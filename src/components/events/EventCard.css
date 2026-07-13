@@ -3,12 +3,13 @@
 /* Event Listing Card */
 .event-listing-card {
     display: flex !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
     height: 463px !important;
     padding: 20px !important;
     flex-direction: column !important;
     justify-content: space-between !important;
     align-items: flex-start !important;
-    flex: 1 0 0 !important;
     border-radius: 16px !important;
     border: 2px solid #000 !important;
     background: #FFF !important;
@@ -329,37 +330,4 @@
 
 .card-cta-btn:active {
     transform: scale(0.98);
-}
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   1920px override — ONLY width changes per Figma spec.
-   Card width: 462.67px (Fill). Height stays 463px — unchanged from 1440px.
-   Children that had explicit 262px widths (= card 302px - 40px padding) are
-   scaled proportionally: 462.67px - 40px padding = 422.67px.
-   Nothing else (height, gap, padding, font-size, border-radius) changes.
-────────────────────────────────────────────────────────────────────────────── */
-@media (min-width: 1920px) {
-    .events-grid .event-listing-card {
-        width: 462.67px !important;
-    }
-
-    .events-grid .card-header-body {
-        width: 422.67px;
-    }
-
-    .events-grid .card-header {
-        width: 422.67px;
-    }
-
-    .events-grid .card-body {
-        width: 422.67px;
-    }
-
-    .events-grid .card-top-content {
-        width: 422.67px;
-    }
-
-    .events-grid .card-image-cta-container {
-        width: 422.67px;
-    }
 }
