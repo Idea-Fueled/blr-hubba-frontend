@@ -499,10 +499,12 @@
 .copyright-row-container {
     display: flex;
     flex-direction: row;
-    /* width: 1376px; */
-    width: auto;
+    max-width: 1280px;
+    width: 100%;
+    margin: 0 auto;
     height: 9px;
     justify-content: space-between;
+    box-sizing: border-box;
 }
 
 .copyright-text {

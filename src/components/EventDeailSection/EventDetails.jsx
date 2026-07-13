@@ -4,6 +4,7 @@ import EventFAQs from "../EventListingSection/EventFAQs";
 import SimilarEvents from "./SimilarEvents";
 import SponsorsSection from "../SponsorsSection/SponsorsSection";
 import siffLogo from "../../assets/SIFF_logo.png";
+import HorizontalRow from "../HorizontalRow";
 
 const EventDetails = () => {
 
@@ -258,9 +259,8 @@ const EventDetails = () => {
                 </div>
             </section>
             <EventFAQs />
-            {/* <hr /> */}
             <SimilarEvents />
-            <hr />
+            <HorizontalRow />
             <SponsorsSection />
         </>
     )

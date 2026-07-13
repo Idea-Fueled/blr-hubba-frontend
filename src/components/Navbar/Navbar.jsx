@@ -1,6 +1,5 @@
 import { useState } from "react";
 import "./Navbar.css";
-import logoBlrhubba from "../../assets/logo_blrhubba.png";
 import instagramIcon from "../../assets/instagram_icon.png";
 
 export const Navbar = () => {
