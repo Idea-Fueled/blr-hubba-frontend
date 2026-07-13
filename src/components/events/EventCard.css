@@ -3,13 +3,12 @@
 /* Event Listing Card */
 .event-listing-card {
     display: flex !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
     height: 463px !important;
     padding: 20px !important;
     flex-direction: column !important;
     justify-content: space-between !important;
     align-items: flex-start !important;
+    flex: 1 0 0 !important;
     border-radius: 16px !important;
     border: 2px solid #000 !important;
     background: #FFF !important;
@@ -26,7 +25,7 @@
     gap: 16px;
     align-self: stretch;
     height: 196px;
-    width: 100%;
+    width: 262px;
 }
 
 .card-header {
@@ -44,7 +43,7 @@
     align-items: center;
     gap: 12px;
     align-self: stretch;
-    width: 100%;
+    width: 262px;
     height: 56px;
     border-bottom: 1px solid var(--Hubba-Black, #000);
 }
@@ -155,7 +154,7 @@
     gap: 20px;
     align-self: stretch;
     height: 108px;
-    width: 100%;
+    width: 262px;
 }
 
 /* .card-genre-pill-container {
@@ -195,7 +194,7 @@
 }
 
 .card-top-content {
-    width: 100%;
+    width: 262px;
     height: 67px;
     /* gap: 16px; */
 }
@@ -230,7 +229,7 @@
 }
 
 .card-image-cta-container {
-    width: 100%;
+    width: 262px;
     height: 201px;
     gap: 16px;
 }
@@ -330,4 +329,35 @@
 
 .card-cta-btn:active {
     transform: scale(0.98);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   >1440px override — card and children go fluid to fill the grid column.
+   At exactly 1440px and below everything stays at original fixed 262px values.
+────────────────────────────────────────────────────────────────────────────── */
+@media (min-width: 1441px) {
+    .events-grid .event-listing-card {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .events-grid .card-header-body {
+        width: 100%;
+    }
+
+    .events-grid .card-header {
+        width: 100%;
+    }
+
+    .events-grid .card-body {
+        width: 100%;
+    }
+
+    .events-grid .card-top-content {
+        width: 100%;
+    }
+
+    .events-grid .card-image-cta-container {
+        width: 100%;
+    }
 }
