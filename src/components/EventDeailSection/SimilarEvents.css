@@ -1,0 +1,123 @@
+.similar-events-wrapper {
+    display: flex;
+    padding: 100px 80px;
+    flex-direction: column;
+    align-items: center;
+    /* CHANGED: was flex-start — needed so the fixed-width container below centers on wide screens */
+    gap: 10px;
+    background: #FFF;
+    height: auto;
+}
+
+.similar-events-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 38px;
+    align-self: stretch;
+}
+
+.similar-events-header-title {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Roboto Condensed";
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 40px;
+}
+
+.similar-events-header-button {
+    display: flex;
+    height: 44px;
+    padding: 16px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    border: 2px solid var(--Hubba-Black, #000);
+    background: var(--Hubba-Yellow, #FDFF53);
+    color: var(--Hubba-Black, #000);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Roboto Condensed";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    font-variant: all-small-caps;
+}
+
+.similar-events-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+    width: 1280px;
+    /* NEW: fixed width, same pattern as .event-listing-content-wrapper */
+    height: 664px;
+}
+
+.similar-events-card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    align-self: stretch;
+}
+
+.cards-grid {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 24px;
+    height: auto;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    padding-left: calc((100vw - 1280px) / 2);
+    padding-right: calc((100vw - 1280px) / 2);
+    box-sizing: border-box;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.cards-grid::-webkit-scrollbar {
+    /* NEW: hide scrollbar (Chrome/Safari) */
+    display: none;
+}
+
+.navigation-button-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+    /* CHANGED: was hardcoded 1280px, now 100% of the already-1280px parent so it centers correctly */
+    height: 56px;
+    margin-top: 40px;
+}
+
+.arrows {
+    display: flex;
+    width: 56px;
+    height: 56px;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-lg, 12px);
+    border-radius: var(--radius-full, 9999px);
+    border: 1px solid var(--Hubba-Black, #000);
+    background: #FFFFFF;
+    /* NEW: added so it's clickable-looking, remove if you don't want this */
+    cursor: pointer;
+    /* NEW */
+}
