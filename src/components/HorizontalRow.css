@@ -1,11 +1,6 @@
 .horizontal-row {
-    border: none;
-    border-top: 1px solid #C3C3C3;
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    box-sizing: border-box;
+    border: 1px solid #C3C3C3;
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
 }
