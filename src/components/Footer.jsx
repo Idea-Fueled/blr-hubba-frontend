@@ -20,7 +20,7 @@ export const Footer = () => {
     };
 
     return (
-        <section>
+        <section style={{ overflow: "hidden" }}>
             <footer className="main-footer" style={{ backgroundImage: `url(${footerBg})` }}>
                 <div className="footer-container">
                     {/* Stay Connected Header */}

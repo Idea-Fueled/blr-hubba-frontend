@@ -56,7 +56,7 @@
     flex-direction: column;
     align-items: center;
     gap: 60px;
-    width: 1280px;
+    width: 100%;
     /* NEW: fixed width, same pattern as .event-listing-content-wrapper */
     height: 664px;
 }
@@ -81,8 +81,8 @@
     right: 50%;
     margin-left: -50vw;
     margin-right: -50vw;
-    padding-left: calc((100vw - 1280px) / 2);
-    padding-right: calc((100vw - 1280px) / 2);
+    padding-left: 80px;
+    padding-right: 80px;
     box-sizing: border-box;
     overflow-x: auto;
     scroll-behavior: smooth;

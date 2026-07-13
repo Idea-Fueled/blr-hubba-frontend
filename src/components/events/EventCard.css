@@ -330,3 +330,47 @@
 .card-cta-btn:active {
     transform: scale(0.98);
 }
+
+/* Card growth and fluid widths ONLY when inside the events-grid of the EventListing page */
+.events-grid .event-listing-card {
+    min-width: 302px !important;
+    box-sizing: border-box !important;
+}
+
+.events-grid .card-header-body {
+    width: 100% !important;
+    height: auto !important;
+    flex-shrink: 0 !important;
+}
+
+.events-grid .card-header {
+    width: 100% !important;
+}
+
+.events-grid .card-body {
+    width: 100% !important;
+    height: auto !important;
+}
+
+.events-grid .card-top-content {
+    width: 100% !important;
+    height: auto !important;
+}
+
+.events-grid .card-image-cta-container {
+    width: 100% !important;
+    height: auto !important;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.events-grid .card-image-container {
+    height: auto !important;
+    aspect-ratio: 262 / 147 !important;
+}
+
+.events-grid .card-image {
+    height: 100% !important;
+    object-fit: cover !important;
+}

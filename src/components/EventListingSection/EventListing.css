@@ -7,16 +7,12 @@
     align-items: flex-start;
     gap: 80px;
     align-self: stretch;
-    max-width: 1440px;
-    margin: 0 auto;
     width: 100%;
     box-sizing: border-box;
 }
 
 .event-listing-content-wrapper {
-    width: 1280px;
-    max-width: 1280px;
-    margin: 0 auto;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 60px;
@@ -25,19 +21,12 @@
 
 /* Header Section */
 .event-listing-header {
-    /* display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    width: 1280px;
-    max-width: 1280px;
-    height: 97px; */
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     align-self: stretch;
     height: 135px;
-    width: 1280px;
-    margin: 0 auto;
+    width: 100%;
 }
 
 .event-listing-header-left {
@@ -100,7 +89,7 @@
 
 .venue-date-filter-row {
     display: flex;
-    width: 1280px;
+    width: 100%;
     flex-direction: column;
     align-items: flex-start;
     gap: 32px;
@@ -366,8 +355,7 @@
 
 /* Right Content Area */
 .right-content-area {
-    width: 954px;
-    flex-shrink: 0;
+    flex: 1;
 }
 
 /* Venue Filter Row */
@@ -387,7 +375,7 @@
     -ms-overflow-style: none;
     flex: 1;
     padding: 4px 0;
-    width: 902px;
+    width: 100%;
     height: auto;
 }
 
@@ -466,7 +454,7 @@
 .events-grid {
     margin-top: 24px;
     display: grid;
-    grid-template-columns: repeat(3, 302px);
+    grid-template-columns: repeat(auto-fill, minmax(302px, 1fr));
     gap: 24px;
 }
 

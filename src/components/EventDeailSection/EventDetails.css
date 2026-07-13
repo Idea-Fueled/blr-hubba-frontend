@@ -1,7 +1,5 @@
 .detail-container-wrapper {
     padding: 60px 80px;
-    max-width: 1440px;
-    margin: 0 auto;
     width: 100%;
     box-sizing: border-box;
 }
@@ -47,7 +45,7 @@
     align-items: flex-start;
     gap: 24px;
     align-self: stretch;
-    width: 810px;
+    width: 100%;
     height: auto;
 }
 
@@ -89,7 +87,7 @@
     align-items: flex-start;
     gap: 32px;
     align-self: stretch;
-    width: 810px;
+    width: 100%;
     height: auto;
 }
 

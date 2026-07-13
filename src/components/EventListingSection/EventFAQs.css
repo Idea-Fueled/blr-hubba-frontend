@@ -2,7 +2,6 @@
 
 .faqs-wrapper-container {
     width: 100%;
-    max-width: 1440px;
     height: 695px;
     padding-bottom: 80px;
     box-sizing: border-box;
@@ -10,7 +9,6 @@
     padding: 100px 200px;
     gap: 40px;
     overflow: hidden;
-    margin: 0 auto;
 }
 
 .faqs-wrapper-content {
@@ -28,7 +26,7 @@
     color: #000000;
     margin: 0;
     margin-bottom: 32px;
-    width: 1040px;
+    width: 100%;
     height: 23px;
     gap: 24px;
     leading-trim: both;
@@ -36,7 +34,7 @@
 }
 
 .faqs-list-container {
-    width: 1040px;
+    width: 100%;
     height: 432px;
 }
 
