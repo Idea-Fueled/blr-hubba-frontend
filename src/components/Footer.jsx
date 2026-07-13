@@ -67,10 +67,11 @@ export const Footer = () => {
                             <a href="#" className="banner-btn">
                                 <span>SUPPORT US</span>
                                 <div className="banner-arrow">
-                                    <svg viewBox="0 0 24 24" className="arrow-svg" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                        <line x1="7" y1="17" x2="17" y2="7" />
-                                        <polyline points="7 7 17 7 17 17" />
-                                    </svg>
+                                    <div className="arrow-footer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 16 15" fill="none">
+                                            <path d="M11.4417 6.20437L1.91599 15L0 13.2339L9.33368 4.48072C5.76468 5.2635 3.4396 4.55398 0.534307 2.63753L2.66736 0C5.68536 2.94216 10.1727 3.05784 13.6165 0.55527L15.5951 2.32519C12.8818 5.45244 13.0613 9.67866 16 12.6208L13.245 14.4177C11.2872 12 10.6235 9.31234 11.4375 6.20051L11.4417 6.20437Z" fill="black" />
+                                        </svg>
+                                    </div>
                                 </div>
                             </a>
                         </div>
@@ -100,10 +101,13 @@ export const Footer = () => {
                             <a href="#" className="banner-btn">
                                 <span>VOLUNTEER WITH US</span>
                                 <div className="banner-arrow">
-                                    <svg viewBox="0 0 24 24" className="arrow-svg" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                        <line x1="7" y1="17" x2="17" y2="7" />
-                                        <polyline points="7 7 17 7 17 17" />
-                                    </svg>
+
+                                    <div className="arrow-footer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 16 15" fill="none">
+                                            <path d="M11.4417 6.20437L1.91599 15L0 13.2339L9.33368 4.48072C5.76468 5.2635 3.4396 4.55398 0.534307 2.63753L2.66736 0C5.68536 2.94216 10.1727 3.05784 13.6165 0.55527L15.5951 2.32519C12.8818 5.45244 13.0613 9.67866 16 12.6208L13.245 14.4177C11.2872 12 10.6235 9.31234 11.4375 6.20051L11.4417 6.20437Z" fill="black" />
+                                        </svg>
+                                    </div>
+
                                 </div>
                             </a>
                         </div>
@@ -127,10 +131,11 @@ export const Footer = () => {
                             <a href="#" className="banner-btn">
                                 <span>CONTACT US</span>
                                 <div className="banner-arrow">
-                                    <svg viewBox="0 0 24 24" className="arrow-svg" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                        <line x1="7" y1="17" x2="17" y2="7" />
-                                        <polyline points="7 7 17 7 17 17" />
-                                    </svg>
+                                    <div className="arrow-footer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 16 15" fill="none">
+                                            <path d="M11.4417 6.20437L1.91599 15L0 13.2339L9.33368 4.48072C5.76468 5.2635 3.4396 4.55398 0.534307 2.63753L2.66736 0C5.68536 2.94216 10.1727 3.05784 13.6165 0.55527L15.5951 2.32519C12.8818 5.45244 13.0613 9.67866 16 12.6208L13.245 14.4177C11.2872 12 10.6235 9.31234 11.4375 6.20051L11.4417 6.20437Z" fill="black" />
+                                        </svg>
+                                    </div>
                                 </div>
                             </a>
                         </div>

@@ -270,15 +270,23 @@
 }
 
 .banner-arrow {
-    width: 32px;
-    height: 32px;
-    background: #FDFF53;
-    border-radius: 50%;
     display: flex;
-    align-items: center;
+    width: 40px;
+    height: 40px;
+    /* padding: 0 24px; */
     justify-content: center;
-    color: #000000;
-    transition: transform 0.2s ease;
+    align-items: center;
+    gap: 10px;
+    aspect-ratio: 1/1;
+    border-radius: 67px;
+    background: var(--Hubba-Yellow, #FDFF53);
+}
+
+.arrow-footer {
+    fill: var(--Hubba-Black, #000);
+    /* width: 16px;
+    height: 15px;
+    flex-shrink: 0; */
 }
 
 .banner-btn:hover .banner-arrow {

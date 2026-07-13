@@ -1,19 +1,18 @@
-.logo {
-    height: 40px;
+.logo-container {
     width: 111px;
+    height: 40px;
+    height: 111px;
+    width: 40px;
 }
 
 .navbar {
+    display: flex;
+    /* width: 1440px; */
     width: auto;
     height: 80px;
-    background: #ffffff;
-
-    display: flex;
+    padding: 0 32px;
     justify-content: space-between;
     align-items: center;
-
-    padding-left: 32px;
-    padding-right: 32px;
 }
 
 .navbar-left {
@@ -22,8 +21,6 @@
     gap: 24px;
     width: 571px;
     height: 40px;
-    justify-content: center;
-    align-items: center;
 }
 
 .logo {
@@ -32,16 +29,44 @@
 }
 
 .nav-link-container {
-    width: 412px;
+    /* width: 412px; */
     height: 24px;
 }
 
-.nav-links {
+.nav-link-1 {
     display: flex;
+    padding: 10px 0;
+    justify-content: center;
     align-items: center;
-    gap: 24px;
+    gap: 10px;
     width: 71px;
+    height: 13px;
+}
+
+.nav-link-6 {
+    display: flex;
+    width: 24px;
+    height: 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    aspect-ratio: 1/1;
+    height: 24px;
+    width: 24px;
+}
+
+.nav-links {
+    /* display: flex; */
+    /* align-items: center; */
+    /* gap: 24px; */
+    /* width: 71px; */
+    gap: 24px;
     height: 33px;
+    display: flex;
+    padding: 10px 0;
+    justify-content: center;
+    align-items: center;
+    /* gap: 10px; */
     /* padding: 10px 0; */
     /* gap: 10px; */
 }
@@ -68,10 +93,7 @@
 .navbar-right {
     display: flex;
     align-items: center;
-    gap: 12px;
-
-    width: 379px;
-    height: 44px;
+    gap: 16px;
 }
 
 .navbar-right-img {
@@ -145,6 +167,30 @@
 
     cursor: pointer;
     transition: all 0.2s ease;
+}
+
+.language-change-container {
+    display: flex;
+    height: 44px;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 6px;
+    width: 80px;
+    height: 44px;
+}
+
+.language-dropdown {
+    display: flex;
+    width: 28px;
+    height: 28px;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1/1;
+}
+
+.language-container {
+    width: 46px;
+    height: 36px;
 }
 
 /* mobile view */
