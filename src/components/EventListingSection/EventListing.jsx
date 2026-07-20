@@ -1,226 +1,168 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import "./EventListing.css";
 import xIcon from "../../assets/x_icon.png";
 import EventCard from "../events/EventCard";
 import HorizontalRow from "../HorizontalRow";
-import { fetchEvents } from "../../api/eventsApi";
-import { mapBackendEventToCard } from "../../utils/eventMappers";
 
-const STATIC_ZONES = ["Central", "North", "South", "East", "West"];
-const MORE_FILTERS = ["Free", "Available", "Multi-Day Events"];
-
-const getLocalDateString = (dateObjOrStr) => {
-    const d = new Date(dateObjOrStr);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-};
-
-const generateDateRange = (rawEvents) => {
-    if (!rawEvents || rawEvents.length === 0) {
-        return [{ label: "All", value: "ALL" }];
+export const DUMMY_EVENTS = [
+    {
+        id: "ev-1",
+        title: "Id orci tincidunt amet cglt ullam cglt corper morbi",
+        performer: "by Swarupa Ananth",
+        venue: "Freedom Park",
+        displayVenue: "Freedom Park, Panchavati +2",
+        time: "11:00 am - 1:00 pm",
+        date: "16",
+        displayDate: "16-24",
+        month: "JAN",
+        weekday: "FRI",
+        image: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800&auto=format&fit=crop&q=60",
+        genres: ["Music", "Genre 2", "Genre 3"],
+        isFree: true,
+        isAvailable: true,
+        isMultiDay: false,
+        zone: "Central",
+        language: "English"
+    },
+    {
+        id: "ev-2",
+        title: "Id orci tincidunt amet cglt ullam cglt corper morbi",
+        performer: "by Swarupa Ananth",
+        venue: "Bangalore International Centre (BIC)",
+        displayVenue: "Freedom Park, Panchavati +2",
+        time: "11:00 am - 1:00 pm",
+        date: "16",
+        displayDate: "16-24",
+        month: "JAN",
+        weekday: "FRI",
+        image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&auto=format&fit=crop&q=60",
+        genres: ["Music", "Genre 2", "Genre 3"],
+        isFree: false,
+        isAvailable: true,
+        isMultiDay: false,
+        zone: "East",
+        language: "Kannada"
+    },
+    {
+        id: "ev-3",
+        title: "Id orci tincidunt amet cglt ullam cglt corper morbi",
+        performer: "by Swarupa Ananth",
+        venue: "National Gallery of Modern Art (NGMA)",
+        displayVenue: "Freedom Park, Panchavati +2",
+        time: "11:00 am - 1:00 pm",
+        date: "17",
+        displayDate: "16-24",
+        month: "JAN",
+        weekday: "SAT",
+        image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&auto=format&fit=crop&q=60",
+        genres: ["Genre 1", "Genre 2"],
+        isFree: true,
+        isAvailable: false,
+        isMultiDay: true,
+        zone: "Central",
+        language: "English"
+    },
+    {
+        id: "ev-4",
+        title: "Id orci tincidunt amet cglt ullam cglt corper morbi",
+        performer: "by Swarupa Ananth",
+        venue: "Prestige Centre for Performing Arts (PCPA)",
+        displayVenue: "Freedom Park, Panchavati +2",
+        time: "11:00 am - 1:00 pm",
+        date: "18",
+        displayDate: "16-24",
+        month: "JAN",
+        weekday: "SUN",
+        image: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=800&auto=format&fit=crop&q=60",
+        genres: ["Genre 1", "Genre 3"],
+        isFree: false,
+        isAvailable: true,
+        isMultiDay: false,
+        zone: "South",
+        language: "Hindi"
+    },
+    {
+        id: "ev-5",
+        title: "Id orci tincidunt amet cglt ullam cglt corper morbi",
+        performer: "by Swarupa Ananth",
+        venue: "Freedom Park",
+        displayVenue: "Freedom Park, Panchavati +2",
+        time: "11:00 am - 1:00 pm",
+        date: "19",
+        displayDate: "16-24",
+        month: "JAN",
+        weekday: "MON",
+        image: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800&auto=format&fit=crop&q=60",
+        genres: ["Music", "Genre 2"],
+        isFree: true,
+        isAvailable: true,
+        isMultiDay: true,
+        zone: "Central",
+        language: "English"
+    },
+    {
+        id: "ev-6",
+        title: "Id orci tincidunt amet cglt ullam cglt corper morbi",
+        performer: "by Swarupa Ananth",
+        venue: "Bangalore International Centre (BIC)",
+        displayVenue: "Freedom Park, Panchavati +2",
+        time: "11:00 am - 1:00 pm",
+        date: "20",
+        displayDate: "16-24",
+        month: "JAN",
+        weekday: "TUE",
+        image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&auto=format&fit=crop&q=60",
+        genres: ["Genre 2", "Genre 3"],
+        isFree: false,
+        isAvailable: true,
+        isMultiDay: false,
+        zone: "East",
+        language: "Kannada"
     }
+];
 
-    // Find the minimum and maximum dates among the events
-    let minDate = null;
-    let maxDate = null;
+const DATES = [
+    { label: "All", value: "ALL" },
+    { day: "15", weekday: "FRI", value: "15" },
+    { day: "16", weekday: "SAT", value: "16" },
+    { day: "17", weekday: "SUN", value: "17" },
+    { day: "18", weekday: "MON", value: "18" },
+    { day: "19", weekday: "TUE", value: "19" },
+    { day: "20", weekday: "WED", value: "20" },
+    { day: "21", weekday: "THU", value: "21" },
+    { day: "22", weekday: "FRI", value: "22" },
+    { day: "23", weekday: "SAT", value: "23" },
+    { day: "24", weekday: "SUN", value: "24" }
+];
 
-    rawEvents.forEach(e => {
-        const start = new Date(e.startDateTime);
-        const end = new Date(e.endDateTime || e.startDateTime);
-
-        if (!minDate || start < minDate) minDate = start;
-        if (!maxDate || end > maxDate) maxDate = end;
-    });
-
-    const dateList = [{ label: "All", value: "ALL" }];
-
-    if (minDate && maxDate) {
-        const current = new Date(minDate);
-        current.setHours(0, 0, 0, 0);
-
-        const last = new Date(maxDate);
-        last.setHours(0, 0, 0, 0);
-
-        while (current <= last) {
-            const dayNumber = current.getDate().toString();
-            const weekday = current.toLocaleString('en-US', { weekday: 'short' }).toUpperCase();
-
-            if (!dateList.some(d => d.value === dayNumber)) {
-                dateList.push({
-                    day: dayNumber,
-                    weekday: weekday,
-                    value: dayNumber,
-                    dateStr: getLocalDateString(current)
-                });
-            }
-
-            current.setDate(current.getDate() + 1);
-        }
-    }
-
-    return dateList;
-};
-
-const generateVenues = (mappedEvents) => {
-    if (!mappedEvents || mappedEvents.length === 0) return [];
-    const venueNames = [];
-    mappedEvents.forEach(e => {
-        if (e.venues && e.venues.length > 0) {
-            e.venues.forEach(v => {
-                if (v) venueNames.push(v);
-            });
-        } else if (e.venue) {
-            venueNames.push(e.venue);
-        }
-    });
-    return Array.from(new Set(venueNames)).sort((a, b) => a.localeCompare(b));
-};
-
-const generateGenres = (mappedEvents) => {
-    if (!mappedEvents || mappedEvents.length === 0) return [];
-    const genresSet = new Set();
-    mappedEvents.forEach(e => {
-        if (e.genres) {
-            e.genres.forEach(g => genresSet.add(g));
-        }
-    });
-    return Array.from(genresSet).sort((a, b) => a.localeCompare(b));
-};
+const GENRES = ["Genre 1", "Genre 2", "Genre 3", "Genre 4", "Genre 5", "Genre 6", "Genre 7", "Genre 8"];
+const ZONES = ["Central", "North", "South", "East", "West"];
+const LANGUAGES = ["English", "Kannada", "Hindi"];
+const VENUES = [
+    "Freedom Park",
+    "Bangalore International Centre (BIC)",
+    "National Gallery of Modern Art (NGMA)",
+    "Prestige Centre for Performing Arts (PCPA)"
+];
+const MORE_FILTERS = ["Free", "Available", "Multi-Day Events", "Filter 4", "Filter 5", "Filter 6", "Filter 7"];
 
 export const EventListing = () => {
-    const [events, setEvents] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    // Dynamic filters populated from events list
-    const [dates, setDates] = useState([{ label: "All", value: "ALL" }]);
-    const [genres, setGenres] = useState([]);
-    const [languages, setLanguages] = useState([]);
-    const [venues, setVenues] = useState([]);
-    const [subfestivals, setSubfestivals] = useState([]);
-    const [curators, setCurators] = useState([]);
-
     // Selection state
     const [selectedDate, setSelectedDate] = useState("ALL");
-    const [selectedVenues, setSelectedVenues] = useState([]);
+    const [selectedVenue, setSelectedVenue] = useState("");
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [selectedZones, setSelectedZones] = useState([]);
     const [selectedLanguages, setSelectedLanguages] = useState([]);
     const [selectedMoreFilters, setSelectedMoreFilters] = useState([]);
-    const [selectedSubfestivals, setSelectedSubfestivals] = useState([]);
-    const [freePassOnly, setFreePassOnly] = useState(false);
-    const [donorPassOnly, setDonorPassOnly] = useState(false);
-    const [selectedCurators, setSelectedCurators] = useState([]);
     const [likedEvents, setLikedEvents] = useState({});
-
-    // Client-side pagination/load more
-    const [visibleCount, setVisibleCount] = useState(6);
 
     // Accordion expand/collapse state
     const [genreOpen, setGenreOpen] = useState(true);
-    const [zonesOpen, setZonesOpen] = useState(true);
-    const [languageOpen, setLanguageOpen] = useState(true);
-    const [moreFiltersOpen, setMoreFiltersOpen] = useState(true);
-    const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-    const [isSticky, setIsSticky] = useState(false);
+    const [zonesOpen, setZonesOpen] = useState(false);
+    const [languageOpen, setLanguageOpen] = useState(false);
+    const [moreFiltersOpen, setMoreFiltersOpen] = useState(false);
 
     const venueRowRef = useRef(null);
-    const sentinelRef = useRef(null);
-    const [venueScrolledLeft, setVenueScrolledLeft] = useState(false);
-
-    // Fetch filters and events on mount
-    useEffect(() => {
-        setLoading(true);
-        setError(null);
-
-        fetchEvents({ limit: 100 })
-            .then(eventsData => {
-                // Map events using shared mapping utility
-                if (eventsData && eventsData.events) {
-                    const mapped = eventsData.events.map(mapBackendEventToCard);
-                    
-                    // Sort list of events: primarily by start time (earliest to latest), secondarily by duration (shortest to longest)
-                    const sorted = [...mapped].sort((a, b) => {
-                        const timeA = new Date(a.startDateTime || 0).getTime();
-                        const timeB = new Date(b.startDateTime || 0).getTime();
-                        if (timeA !== timeB) {
-                            return timeA - timeB;
-                        }
-                        const durationA = a.duration || 0;
-                        const durationB = b.duration || 0;
-                        return durationA - durationB;
-                    });
-
-                    setEvents(sorted);
-                    const dynamicDates = generateDateRange(eventsData.events);
-                    setDates(dynamicDates);
-
-                    // Generate venues dynamically
-                    const dynamicVenues = generateVenues(mapped);
-                    setVenues(dynamicVenues);
-
-                    // Generate genres dynamically
-                    const dynamicGenres = generateGenres(mapped);
-                    setGenres(dynamicGenres);
-
-                    // Generate languages dynamically with base languages Kannada, English, Hindi included
-                    const baseLanguages = ["Kannada", "English", "Hindi"];
-                    const dynamicLanguages = Array.from(new Set([...baseLanguages, ...mapped.map(e => e.language).filter(Boolean)])).sort((a, b) => a.localeCompare(b));
-                    setLanguages(dynamicLanguages);
-
-                    // Generate subfestivals dynamically
-                    const dynamicSubfestivals = Array.from(new Set(mapped.map(e => e.subfestivalName).filter(Boolean))).sort((a, b) => a.localeCompare(b));
-                    setSubfestivals(dynamicSubfestivals);
-
-                    // Generate curators dynamically
-                    const dynamicCurators = Array.from(new Set(mapped.map(e => e.curatedBy).filter(Boolean))).sort((a, b) => a.localeCompare(b));
-                    setCurators(dynamicCurators);
-                }
-
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error(err);
-                setError(err.message);
-                setLoading(false);
-            });
-    }, []);
-
-    // Reset visible count to 6 when filters change
-    useEffect(() => {
-        setVisibleCount(6);
-    }, [
-        selectedDate,
-        selectedVenues,
-        selectedGenres,
-        selectedZones,
-        selectedLanguages,
-        selectedMoreFilters,
-        selectedSubfestivals,
-        freePassOnly,
-        donorPassOnly,
-        selectedCurators
-    ]);
-
-    // Intersection observer to toggle sticky state
-    useEffect(() => {
-        const sentinel = sentinelRef.current;
-        if (!sentinel) return;
-
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                setIsSticky(!entry.isIntersecting);
-            },
-            { threshold: [0] }
-        );
-
-        observer.observe(sentinel);
-        return () => {
-            if (sentinel) observer.unobserve(sentinel);
-        };
-    }, [loading]);
 
     // Toggle favorite handler
     const toggleLike = (eventId) => {
@@ -258,42 +200,20 @@ export const EventListing = () => {
     // Reset filters
     const handleResetAll = () => {
         setSelectedDate("ALL");
-        setSelectedVenues([]);
+        setSelectedVenue("");
         setSelectedGenres([]);
         setSelectedZones([]);
         setSelectedLanguages([]);
         setSelectedMoreFilters([]);
-        setSelectedSubfestivals([]);
-        setFreePassOnly(false);
-        setDonorPassOnly(false);
-        setSelectedCurators([]);
     };
 
     // Filter logic
-    const filteredEvents = events.filter((event) => {
-        // Date Filter (Multi-day support)
-        if (selectedDate !== "ALL") {
-            const selectedTab = dates.find(d => d.value === selectedDate);
-            if (selectedTab && selectedTab.dateStr) {
-                const targetStr = selectedTab.dateStr;
-                const startStr = getLocalDateString(event.startDateTime);
-                const endStr = getLocalDateString(event.endDateTime || event.startDateTime);
+    const filteredEvents = DUMMY_EVENTS.filter((event) => {
+        // Date Filter
+        if (selectedDate !== "ALL" && event.date !== selectedDate) return false;
 
-                if (targetStr < startStr || targetStr > endStr) {
-                    return false;
-                }
-            } else if (event.date !== selectedDate) {
-                return false;
-            }
-        }
-
-        // Venue Filter (multi-select)
-        if (selectedVenues.length > 0) {
-            const matchesVenue = event.venues
-                ? event.venues.some(v => selectedVenues.includes(v))
-                : selectedVenues.includes(event.venue);
-            if (!matchesVenue) return false;
-        }
+        // Venue Filter
+        if (selectedVenue && event.venue !== selectedVenue) return false;
 
         // Genre Filter
         if (selectedGenres.length > 0) {
@@ -314,24 +234,8 @@ export const EventListing = () => {
             if (selectedMoreFilters.includes("Multi-Day Events") && !event.isMultiDay) return false;
         }
 
-        // Sub-Festival Filter
-        if (selectedSubfestivals.length > 0 && !selectedSubfestivals.includes(event.subfestivalName)) return false;
-
-        // Free Pass Filter
-        if (freePassOnly && !event.isFree) return false;
-
-        // Donor Pass Filter
-        if (donorPassOnly && event.isFree) return false;
-
-        // Curator Filter
-        if (selectedCurators.length > 0 && !selectedCurators.includes(event.curatedBy)) return false;
-
         return true;
     });
-
-    const handleLoadMore = () => {
-        setVisibleCount(prev => prev + 6);
-    };
 
     // Horizontal scroll venue chip row
     const scrollVenuesRight = () => {
@@ -339,30 +243,6 @@ export const EventListing = () => {
             venueRowRef.current.scrollBy({ left: 200, behavior: "smooth" });
         }
     };
-
-    const scrollVenuesLeft = () => {
-        if (venueRowRef.current) {
-            venueRowRef.current.scrollBy({ left: -200, behavior: "smooth" });
-        }
-    };
-
-    const handleVenueScroll = () => {
-        if (venueRowRef.current) {
-            setVenueScrolledLeft(venueRowRef.current.scrollLeft > 10);
-        }
-    };
-
-
-    if (error) {
-        return (
-            <div className="w-full text-center py-32 bg-red-50 rounded-2xl border border-red-100 p-6">
-                <p className="text-xl text-red-600 font-medium">{error}</p>
-            </div>
-        );
-    }
-
-    const visibleEvents = filteredEvents.slice(0, visibleCount);
-    const showLoadMore = filteredEvents.length > visibleCount;
 
     return (
         <>
@@ -379,13 +259,10 @@ export const EventListing = () => {
                 </div>
 
                 <div className="event-listing-content-wrapper">
-                    {/* Sentinel for sticky filter row detection */}
-                    <div ref={sentinelRef} style={{ height: "1px", margin: "0", padding: "0" }}></div>
-
                     {/* Date Filter Row */}
                     <div className="venue-date-filter-row">
                         <div className="date-filter-row">
-                            {dates.map((date, idx) => {
+                            {DATES.map((date, idx) => {
                                 const isActive = selectedDate === date.value;
                                 if (date.value === "ALL") {
                                     return (
@@ -412,70 +289,36 @@ export const EventListing = () => {
                                 );
                             })}
                         </div>
-                        {venues.length > 0 && (
-                            <div className="venue-filter-row-container">
-                                {isSticky && (
-                                    <>
-                                        <button className="mobile-filter-trigger-btn" onClick={() => setIsFilterModalOpen(true)} aria-label="Open Filters">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
-                                                <path d="M16.5 2.25H1.5L7.5 9.345V14.25L10.5 15.75V9.345L16.5 2.25Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
+                        <div className="venue-filter-row-container">
+                            <div ref={venueRowRef} className="venue-filter-row">
+                                {VENUES.map((venue) => {
+                                    const isSelected = selectedVenue === venue;
+                                    return (
+                                        <button
+                                            key={venue}
+                                            className={`venue-chip ${isSelected ? "selected" : ""}`}
+                                            onClick={() => setSelectedVenue(isSelected ? "" : venue)}
+                                        >
+                                            <span className="venue-name">{venue}</span>
                                         </button>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="1" height="38" viewBox="0 0 1 38" fill="none" style={{ flexShrink: 0 }}>
-                                            <path d="M0.5 38V0" stroke="#6C6C6C" />
-                                        </svg>
-                                    </>
-                                )}
-                                <button
-                                    className="venue-next-btn"
-                                    onClick={scrollVenuesLeft}
-                                    aria-label="Previous Venues"
-                                    disabled={!venueScrolledLeft}
-                                    style={{ opacity: venueScrolledLeft ? 1 : 0.3, cursor: venueScrolledLeft ? "pointer" : "default" }}
-                                >
-                                    <svg
-                                        className="venue-next-svg"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    >
-                                        <line x1="19" y1="12" x2="5" y2="12"></line>
-                                        <polyline points="12 19 5 12 12 5"></polyline>
-                                    </svg>
-                                </button>
-                                <div ref={venueRowRef} className="venue-filter-row" onScroll={handleVenueScroll}>
-                                    {venues.map((venue) => {
-                                        const isSelected = selectedVenues.includes(venue);
-                                        return (
-                                            <button
-                                                key={venue}
-                                                className={`venue-chip ${isSelected ? "selected" : ""}`}
-                                                onClick={() => setSelectedVenues(prev => isSelected ? prev.filter(v => v !== venue) : [...prev, venue])}
-                                            >
-                                                <span className="venue-name">{venue}</span>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
-                                <button className="venue-next-btn" onClick={scrollVenuesRight} aria-label="Next Venues">
-                                    <svg
-                                        className="venue-next-svg"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    >
-                                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                                        <polyline points="12 5 19 12 12 19"></polyline>
-                                    </svg>
-                                </button>
+                                    );
+                                })}
                             </div>
-                        )}
+                            <button className="venue-next-btn" onClick={scrollVenuesRight} aria-label="Next Venues">
+                                <svg
+                                    className="venue-next-svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     {/* Main Layout */}
                     <div className="main-layout">
@@ -485,17 +328,17 @@ export const EventListing = () => {
                             <div className="filter-accordion">
                                 <span className="filter-section-title">Filtered by</span>
                                 <div className="filtered-by-pills" style={{ marginTop: "12px" }}>
-                                    {selectedVenues.map((venue) => (
-                                        <div key={venue} className="filtered-pill">
-                                            <span>{venue}</span>
+                                    {selectedVenue && (
+                                        <div className="filtered-pill">
+                                            <span>{selectedVenue}</span>
                                             <span
                                                 className="filtered-pill-close"
-                                                onClick={() => setSelectedVenues(prev => prev.filter(v => v !== venue))}
+                                                onClick={() => setSelectedVenue("")}
                                             >
                                                 <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
                                             </span>
                                         </div>
-                                    ))}
+                                    )}
                                     {selectedGenres.map((genre) => (
                                         <div key={genre} className="filtered-pill">
                                             <span>{genre}</span>
@@ -529,50 +372,6 @@ export const EventListing = () => {
                                             </span>
                                         </div>
                                     ))}
-                                    {selectedSubfestivals.map((subfest) => (
-                                        <div key={subfest} className="filtered-pill">
-                                            <span>{subfest}</span>
-                                            <span
-                                                className="filtered-pill-close"
-                                                onClick={() => setSelectedSubfestivals(prev => prev.filter(s => s !== subfest))}
-                                            >
-                                                <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                            </span>
-                                        </div>
-                                    ))}
-                                    {freePassOnly && (
-                                        <div className="filtered-pill">
-                                            <span>Free Pass</span>
-                                            <span
-                                                className="filtered-pill-close"
-                                                onClick={() => setFreePassOnly(false)}
-                                            >
-                                                <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                            </span>
-                                        </div>
-                                    )}
-                                    {donorPassOnly && (
-                                        <div className="filtered-pill">
-                                            <span>Donor Pass</span>
-                                            <span
-                                                className="filtered-pill-close"
-                                                onClick={() => setDonorPassOnly(false)}
-                                            >
-                                                <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                            </span>
-                                        </div>
-                                    )}
-                                    {selectedCurators.map((curator) => (
-                                        <div key={curator} className="filtered-pill">
-                                            <span>{curator}</span>
-                                            <span
-                                                className="filtered-pill-close"
-                                                onClick={() => setSelectedCurators(prev => prev.filter(c => c !== curator))}
-                                            >
-                                                <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                            </span>
-                                        </div>
-                                    ))}
                                     {selectedMoreFilters.map((filter) => (
                                         <div key={filter} className="filtered-pill">
                                             <span>{filter}</span>
@@ -588,38 +387,36 @@ export const EventListing = () => {
                             </div>
 
                             {/* Genre Section */}
-                            {genres.length > 0 && (
-                                <div className={`filter-accordion genre-accordion ${genreOpen ? "open" : ""}`}>
-                                    <div className="accordion-header" onClick={() => setGenreOpen(!genreOpen)}>
-                                        <h4 className="accordion-title">Genre</h4>
-                                        <svg
-                                            className={`accordion-chevron ${genreOpen ? "open" : ""}`}
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                        >
-                                            <polyline points="6 9 12 15 18 9"></polyline>
-                                        </svg>
-                                    </div>
-                                    {genreOpen && (
-                                        <div className="accordion-content">
-                                            {genres.map((genre) => {
-                                                const isSelected = selectedGenres.includes(genre);
-                                                return (
-                                                    <button
-                                                        key={genre}
-                                                        className={`filter-pill ${isSelected ? "selected" : ""}`}
-                                                        onClick={() => handleGenreToggle(genre)}
-                                                    >
-                                                        {genre}
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                    )}
+                            <div className="filter-accordion">
+                                <div className="accordion-header" onClick={() => setGenreOpen(!genreOpen)}>
+                                    <h4 className="accordion-title">Genre</h4>
+                                    <svg
+                                        className={`accordion-chevron ${genreOpen ? "open" : ""}`}
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                    >
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
                                 </div>
-                            )}
+                                {genreOpen && (
+                                    <div className="accordion-content">
+                                        {GENRES.map((genre) => {
+                                            const isSelected = selectedGenres.includes(genre);
+                                            return (
+                                                <button
+                                                    key={genre}
+                                                    className={`filter-pill ${isSelected ? "selected" : ""}`}
+                                                    onClick={() => handleGenreToggle(genre)}
+                                                >
+                                                    {genre}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
 
                             {/* Zones Section */}
                             <div className="filter-accordion">
@@ -637,7 +434,7 @@ export const EventListing = () => {
                                 </div>
                                 {zonesOpen && (
                                     <div className="accordion-content">
-                                        {STATIC_ZONES.map((zone) => {
+                                        {ZONES.map((zone) => {
                                             const isSelected = selectedZones.includes(zone);
                                             return (
                                                 <button
@@ -654,44 +451,36 @@ export const EventListing = () => {
                             </div>
 
                             {/* Language Section */}
-                            {languages.length > 0 && (
-                                <div className="filter-accordion">
-                                    <div className="accordion-header" onClick={() => setLanguageOpen(!languageOpen)}>
-                                        <h4 className="accordion-title">Language</h4>
-                                        <svg
-                                            className={`accordion-chevron ${languageOpen ? "open" : ""}`}
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                        >
-                                            <polyline points="6 9 12 15 18 9"></polyline>
-                                        </svg>
-                                    </div>
-                                    {languageOpen && (
-                                        <div className="accordion-content">
-                                            <button
-                                                className={`filter-pill ${selectedLanguages.length === 0 ? "selected" : ""}`}
-                                                onClick={() => setSelectedLanguages([])}
-                                            >
-                                                All
-                                            </button>
-                                            {languages.map((lang) => {
-                                                const isSelected = selectedLanguages.includes(lang);
-                                                return (
-                                                    <button
-                                                        key={lang}
-                                                        className={`filter-pill ${isSelected ? "selected" : ""}`}
-                                                        onClick={() => handleLanguageToggle(lang)}
-                                                    >
-                                                        {lang}
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                    )}
+                            <div className="filter-accordion">
+                                <div className="accordion-header" onClick={() => setLanguageOpen(!languageOpen)}>
+                                    <h4 className="accordion-title">Language</h4>
+                                    <svg
+                                        className={`accordion-chevron ${languageOpen ? "open" : ""}`}
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                    >
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
                                 </div>
-                            )}
+                                {languageOpen && (
+                                    <div className="accordion-content">
+                                        {LANGUAGES.map((lang) => {
+                                            const isSelected = selectedLanguages.includes(lang);
+                                            return (
+                                                <button
+                                                    key={lang}
+                                                    className={`filter-pill ${isSelected ? "selected" : ""}`}
+                                                    onClick={() => handleLanguageToggle(lang)}
+                                                >
+                                                    {lang}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
 
                             {/* More Filters Section */}
                             <div className="filter-accordion">
@@ -708,110 +497,19 @@ export const EventListing = () => {
                                     </svg>
                                 </div>
                                 {moreFiltersOpen && (
-                                    <div className="accordion-content" style={{ display: "flex", flexDirection: "column", gap: "20px", width: "100%" }}>
-                                        {/* Status Group */}
-                                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                            <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Status & Duration</span>
-                                            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                                                {MORE_FILTERS.map((filter) => {
-                                                    const isSelected = selectedMoreFilters.includes(filter);
-                                                    return (
-                                                        <button
-                                                            key={filter}
-                                                            className={`filter-pill ${isSelected ? "selected" : ""}`}
-                                                            onClick={() => handleMoreFilterToggle(filter)}
-                                                        >
-                                                            {filter}
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-
-                                        {/* Passes Group */}
-                                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                            <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Pass Types</span>
-                                            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                                    <div className="accordion-content">
+                                        {MORE_FILTERS.map((filter) => {
+                                            const isSelected = selectedMoreFilters.includes(filter);
+                                            return (
                                                 <button
-                                                    className={`filter-pill ${freePassOnly ? "selected" : ""}`}
-                                                    onClick={() => setFreePassOnly(!freePassOnly)}
+                                                    key={filter}
+                                                    className={`filter-pill ${isSelected ? "selected" : ""}`}
+                                                    onClick={() => handleMoreFilterToggle(filter)}
                                                 >
-                                                    Free Pass
+                                                    {filter}
                                                 </button>
-                                                <button
-                                                    className={`filter-pill ${donorPassOnly ? "selected" : ""}`}
-                                                    onClick={() => setDonorPassOnly(!donorPassOnly)}
-                                                >
-                                                    Donor Pass
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        {/* Sub-Festival Group */}
-                                        {subfestivals.length > 0 && (
-                                            <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                                <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Sub-Festivals</span>
-                                                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                                                    <button
-                                                        className={`filter-pill ${selectedSubfestivals.length === 0 ? "selected" : ""}`}
-                                                        onClick={() => setSelectedSubfestivals([])}
-                                                    >
-                                                        All
-                                                    </button>
-                                                    {subfestivals.map((subfest) => {
-                                                        const isSelected = selectedSubfestivals.includes(subfest);
-                                                        return (
-                                                            <button
-                                                                key={subfest}
-                                                                className={`filter-pill ${isSelected ? "selected" : ""}`}
-                                                                onClick={() => {
-                                                                    setSelectedSubfestivals(prev =>
-                                                                        prev.includes(subfest)
-                                                                            ? prev.filter(s => s !== subfest)
-                                                                            : [...prev, subfest]
-                                                                    );
-                                                                }}
-                                                            >
-                                                                {subfest}
-                                                            </button>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {/* Curator Group */}
-                                        {curators.length > 0 && (
-                                            <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                                <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Curators</span>
-                                                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                                                    <button
-                                                        className={`filter-pill ${selectedCurators.length === 0 ? "selected" : ""}`}
-                                                        onClick={() => setSelectedCurators([])}
-                                                    >
-                                                        All
-                                                    </button>
-                                                    {curators.map((curator) => {
-                                                        const isSelected = selectedCurators.includes(curator);
-                                                        return (
-                                                            <button
-                                                                key={curator}
-                                                                className={`filter-pill ${isSelected ? "selected" : ""}`}
-                                                                onClick={() => {
-                                                                    setSelectedCurators(prev =>
-                                                                        prev.includes(curator)
-                                                                            ? prev.filter(c => c !== curator)
-                                                                            : [...prev, curator]
-                                                                    );
-                                                                }}
-                                                            >
-                                                                {curator}
-                                                            </button>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </div>
-                                        )}
+                                            );
+                                        })}
                                     </div>
                                 )}
                             </div>
@@ -824,334 +522,30 @@ export const EventListing = () => {
 
                         {/* Right Content Area */}
                         <main className="right-content-area">
-                            {loading ? (
-                                <div className="events-grid">
-                                    {[1, 2, 3, 4, 5, 6].map((i) => (
-                                        <div key={i} className="animate-pulse bg-gray-100 rounded-2xl h-[380px] w-full border border-gray-200"></div>
-                                    ))}
-                                </div>
-                            ) : filteredEvents.length > 0 ? (
-                                <>
-                                    {/* Events Grid */}
-                                    <div className="events-grid">
-                                        {visibleEvents.map((event) => (
-                                            <EventCard
-                                                key={event.id}
-                                                event={event}
-                                                isLiked={!!likedEvents[event.id]}
-                                                onToggleLike={toggleLike}
-                                            />
-                                        ))}
-                                    </div>
+                            {/* Venue Filter Row */}
 
-                                    {/* Dynamic Load More button */}
-                                    {showLoadMore && (
-                                        <div className="load-more-container">
-                                            <button className="load-more-btn" onClick={handleLoadMore}>LOAD MORE</button>
-                                        </div>
-                                    )}
-                                </>
-                            ) : (
-                                <div className="no-events-found" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', height: '300px' }}>
-                                    <p style={{ fontFamily: 'Roboto Condensed', fontSize: '24px', fontWeight: '600', color: '#000', margin: '0 0 16px 0' }}>No Events Found</p>
-                                    <button
-                                        className="reset-filters-btn-inline"
-                                        style={{
-                                            display: 'flex',
-                                            height: '44px',
-                                            padding: '16px 24px',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            borderRadius: '8px',
-                                            border: '2px solid #000',
-                                            background: '#FDFF53',
-                                            color: '#000',
-                                            fontFamily: 'Roboto Condensed',
-                                            fontSize: '16px',
-                                            fontWeight: '600',
-                                            cursor: 'pointer'
-                                        }}
-                                        onClick={handleResetAll}
-                                    >
-                                        RESET ALL FILTERS
-                                    </button>
-                                </div>
-                            )}
+
+                            {/* Events Grid */}
+                            <div className="events-grid">
+                                {filteredEvents.map((event) => (
+                                    <EventCard
+                                        key={event.id}
+                                        event={event}
+                                        isLiked={!!likedEvents[event.id]}
+                                        onToggleLike={toggleLike}
+                                    />
+                                ))}
+                            </div>
+
+                            {/* Centered Load More button */}
+                            <div className="load-more-container">
+                                <button className="load-more-btn">LOAD MORE</button>
+                            </div>
                         </main>
                     </div>
                 </div>
             </div>
             <HorizontalRow />
-
-            {/* Filter Modal Bottom Sheet */}
-            {isFilterModalOpen && (
-                <div className="mobile-filter-backdrop" onClick={() => setIsFilterModalOpen(false)}>
-                    <div className="mobile-filter-bottom-sheet" onClick={(e) => e.stopPropagation()}>
-                        {/* Header */}
-                        <div className="bottom-sheet-header">
-                            <span className="bottom-sheet-title">Filters</span>
-                            <button className="bottom-sheet-close-btn" onClick={() => setIsFilterModalOpen(false)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
-                                    <path d="M13.5 4.5L4.5 13.5M4.5 4.5L13.5 13.5" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </button>
-                        </div>
-
-                        {/* Content */}
-                        <div className="bottom-sheet-content">
-                            {/* Active Pills */}
-                            {(selectedVenues.length > 0 || selectedGenres.length > 0 || selectedLanguages.length > 0 || selectedMoreFilters.length > 0 || selectedSubfestivals.length > 0 || freePassOnly || donorPassOnly || selectedCurators.length > 0) && (
-                                <div className="bottom-sheet-section">
-                                    <span className="bottom-sheet-section-label">Filtered by</span>
-                                    <div className="filtered-by-pills" style={{ marginTop: "12px" }}>
-                                        {selectedVenues.map((venue) => (
-                                            <div key={venue} className="filtered-pill">
-                                                <span>{venue}</span>
-                                                <span className="filtered-pill-close" onClick={() => setSelectedVenues(prev => prev.filter(v => v !== venue))}>
-                                                    <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                                </span>
-                                            </div>
-                                        ))}
-                                        {selectedGenres.map((genre) => (
-                                            <div key={genre} className="filtered-pill">
-                                                <span>{genre}</span>
-                                                <span className="filtered-pill-close" onClick={() => handleGenreToggle(genre)}>
-                                                    <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                                </span>
-                                            </div>
-                                        ))}
-                                        {selectedLanguages.map((lang) => (
-                                            <div key={lang} className="filtered-pill">
-                                                <span>{lang}</span>
-                                                <span className="filtered-pill-close" onClick={() => handleLanguageToggle(lang)}>
-                                                    <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                                </span>
-                                            </div>
-                                        ))}
-                                        {selectedSubfestivals.map((subfest) => (
-                                            <div key={subfest} className="filtered-pill">
-                                                <span>{subfest}</span>
-                                                <span className="filtered-pill-close" onClick={() => setSelectedSubfestivals(prev => prev.filter(s => s !== subfest))}>
-                                                    <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                                </span>
-                                            </div>
-                                        ))}
-                                        {freePassOnly && (
-                                            <div className="filtered-pill">
-                                                <span>Free Pass</span>
-                                                <span className="filtered-pill-close" onClick={() => setFreePassOnly(false)}>
-                                                    <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                                </span>
-                                            </div>
-                                        )}
-                                        {donorPassOnly && (
-                                            <div className="filtered-pill">
-                                                <span>Donor Pass</span>
-                                                <span className="filtered-pill-close" onClick={() => setDonorPassOnly(false)}>
-                                                    <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                                </span>
-                                            </div>
-                                        )}
-                                        {selectedCurators.map((curator) => (
-                                            <div key={curator} className="filtered-pill">
-                                                <span>{curator}</span>
-                                                <span className="filtered-pill-close" onClick={() => setSelectedCurators(prev => prev.filter(c => c !== curator))}>
-                                                    <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                                </span>
-                                            </div>
-                                        ))}
-                                        {selectedMoreFilters.map((filter) => (
-                                            <div key={filter} className="filtered-pill">
-                                                <span>{filter}</span>
-                                                <span className="filtered-pill-close" onClick={() => handleMoreFilterToggle(filter)}>
-                                                    <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                                </span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Genre Accordion */}
-                            {genres.length > 0 && (
-                                <div className={`filter-accordion genre-accordion ${genreOpen ? "open" : ""}`}>
-                                    <div className="accordion-header" onClick={() => setGenreOpen(!genreOpen)}>
-                                        <h4 className="accordion-title">Genre</h4>
-                                        <svg className={`accordion-chevron ${genreOpen ? "open" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                            <polyline points="6 9 12 15 18 9"></polyline>
-                                        </svg>
-                                    </div>
-                                    {genreOpen && (
-                                        <div className="accordion-content">
-                                            <div className="pills-grid">
-                                                {genres.map((genre) => {
-                                                    const isSelected = selectedGenres.includes(genre);
-                                                    return (
-                                                        <button key={genre} className={`filter-pill ${isSelected ? "selected" : ""}`} onClick={() => handleGenreToggle(genre)}>
-                                                            {genre}
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Language Accordion */}
-                            {languages.length > 0 && (
-                                <div className="filter-accordion">
-                                    <div className="accordion-header" onClick={() => setLanguageOpen(!languageOpen)}>
-                                        <h4 className="accordion-title">Language</h4>
-                                        <svg className={`accordion-chevron ${languageOpen ? "open" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                            <polyline points="6 9 12 15 18 9"></polyline>
-                                        </svg>
-                                    </div>
-                                    {languageOpen && (
-                                        <div className="accordion-content">
-                                            <div className="pills-grid">
-                                                <button
-                                                    className={`filter-pill ${selectedLanguages.length === 0 ? "selected" : ""}`}
-                                                    onClick={() => setSelectedLanguages([])}
-                                                >
-                                                    All
-                                                </button>
-                                                {languages.map((lang) => {
-                                                    const isSelected = selectedLanguages.includes(lang);
-                                                    return (
-                                                        <button key={lang} className={`filter-pill ${isSelected ? "selected" : ""}`} onClick={() => handleLanguageToggle(lang)}>
-                                                            {lang}
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* More Filters Accordion */}
-                            <div className="filter-accordion">
-                                <div className="accordion-header" onClick={() => setMoreFiltersOpen(!moreFiltersOpen)}>
-                                    <h4 className="accordion-title">More Filters</h4>
-                                    <svg className={`accordion-chevron ${moreFiltersOpen ? "open" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                    </svg>
-                                </div>
-                                {moreFiltersOpen && (
-                                    <div className="accordion-content" style={{ display: "flex", flexDirection: "column", gap: "20px", width: "100%" }}>
-                                        {/* Status Group */}
-                                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                            <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Status & Duration</span>
-                                            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                                                {MORE_FILTERS.map((filter) => {
-                                                    const isSelected = selectedMoreFilters.includes(filter);
-                                                    return (
-                                                        <button key={filter} className={`filter-pill ${isSelected ? "selected" : ""}`} onClick={() => handleMoreFilterToggle(filter)}>
-                                                            {filter}
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-
-                                        {/* Passes Group */}
-                                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                            <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Pass Types</span>
-                                            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                                                <button
-                                                    className={`filter-pill ${freePassOnly ? "selected" : ""}`}
-                                                    onClick={() => setFreePassOnly(!freePassOnly)}
-                                                >
-                                                    Free Pass
-                                                </button>
-                                                <button
-                                                    className={`filter-pill ${donorPassOnly ? "selected" : ""}`}
-                                                    onClick={() => setDonorPassOnly(!donorPassOnly)}
-                                                >
-                                                    Donor Pass
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        {/* Sub-Festival Group */}
-                                        {subfestivals.length > 0 && (
-                                            <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                                <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Sub-Festivals</span>
-                                                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                                                    <button
-                                                        className={`filter-pill ${selectedSubfestivals.length === 0 ? "selected" : ""}`}
-                                                        onClick={() => setSelectedSubfestivals([])}
-                                                    >
-                                                        All
-                                                    </button>
-                                                    {subfestivals.map((subfest) => {
-                                                        const isSelected = selectedSubfestivals.includes(subfest);
-                                                        return (
-                                                            <button
-                                                                key={subfest}
-                                                                className={`filter-pill ${isSelected ? "selected" : ""}`}
-                                                                onClick={() => {
-                                                                    setSelectedSubfestivals(prev =>
-                                                                        prev.includes(subfest)
-                                                                            ? prev.filter(s => s !== subfest)
-                                                                            : [...prev, subfest]
-                                                                    );
-                                                                }}
-                                                            >
-                                                                {subfest}
-                                                            </button>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {/* Curator Group */}
-                                        {curators.length > 0 && (
-                                            <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                                <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Curators</span>
-                                                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                                                    <button
-                                                        className={`filter-pill ${selectedCurators.length === 0 ? "selected" : ""}`}
-                                                        onClick={() => setSelectedCurators([])}
-                                                    >
-                                                        All
-                                                    </button>
-                                                    {curators.map((curator) => {
-                                                        const isSelected = selectedCurators.includes(curator);
-                                                        return (
-                                                            <button
-                                                                key={curator}
-                                                                className={`filter-pill ${isSelected ? "selected" : ""}`}
-                                                                onClick={() => {
-                                                                    setSelectedCurators(prev =>
-                                                                        prev.includes(curator)
-                                                                            ? prev.filter(c => c !== curator)
-                                                                            : [...prev, curator]
-                                                                    );
-                                                                }}
-                                                            >
-                                                                {curator}
-                                                            </button>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="bottom-sheet-actions">
-                            <button className="bottom-sheet-apply-btn" onClick={() => setIsFilterModalOpen(false)}>APPLY</button>
-                            <button className="bottom-sheet-reset-btn" onClick={() => { handleResetAll(); setIsFilterModalOpen(false); }}>RESET</button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </>
     );
 };
