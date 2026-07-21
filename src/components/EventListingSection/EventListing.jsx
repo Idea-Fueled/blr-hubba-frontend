@@ -808,37 +808,35 @@ export const EventListing = () => {
                                         )}
 
                                         {/* Curator Group */}
-                                        {curators.length > 0 && (
-                                            <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                                <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Curators</span>
-                                                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                                                    <button
-                                                        className={`filter-pill ${selectedCurators.length === 0 ? "selected" : ""}`}
-                                                        onClick={() => setSelectedCurators([])}
-                                                    >
-                                                        All
-                                                    </button>
-                                                    {curators.map((curator) => {
-                                                        const isSelected = selectedCurators.includes(curator);
-                                                        return (
-                                                            <button
-                                                                key={curator}
-                                                                className={`filter-pill ${isSelected ? "selected" : ""}`}
-                                                                onClick={() => {
-                                                                    setSelectedCurators(prev =>
-                                                                        prev.includes(curator)
-                                                                            ? prev.filter(c => c !== curator)
-                                                                            : [...prev, curator]
-                                                                    );
-                                                                }}
-                                                            >
-                                                                {curator}
-                                                            </button>
-                                                        );
-                                                    })}
-                                                </div>
+                                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
+                                            <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Curated By</span>
+                                            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                                                <button
+                                                    className={`filter-pill ${selectedCurators.length === 0 ? "selected" : ""}`}
+                                                    onClick={() => setSelectedCurators([])}
+                                                >
+                                                    All
+                                                </button>
+                                                {curators.map((curator) => {
+                                                    const isSelected = selectedCurators.includes(curator);
+                                                    return (
+                                                        <button
+                                                            key={curator}
+                                                            className={`filter-pill ${isSelected ? "selected" : ""}`}
+                                                            onClick={() => {
+                                                                setSelectedCurators(prev =>
+                                                                    prev.includes(curator)
+                                                                        ? prev.filter(c => c !== curator)
+                                                                        : [...prev, curator]
+                                                                );
+                                                            }}
+                                                        >
+                                                            {curator}
+                                                        </button>
+                                                    );
+                                                })}
                                             </div>
-                                        )}
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -1135,37 +1133,35 @@ export const EventListing = () => {
                                         )}
 
                                         {/* Curator Group */}
-                                        {curators.length > 0 && (
-                                            <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                                <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Curators</span>
-                                                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                                                    <button
-                                                        className={`filter-pill ${selectedCurators.length === 0 ? "selected" : ""}`}
-                                                        onClick={() => setSelectedCurators([])}
-                                                    >
-                                                        All
-                                                    </button>
-                                                    {curators.map((curator) => {
-                                                        const isSelected = selectedCurators.includes(curator);
-                                                        return (
-                                                            <button
-                                                                key={curator}
-                                                                className={`filter-pill ${isSelected ? "selected" : ""}`}
-                                                                onClick={() => {
-                                                                    setSelectedCurators(prev =>
-                                                                        prev.includes(curator)
-                                                                            ? prev.filter(c => c !== curator)
-                                                                            : [...prev, curator]
-                                                                    );
-                                                                }}
-                                                            >
-                                                                {curator}
-                                                            </button>
-                                                        );
-                                                    })}
-                                                </div>
+                                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
+                                            <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Curated By</span>
+                                            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                                                <button
+                                                    className={`filter-pill ${selectedCurators.length === 0 ? "selected" : ""}`}
+                                                    onClick={() => setSelectedCurators([])}
+                                                >
+                                                    All
+                                                </button>
+                                                {curators.map((curator) => {
+                                                    const isSelected = selectedCurators.includes(curator);
+                                                    return (
+                                                        <button
+                                                            key={curator}
+                                                            className={`filter-pill ${isSelected ? "selected" : ""}`}
+                                                            onClick={() => {
+                                                                setSelectedCurators(prev =>
+                                                                    prev.includes(curator)
+                                                                        ? prev.filter(c => c !== curator)
+                                                                        : [...prev, curator]
+                                                                );
+                                                            }}
+                                                        >
+                                                            {curator}
+                                                        </button>
+                                                    );
+                                                })}
                                             </div>
-                                        )}
+                                        </div>
                                     </div>
                                 )}
                             </div>
