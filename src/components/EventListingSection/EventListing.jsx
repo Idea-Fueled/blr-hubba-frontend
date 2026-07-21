@@ -141,7 +141,7 @@ export const EventListing = () => {
                 // Map events using shared mapping utility
                 if (eventsData && eventsData.events) {
                     const mapped = eventsData.events.map(mapBackendEventToCard);
-                    
+
                     // Sort list of events: primarily by start time (earliest to latest), secondarily by duration (shortest to longest)
                     const sorted = [...mapped].sort((a, b) => {
                         const timeA = new Date(a.startDateTime || 0).getTime();
