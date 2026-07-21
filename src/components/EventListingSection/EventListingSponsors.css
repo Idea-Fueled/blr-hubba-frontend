@@ -456,3 +456,10 @@
         max-width: 350px !important;
     }
 }
+
+/* Tablet-only: hide sponsors section on iPad/tablet */
+@media (min-width: 481px) and (max-width: 1366px) {
+    .main-wrapper {
+        display: none !important;
+    }
+}

@@ -353,7 +353,7 @@
     }
 
     .hero-left-wrapper-top-row {
-        gap: 16px !important;
+        gap: 8px !important;
         width: 100% !important;
     }
 
@@ -399,7 +399,7 @@
 
     .venue-wrapper {
         gap: 8px !important;
-        width: 100% !important;
+        width: 62% !important;
         height: auto !important;
     }
 
@@ -418,10 +418,21 @@
     .icons-wrapper {
         position: absolute !important;
         right: 24px !important;
-        bottom: 24px !important;
+        bottom: 14px !important;
         display: flex !important;
         gap: 12px !important;
         padding: 0 !important;
+    }
+
+    .hero-event-detail-wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 60px;
+        flex: 1 0 0;
+        align-self: stretch;
+        padding: 0px 0px;
     }
 
     .hero-image-wrapper {
@@ -586,6 +597,20 @@
     .hero-venue-name {
         width: auto !important;
         height: auto !important;
+    }
+}
+
+/* Tablet-only: iPad Pro landscape and similar (1025px–1366px) */
+@media (min-width: 1025px) and (max-width: 1366px) {
+    .hero-event-detail {
+        width: auto !important;
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+    }
+
+    .hero-image-wrapper {
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
     }
 }
 

@@ -1194,6 +1194,35 @@
         padding: 60px 32px !important;
     }
 
+    .media-section {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 24px;
+        padding-left: 36px;
+    }
+
+    .event-details-header {
+        padding-top: 13px !important;
+        display: flex;
+        height: 50px;
+        padding: 0px;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        flex: 1 0 0;
+        height: 18px;
+        width: 380px;
+        border-radius: 16px 16px 0 0;
+        border: 1px solid #000;
+        background: #000;
+        padding-bottom: 20px;
+    }
+
+    .sponsors-section {
+        display: none !important;
+    }
+
     .event-about-title-container,
     .presented-by-title,
     .curator-section-title,
@@ -1341,5 +1370,31 @@
     .event-details-cta-button-wrapper {
         width: 100% !important;
         box-sizing: border-box !important;
+    }
+}
+
+/* Tablet-only: iPad Pro landscape and similar (1025px–1366px) */
+@media (min-width: 1025px) and (max-width: 1366px) {
+    .detail-container-wrapper {
+        padding: 60px 40px !important;
+    }
+
+    .event-detail-section {
+        gap: 40px !important;
+    }
+
+    .left-container {
+        min-width: 0 !important;
+    }
+
+    .right-container {
+        flex-shrink: 0 !important;
+        width: 380px !important;
+    }
+
+    /* Hide Sponsors section on tablet */
+    .sponsors-section,
+    .similar-events-wrapper~hr {
+        display: none !important;
     }
 }

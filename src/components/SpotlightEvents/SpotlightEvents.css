@@ -56,7 +56,6 @@
 }
 
 .spotlight-carousel-viewport {
-    width: 100%;
     overflow: hidden;
     position: relative;
     display: flex;
@@ -90,9 +89,8 @@
     display: none;
 }
 
-@media (min-width: 769px) {
+@media (min-width: 767px) {
     .spotlight-carousel-viewport {
-        width: 100%;
         overflow: hidden;
         position: relative;
     }
@@ -270,7 +268,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
+    gap: 8px;
     align-self: stretch;
 }
 
@@ -546,7 +544,7 @@
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 710px) {
     .spotlight-events-section {
         height: auto;
         padding: 40px 0;
