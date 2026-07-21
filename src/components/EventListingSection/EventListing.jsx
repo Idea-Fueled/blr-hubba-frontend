@@ -101,7 +101,7 @@ export const EventListing = () => {
     const [languages, setLanguages] = useState([]);
     const [venues, setVenues] = useState([]);
     const [subfestivals, setSubfestivals] = useState([]);
-    const [curators, setCurators] = useState(["Abhijit Nath"]);
+    const [curators, setCurators] = useState([]);
 
     // Selection state
     const [selectedDate, setSelectedDate] = useState("ALL");
@@ -175,9 +175,8 @@ export const EventListing = () => {
                     const dynamicSubfestivals = Array.from(new Set(mapped.map(e => e.subfestivalName).filter(Boolean))).sort((a, b) => a.localeCompare(b));
                     setSubfestivals(dynamicSubfestivals);
 
-                    // Generate curators dynamically with base curators included
-                    const baseCurators = ["Abhijit Nath"];
-                    const dynamicCurators = Array.from(new Set([...baseCurators, ...mapped.map(e => e.curatedBy).filter(Boolean)])).sort((a, b) => a.localeCompare(b));
+                    // Generate curators dynamically from backend events
+                    const dynamicCurators = Array.from(new Set(mapped.map(e => e.curatedBy).filter(Boolean))).sort((a, b) => a.localeCompare(b));
                     setCurators(dynamicCurators);
                 }
 
