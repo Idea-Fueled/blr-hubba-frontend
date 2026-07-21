@@ -74,29 +74,14 @@ const EventDetails = ({ event }) => {
     const presentedByColumns = splitIntoColumns(presentedByList, 2);
     const mediaContainerRef = useRef(null);
 
-    // Gather all unique media images from backend
+    // Only show images from the Media section in admin (16:9 images)
+    // Do NOT include imageUrl / coverImage / squareImages — those are card thumbnails only
     const allImages = [];
     const seenUrls = new Set();
 
-    if (event.imageUrl) {
-        seenUrls.add(event.imageUrl);
-        allImages.push({ url: event.imageUrl, caption: "Featured Image" });
-    }
-    if (event.coverImage && !seenUrls.has(event.coverImage)) {
-        seenUrls.add(event.coverImage);
-        allImages.push({ url: event.coverImage, caption: "Cover Image" });
-    }
     if (event.images) {
         event.images.forEach(img => {
-            if (img && img.url && !seenUrls.has(img.url)) {
-                seenUrls.add(img.url);
-                allImages.push(img);
-            }
-        });
-    }
-    if (event.squareImages) {
-        event.squareImages.forEach(img => {
-            if (img && img.url && !seenUrls.has(img.url)) {
+            if (img && img.url && img.url.trim() !== '' && !seenUrls.has(img.url)) {
                 seenUrls.add(img.url);
                 allImages.push(img);
             }
