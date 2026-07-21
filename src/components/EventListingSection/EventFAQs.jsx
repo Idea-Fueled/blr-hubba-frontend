@@ -4,33 +4,22 @@ import HorizontalRow from "../HorizontalRow";
 
 const FAQ_ITEMS = [
     {
-        question: "Sapien, est felis, sagittis viverra nulla mattis scelerisque est felis, sagittis viverra nulla mattis scelerisque?",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+        question: "What is the venue's accessibility policy?",
+        answer: "Our venues are fully accessible to individuals with limited mobility. Accessible seating is available, and ramp access is provided at all primary entrances."
     },
     {
-        question: "Sapien, est felis, sagittis viverra nulla mattis scelerisque est felis, sagittis viverra nulla mattis scelerisque?",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+        question: "Are tickets refundable?",
+        answer: "Tickets are non-refundable unless the event is cancelled or postponed. If an event is cancelled, refunds will be issued automatically to your original payment method."
     },
     {
-        question: "Sapien, est felis, sagittis viverra nulla mattis scelerisque est felis, sagittis viverra nulla mattis scelerisque?",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-    },
-    {
-        question: "Sapien, est felis, sagittis viverra nulla mattis scelerisque est felis, sagittis viverra nulla mattis scelerisque?",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-    },
-    {
-        question: "Sapien, est felis, sagittis viverra nulla mattis scelerisque est felis, sagittis viverra nulla mattis scelerisque?",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-    },
-    {
-        question: "Sapien, est felis, sagittis viverra nulla mattis scelerisque est felis, sagittis viverra nulla mattis scelerisque?",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+        question: "Can I transfer my pass to someone else?",
+        answer: "Yes, passes are transferable. You can share your ticket confirmation email and QR code with the person attending in your place."
     }
 ];
 
-export const EventFAQs = () => {
+export const EventFAQs = ({ faqs }) => {
     const [expandedFaqIndex, setExpandedFaqIndex] = useState(null);
+    const items = Array.isArray(faqs) ? faqs : FAQ_ITEMS;
 
     return (
         <>
@@ -39,10 +28,10 @@ export const EventFAQs = () => {
                     <h2 className="faqs-heading">Event FAQs</h2>
                     <div className="faqs-list-container">
                         <div className="faqs-list">
-                            {FAQ_ITEMS.map((faq, index) => {
+                            {items.map((faq, index) => {
                                 const isExpanded = expandedFaqIndex === index;
                                 return (
-                                    <div key={index} className="faq-item">
+                                    <div key={index} className={`faq-item${isExpanded ? ' faq-item-expanded' : ''}`}>
                                         <div className="faq-question-row" onClick={() => setExpandedFaqIndex(isExpanded ? null : index)}>
                                             <span className="faq-icon">{isExpanded ? "—" : "+"}</span>
                                             <span className="faq-question">{faq.question}</span>

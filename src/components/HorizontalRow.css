@@ -1,6 +1,13 @@
 .horizontal-row {
     border: 1px solid #C3C3C3;
     width: 100%;
-    max-width: 1440px;
-    margin: 0 auto;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+    .horizontal-row {
+        display: none !important;
+    }
 }

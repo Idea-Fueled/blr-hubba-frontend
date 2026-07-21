@@ -62,28 +62,52 @@ const normalizeEventImages = (event) => {
   return cleanEvent;
 };
 
-// Cache for the latest 8 events to prevent multiple database hits
+// ----------------------------------------------------
+// Caching & Request Deduplication Mechanisms
+// ----------------------------------------------------
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes TTL
+const eventsCache = new Map();
+let spotlightCache = null;
+const eventSlugCache = new Map();
 let cachedLatest8 = null;
+
+// Track in-flight Promises to eliminate parallel duplicate HTTP requests
+const inFlightRequests = new Map();
+
+const fetchWithDeduplication = (url, options = {}) => {
+  if (inFlightRequests.has(url)) {
+    return inFlightRequests.get(url);
+  }
+
+  const promise = fetch(url, options)
+    .then(async (res) => {
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+      return await res.json();
+    })
+    .finally(() => {
+      inFlightRequests.delete(url);
+    });
+
+  inFlightRequests.set(url, promise);
+  return promise;
+};
 
 /**
  * Helper to fetch the latest 8 created events from the backend.
- * These are sorted by creation date descending.
  */
 export const fetchLatest8Events = async () => {
-  if (cachedLatest8) return cachedLatest8;
+  if (cachedLatest8 && (Date.now() - cachedLatest8.timestamp < CACHE_TTL_MS)) {
+    return cachedLatest8.data;
+  }
   
-  // Call public events with creation date sorting, fetching a larger limit so we can deduplicate by title
   const url = `${API_BASE_URL}/public/events?sortBy=createdAt&sortOrder=desc&limit=50&pastOnly=true`;
-  const response = await fetch(url, {
+  const data = await fetchWithDeduplication(url, {
     method: 'GET',
     headers: getHeaders(),
   });
   
-  if (!response.ok) {
-    throw new Error("Failed to fetch latest events for demo mode");
-  }
-  
-  const data = await response.json();
   const rawEvents = (data.events || []).map(normalizeEventImages);
 
   const uniqueEvents = [];
@@ -100,8 +124,8 @@ export const fetchLatest8Events = async () => {
     }
   }
   
-  cachedLatest8 = uniqueEvents;
-  return cachedLatest8;
+  cachedLatest8 = { data: uniqueEvents, timestamp: Date.now() };
+  return cachedLatest8.data;
 };
 
 /**
@@ -113,7 +137,6 @@ const computeFilterOptionsFromEvents = (events) => {
   const datesMap = new Map();
 
   events.forEach(event => {
-    // Genres
     if (event.genres) {
       event.genres.forEach(g => {
         if (g && g.id) {
@@ -122,12 +145,10 @@ const computeFilterOptionsFromEvents = (events) => {
       });
     }
 
-    // Venue
     if (event.venue) {
       venuesMap.set(event.venue.id, { id: event.venue.id, name: event.venue.name });
     }
 
-    // Dates
     if (event.startDateTime) {
       const date = new Date(event.startDateTime);
       const yyyymmdd = date.toISOString().split('T')[0];
@@ -152,11 +173,6 @@ const computeFilterOptionsFromEvents = (events) => {
   };
 };
 
-// In-memory caches for fast instant page rendering
-const eventsCache = new Map();
-let spotlightCache = null;
-const eventSlugCache = new Map();
-
 /**
  * Fetch paginated, filterable events list.
  */
@@ -174,32 +190,24 @@ export const fetchEvents = async (params = {}) => {
   });
 
   const cacheKey = query.toString();
+  const cached = eventsCache.get(cacheKey);
 
-  const fetchFromNetwork = async () => {
-    const url = `${API_BASE_URL}/public/events${cacheKey ? `?${cacheKey}` : ""}`;
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: getHeaders(),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch events");
-    }
-
-    const data = await response.json();
-    if (data.events) {
-      data.events = data.events.map(normalizeEventImages);
-    }
-    eventsCache.set(cacheKey, data);
-    return data;
-  };
-
-  if (eventsCache.has(cacheKey)) {
-    fetchFromNetwork().catch(console.error);
-    return eventsCache.get(cacheKey);
+  if (cached && (Date.now() - cached.timestamp < CACHE_TTL_MS)) {
+    return cached.data;
   }
 
-  return await fetchFromNetwork();
+  const url = `${API_BASE_URL}/public/events${cacheKey ? `?${cacheKey}` : ""}`;
+  const data = await fetchWithDeduplication(url, {
+    method: 'GET',
+    headers: getHeaders(),
+  });
+
+  if (data.events) {
+    data.events = data.events.map(normalizeEventImages);
+  }
+
+  eventsCache.set(cacheKey, { data, timestamp: Date.now() });
+  return data;
 };
 
 /**
@@ -214,31 +222,23 @@ export const fetchFilterOptions = async (params = {}) => {
  * Fetch a single public event details by slug or id.
  */
 export const fetchEventBySlug = async (slug) => {
-  const fetchFromNetwork = async () => {
-    const url = `${API_BASE_URL}/public/events/${slug}`;
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: getHeaders(),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch event: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    if (data.event) {
-      data.event = normalizeEventImages(data.event);
-    }
-    eventSlugCache.set(slug, data);
-    return data;
-  };
-
-  if (eventSlugCache.has(slug)) {
-    fetchFromNetwork().catch(console.error);
-    return eventSlugCache.get(slug);
+  const cached = eventSlugCache.get(slug);
+  if (cached && (Date.now() - cached.timestamp < CACHE_TTL_MS)) {
+    return cached.data;
   }
 
-  return await fetchFromNetwork();
+  const url = `${API_BASE_URL}/public/events/${slug}`;
+  const data = await fetchWithDeduplication(url, {
+    method: 'GET',
+    headers: getHeaders(),
+  });
+
+  if (data.event) {
+    data.event = normalizeEventImages(data.event);
+  }
+
+  eventSlugCache.set(slug, { data, timestamp: Date.now() });
+  return data;
 };
 
 /**
@@ -248,65 +248,53 @@ export const fetchHomeHighlights = async (limit = 12) => {
   const latestEvents = await fetchLatest8Events();
   
   const url = `${API_BASE_URL}/public/home-highlights?limit=${limit}`;
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: getHeaders(),
-  });
+  try {
+    const data = await fetchWithDeduplication(url, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
 
-  if (!response.ok) {
-    // Fallback: highlight the first 3 events of our latest 8
+    const rawEvents = (data.events || []).map(normalizeEventImages);
+    const filteredHighlights = rawEvents.filter(h => 
+      latestEvents.some(le => le.id === h.id)
+    );
+
+    const finalHighlights = filteredHighlights.length > 0 
+      ? filteredHighlights 
+      : latestEvents.slice(0, 3);
+
+    return {
+      success: true,
+      events: finalHighlights
+    };
+  } catch (err) {
     return {
       success: true,
       events: latestEvents.slice(0, 3)
     };
   }
-
-  const data = await response.json();
-  const rawEvents = (data.events || []).map(normalizeEventImages);
-  const filteredHighlights = rawEvents.filter(h => 
-    latestEvents.some(le => le.id === h.id)
-  );
-
-  // If no highlights are in the latest 8 events, fallback to the first 3 latest events
-  const finalHighlights = filteredHighlights.length > 0 
-    ? filteredHighlights 
-    : latestEvents.slice(0, 3);
-
-  return {
-    success: true,
-    events: finalHighlights
-  };
 };
 
 /**
  * Fetch spotlight events from the backend (events with isSpotlight=true).
  */
 export const fetchSpotlightEvents = async () => {
-  const fetchFromNetwork = async () => {
-    const url = `${API_BASE_URL}/public/spotlight-events`;
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: getHeaders(),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch spotlight events");
-    }
-
-    const data = await response.json();
-    if (data.events) {
-      data.events = data.events.map(normalizeEventImages);
-    }
-    spotlightCache = data;
-    return data;
-  };
-
-  if (spotlightCache) {
-    fetchFromNetwork().catch(console.error);
-    return spotlightCache;
+  if (spotlightCache && (Date.now() - spotlightCache.timestamp < CACHE_TTL_MS)) {
+    return spotlightCache.data;
   }
 
-  return await fetchFromNetwork();
+  const url = `${API_BASE_URL}/public/spotlight-events`;
+  const data = await fetchWithDeduplication(url, {
+    method: 'GET',
+    headers: getHeaders(),
+  });
+
+  if (data.events) {
+    data.events = data.events.map(normalizeEventImages);
+  }
+
+  spotlightCache = { data, timestamp: Date.now() };
+  return data;
 };
 
 /**

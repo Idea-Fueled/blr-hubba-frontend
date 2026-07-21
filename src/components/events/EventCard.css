@@ -3,7 +3,7 @@
 /* Event Listing Card */
 .event-listing-card {
     display: flex !important;
-    height: 463px !important;
+    /* height: 463px !important; */
     padding: 20px !important;
     flex-direction: column !important;
     justify-content: space-between !important;
@@ -12,11 +12,14 @@
     border-radius: 16px !important;
     border: 2px solid #000 !important;
     background: #FFF !important;
+    width: auto !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
 }
 
-/* .event-listing-card:hover {
-    transform: translateY(-4px);
-} */
+.event-listing-card:hover {
+    transform: translateY(-6px) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+}
 
 .card-header-body {
     display: flex;
@@ -24,7 +27,7 @@
     align-items: flex-start;
     gap: 16px;
     align-self: stretch;
-    height: 196px;
+    height: auto;
     width: 262px;
 }
 
@@ -153,7 +156,7 @@
     align-items: flex-start;
     gap: 20px;
     align-self: stretch;
-    height: 108px;
+    height: auto;
     width: 262px;
 }
 
@@ -195,7 +198,7 @@
 
 .card-top-content {
     width: 262px;
-    height: 67px;
+    height: auto;
     /* gap: 16px; */
 }
 
@@ -232,6 +235,7 @@
     width: 262px;
     height: 201px;
     gap: 16px;
+    margin-top: 16px;
 }
 
 /* Image section */
@@ -250,6 +254,7 @@
     align-items: flex-start;
     gap: 8px;
     align-self: stretch;
+    background-color: #000;
 }
 
 .card-image {
@@ -262,6 +267,8 @@
     align-self: stretch;
     border-radius: 12px;
     /* background: url(<path-to-image>) lightgray 50% / cover no-repeat; */
+    object-fit: contain;
+    background-color: #000;
 }
 
 .card-wishlist-btn {
@@ -359,5 +366,129 @@
 
     .events-grid .card-image-cta-container {
         width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .event-listing-card {
+        width: 100% !important;
+        height: auto !important;
+        padding: 16px !important;
+        box-sizing: border-box !important;
+        gap: 16px !important;
+        border-radius: 12px !important;
+    }
+
+    .card-header-body {
+        width: 100% !important;
+        height: auto !important;
+        gap: 12px !important;
+    }
+
+    .card-header {
+        width: 100% !important;
+        height: auto !important;
+        padding-bottom: 12px !important;
+    }
+
+    .card-venue-time {
+        margin-left: 12px !important;
+        width: calc(100% - 56px) !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 4px !important;
+    }
+
+    .card-venue-time .venue-time-divider {
+        display: none !important;
+    }
+
+    .card-venue,
+    .card-time {
+        width: auto !important;
+        height: auto !important;
+        font-size: 14px !important;
+        line-height: 18px !important;
+    }
+
+    .card-body {
+        width: 100% !important;
+        height: auto !important;
+        gap: 12px !important;
+    }
+
+    .card-genres {
+        width: 100% !important;
+    }
+
+    .card-top-content {
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    .card-title {
+        font-size: 18px !important;
+        line-height: 24px !important;
+    }
+
+    .card-performer {
+        font-size: 14px !important;
+        line-height: 20px !important;
+        margin-top: 8px !important;
+    }
+
+    .card-image-cta-container {
+        width: 100% !important;
+        height: auto !important;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .card-image-container {
+        width: 100% !important;
+        height: auto !important;
+        aspect-ratio: 16/9 !important;
+        margin: 0 !important;
+    }
+
+    .card-image {
+        width: 100% !important;
+        height: 100% !important;
+        aspect-ratio: 16/9 !important;
+        object-fit: cover !important;
+    }
+
+    .card-cta-btn {
+        width: 100% !important;
+        height: 48px !important;
+        box-sizing: border-box !important;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 1280px) {
+    .events-grid .event-listing-card {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .events-grid .card-header-body {
+        width: 100% !important;
+    }
+
+    .events-grid .card-header {
+        width: 100% !important;
+    }
+
+    .events-grid .card-body {
+        width: 100% !important;
+    }
+
+    .events-grid .card-top-content {
+        width: 100% !important;
+    }
+
+    .events-grid .card-image-cta-container {
+        width: 100% !important;
     }
 }

@@ -1,10 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import "./EventListing.css";
 import xIcon from "../../assets/x_icon.png";
 import EventCard from "../events/EventCard";
 import HorizontalRow from "../HorizontalRow";
 import { fetchEvents } from "../../api/eventsApi";
 import { mapBackendEventToCard } from "../../utils/eventMappers";
+import { SkeletonCard } from "../Loader/Loader";
 
 const STATIC_ZONES = ["Central", "North", "South", "East", "West"];
 const MORE_FILTERS = ["Free", "Available", "Multi-Day Events"];
@@ -270,64 +271,79 @@ export const EventListing = () => {
     };
 
     // Filter logic
-    const filteredEvents = events.filter((event) => {
-        // Date Filter (Multi-day support)
-        if (selectedDate !== "ALL") {
-            const selectedTab = dates.find(d => d.value === selectedDate);
-            if (selectedTab && selectedTab.dateStr) {
-                const targetStr = selectedTab.dateStr;
-                const startStr = getLocalDateString(event.startDateTime);
-                const endStr = getLocalDateString(event.endDateTime || event.startDateTime);
+    const filteredEvents = useMemo(() => {
+        return events.filter((event) => {
+            // Date Filter (Multi-day support)
+            if (selectedDate !== "ALL") {
+                const selectedTab = dates.find(d => d.value === selectedDate);
+                if (selectedTab && selectedTab.dateStr) {
+                    const targetStr = selectedTab.dateStr;
+                    const startStr = getLocalDateString(event.startDateTime);
+                    const endStr = getLocalDateString(event.endDateTime || event.startDateTime);
 
-                if (targetStr < startStr || targetStr > endStr) {
+                    if (targetStr < startStr || targetStr > endStr) {
+                        return false;
+                    }
+                } else if (event.date !== selectedDate) {
                     return false;
                 }
-            } else if (event.date !== selectedDate) {
-                return false;
             }
-        }
 
-        // Venue Filter (multi-select)
-        if (selectedVenues.length > 0) {
-            const matchesVenue = event.venues
-                ? event.venues.some(v => selectedVenues.includes(v))
-                : selectedVenues.includes(event.venue);
-            if (!matchesVenue) return false;
-        }
+            // Venue Filter (multi-select)
+            if (selectedVenues.length > 0) {
+                const matchesVenue = event.venues
+                    ? event.venues.some(v => selectedVenues.includes(v))
+                    : selectedVenues.includes(event.venue);
+                if (!matchesVenue) return false;
+            }
 
-        // Genre Filter
-        if (selectedGenres.length > 0) {
-            const hasGenre = event.genres.some((g) => selectedGenres.includes(g));
-            if (!hasGenre) return false;
-        }
+            // Genre Filter
+            if (selectedGenres.length > 0) {
+                const hasGenre = event.genres.some((g) => selectedGenres.includes(g));
+                if (!hasGenre) return false;
+            }
 
-        // Zone Filter
-        if (selectedZones.length > 0 && !selectedZones.includes(event.zone)) return false;
+            // Zone Filter
+            if (selectedZones.length > 0 && !selectedZones.includes(event.zone)) return false;
 
-        // Language Filter
-        if (selectedLanguages.length > 0 && !selectedLanguages.includes(event.language)) return false;
+            // Language Filter
+            if (selectedLanguages.length > 0 && !selectedLanguages.includes(event.language)) return false;
 
-        // More Filters
-        if (selectedMoreFilters.length > 0) {
-            if (selectedMoreFilters.includes("Free") && !event.isFree) return false;
-            if (selectedMoreFilters.includes("Available") && !event.isAvailable) return false;
-            if (selectedMoreFilters.includes("Multi-Day Events") && !event.isMultiDay) return false;
-        }
+            // More Filters
+            if (selectedMoreFilters.length > 0) {
+                if (selectedMoreFilters.includes("Free") && !event.isFree) return false;
+                if (selectedMoreFilters.includes("Available") && !event.isAvailable) return false;
+                if (selectedMoreFilters.includes("Multi-Day Events") && !event.isMultiDay) return false;
+            }
 
-        // Sub-Festival Filter
-        if (selectedSubfestivals.length > 0 && !selectedSubfestivals.includes(event.subfestivalName)) return false;
+            // Sub-Festival Filter
+            if (selectedSubfestivals.length > 0 && !selectedSubfestivals.includes(event.subfestivalName)) return false;
 
-        // Free Pass Filter
-        if (freePassOnly && !event.isFree) return false;
+            // Free Pass Filter
+            if (freePassOnly && !event.isFree) return false;
 
-        // Donor Pass Filter
-        if (donorPassOnly && event.isFree) return false;
+            // Donor Pass Filter
+            if (donorPassOnly && event.isFree) return false;
 
-        // Curator Filter
-        if (selectedCurators.length > 0 && !selectedCurators.includes(event.curatedBy)) return false;
+            // Curator Filter
+            if (selectedCurators.length > 0 && !selectedCurators.includes(event.curatedBy)) return false;
 
-        return true;
-    });
+            return true;
+        });
+    }, [
+        events,
+        selectedDate,
+        dates,
+        selectedVenues,
+        selectedGenres,
+        selectedZones,
+        selectedLanguages,
+        selectedMoreFilters,
+        selectedSubfestivals,
+        freePassOnly,
+        donorPassOnly,
+        selectedCurators
+    ]);
 
     const handleLoadMore = () => {
         setVisibleCount(prev => prev + 6);
@@ -352,7 +368,6 @@ export const EventListing = () => {
         }
     };
 
-
     if (error) {
         return (
             <div className="w-full text-center py-32 bg-red-50 rounded-2xl border border-red-100 p-6">
@@ -361,8 +376,13 @@ export const EventListing = () => {
         );
     }
 
-    const visibleEvents = filteredEvents.slice(0, visibleCount);
-    const showLoadMore = filteredEvents.length > visibleCount;
+    const visibleEvents = useMemo(() => {
+        return filteredEvents.slice(0, visibleCount);
+    }, [filteredEvents, visibleCount]);
+
+    const showLoadMore = useMemo(() => {
+        return filteredEvents.length > visibleCount;
+    }, [filteredEvents.length, visibleCount]);
 
     return (
         <>
@@ -827,7 +847,7 @@ export const EventListing = () => {
                             {loading ? (
                                 <div className="events-grid">
                                     {[1, 2, 3, 4, 5, 6].map((i) => (
-                                        <div key={i} className="animate-pulse bg-gray-100 rounded-2xl h-[380px] w-full border border-gray-200"></div>
+                                        <SkeletonCard key={i} className="skeleton-event-card" />
                                     ))}
                                 </div>
                             ) : filteredEvents.length > 0 ? (

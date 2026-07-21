@@ -5,6 +5,7 @@ import EventDeatilHero from "../../components/EventDeailSection/EventDetailHero"
 import EventDetails from "../../components/EventDeailSection/EventDetails";
 
 import { fetchEventBySlug } from "../../api/eventsApi";
+import { SkeletonCard } from "../../components/Loader/Loader";
 
 const EventDetailPage = () => {
     const { eventId } = useParams();
@@ -35,9 +36,9 @@ const EventDetailPage = () => {
 
     if (loading) {
         return (
-            <main className="main-container">
-                <div className="w-full h-[400px] bg-gray-100 animate-pulse rounded-2xl border border-gray-200 my-4"></div>
-                <div className="w-full h-[250px] bg-gray-100 animate-pulse rounded-2xl border border-gray-200"></div>
+            <main className="main-container" style={{ gap: "24px", paddingTop: "40px" }}>
+                <SkeletonCard className="skeleton-hero-card" />
+                <SkeletonCard className="skeleton-details-card" />
             </main>
         );
     }

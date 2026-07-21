@@ -4,6 +4,7 @@ import "./SpotlightEvents.css";
 import heartIcon from "../../assets/heart_icon.png";
 import { fetchSpotlightEvents } from "../../api/eventsApi";
 import { mapBackendEventToSpotlight, formatVenueDisplay, formatEventTiming } from "../../utils/eventMappers";
+import { SkeletonCard } from "../Loader/Loader";
 
 const formatSpotlightTime = (timeStr) => {
     if (!timeStr) return "";
@@ -320,7 +321,7 @@ const SpotlightEvents = () => {
                         <h2 className="spotlight-heading">Spotlight Events</h2>
                     </div>
                     <div className="spotlight-carousel-viewport" style={{ padding: "0 20px" }}>
-                        <div className="animate-pulse bg-gray-100 rounded-2xl h-[360px] w-full max-w-[1040px] mx-auto border border-gray-200"></div>
+                        <SkeletonCard className="skeleton-spotlight-card" />
                     </div>
                 </section>
             </main>

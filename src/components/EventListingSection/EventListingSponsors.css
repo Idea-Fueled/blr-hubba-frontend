@@ -90,7 +90,7 @@
     width: 162px;
     height: 106px;
     aspect-ratio: 81/53;
-    background: url(../../assets/JSW_logo_1.png) -15.231px -43.279px / 118.803% 182.096% no-repeat;
+    background: url(../../assets/JSW_Logo_1.png) -15.231px -43.279px / 118.803% 182.096% no-repeat;
 }
 
 .logo-1 {
@@ -423,4 +423,36 @@
     align-self: stretch;
     aspect-ratio: 87.42/40.00;
     background: url("../../assets/bottom-row-logo-12.png") -4.351px -3.801px / 108.918% 121.719% no-repeat;
+}
+
+@media (max-width: 480px) {
+    .main-wrapper {
+        display: none !important;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 1280px) {
+    .main-wrapper {
+        padding: 80px 30px !important;
+    }
+    
+    .right-container-logo-grid {
+        width: 100% !important;
+        max-width: 680px !important;
+    }
+
+    .bottom-row-left-container {
+        width: 100% !important;
+        max-width: 720px !important;
+    }
+
+    .bottom-row-left-cards-grid {
+        width: 100% !important;
+        gap: 30px !important;
+    }
+
+    .bottom-row-right-container {
+        width: 100% !important;
+        max-width: 350px !important;
+    }
 }

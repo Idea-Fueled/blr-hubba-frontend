@@ -46,7 +46,7 @@ export const Footer = () => {
                                     </div>
                                     <span className="card-category">JOIN OUR MAILING LIST</span>
                                     <h3 className="card-desc">
-                                        Get a monthly update on all things Hubba, delivered straight to your inbox.
+                                        Get updates on all things Hubba, delivered straight to your inbox.
                                     </h3>
                                 </div>
                                 <form onSubmit={handleJoinMailingList} className="card-form">
@@ -190,7 +190,7 @@ export const Footer = () => {
                             </div>
                         </div>
 
-                        <div className="footer-about-column">
+                        <div className="footer-links-wrapper footer-about-column">
                             {/* About Us column */}
                             <div className="footer-links-col">
                                 <h4 className="footer-col-title">About Us</h4>
@@ -216,25 +216,23 @@ export const Footer = () => {
                             </div>
 
                             {/* Important Links & Contact column */}
-                            <div className="footer-links-col">
-                                <div className="links-subgroup-div">
-                                    <div className="links-subgroup">
-                                        <h4 className="footer-col-title">Important Links</h4>
-                                        <ul className="footer-links-list">
-                                            <li><a href="#">Events</a></li>
-                                            <li><a href="#">Venues</a></li>
-                                            <li><a href="#">Festival Guides</a></li>
-                                        </ul>
-                                    </div>
-                                    <div className="links-subgroup contact-subgroup">
-                                        <h4 className="footer-col-title">Contact Us</h4>
-                                        <p className="contact-info-text">
-                                            <a href="mailto:support@blrhubba.in">support@blrhubba.in</a>
-                                        </p>
-                                        <p className="contact-info-text">
-                                            <a href="tel:+916361188295">+91 6361188295</a>
-                                        </p>
-                                    </div>
+                            <div className="links-subgroup-div">
+                                <div className="links-subgroup">
+                                    <h4 className="footer-col-title">Important Links</h4>
+                                    <ul className="footer-links-list">
+                                        <li><a href="#">Events</a></li>
+                                        <li><a href="#">Venues</a></li>
+                                        <li><a href="#">Festival Guides</a></li>
+                                    </ul>
+                                </div>
+                                <div className="links-subgroup contact-subgroup">
+                                    <h4 className="footer-col-title">Contact Us</h4>
+                                    <p className="contact-info-text">
+                                        <a href="mailto:support@blrhubba.in">support@blrhubba.in</a>
+                                    </p>
+                                    <p className="contact-info-text">
+                                        <a href="tel:+916361188295">+91 6361188295</a>
+                                    </p>
                                 </div>
                             </div>
                         </div>

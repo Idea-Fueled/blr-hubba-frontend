@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { Events } from "./pages/Events";
 import EventDetailPage from "./pages/EventDetail/EventDetailPage";
+import { BookingPage } from "./pages/BookingFlowPage/BookingPage";
 
 const App = () => {
 
@@ -21,6 +22,10 @@ const App = () => {
       {
         path: "/events/:eventId",
         element: <EventDetailPage />
+      },
+      {
+        path: "/book",
+        element: <BookingPage />
       }
     ]
   }])

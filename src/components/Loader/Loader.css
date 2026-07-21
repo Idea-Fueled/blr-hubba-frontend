@@ -1,0 +1,92 @@
+/* Reusable Loader & Skeleton CSS */
+
+.page-loader-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    width: 100%;
+    min-height: 300px;
+    box-sizing: border-box;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid var(--Hubba-Yellow, #FDFF53);
+    border-right: 4px solid #000;
+    border-radius: 50%;
+    animation: hubba-spin 0.8s linear infinite;
+}
+
+.loader-text {
+    margin-top: 16px;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: #4E4E4E;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+@keyframes hubba-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Skeleton Shimmer Styles */
+.skeleton-box {
+    background-color: #E9E9E9;
+    background-image: linear-gradient(
+        90deg,
+        #E9E9E9 0%,
+        #F5F5F5 50%,
+        #E9E9E9 100%
+    );
+    background-size: 200% 100%;
+    background-repeat: no-repeat;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+    border-radius: 16px;
+}
+
+@keyframes skeleton-shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.skeleton-hero-card {
+    width: 100%;
+    height: 400px;
+    border-radius: 32px;
+    margin-bottom: 24px;
+}
+
+.skeleton-details-card {
+    width: 100%;
+    height: 250px;
+    border-radius: 24px;
+}
+
+.skeleton-spotlight-card {
+    width: 100%;
+    max-width: 1040px;
+    height: 360px;
+    margin: 0 auto;
+    border-radius: 24px;
+}
+
+.skeleton-event-card {
+    width: 100%;
+    height: 380px;
+    border-radius: 24px;
+}
