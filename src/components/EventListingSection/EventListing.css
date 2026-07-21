@@ -271,9 +271,12 @@
     border-bottom: 1px solid #A4A4A4;
 }
 
-.genre-accordion .accordion-header,
-.genre-accordion.open .accordion-header {
+.genre-accordion .accordion-header {
     border-bottom: none !important;
+}
+
+.genre-accordion.open .accordion-header {
+    border-bottom: 1px solid #A4A4A4 !important;
 }
 
 .accordion-title {
@@ -1128,6 +1131,13 @@
         align-items: center !important;
         cursor: pointer !important;
         user-select: none !important;
+        border-bottom: none !important;
+    }
+
+    .bottom-sheet-content .genre-accordion .accordion-header,
+    .bottom-sheet-content .genre-accordion.open .accordion-header,
+    .genre-accordion .accordion-header,
+    .genre-accordion.open .accordion-header {
         border-bottom: none !important;
     }
 
