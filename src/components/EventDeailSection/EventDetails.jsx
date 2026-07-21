@@ -16,11 +16,11 @@ const cleanPerformerDescription = (html) => {
 
 const parseSupporterItem = (item) => {
     if (!item) return { name: "", logoUrl: "" };
-    if (typeof item === 'object') return { name: item.name || "", logoUrl: item.logoUrl || "" };
+    if (typeof item === 'object') return { name: item.name || "", logoUrl: item.logo || item.logoUrl || "" };
     if (typeof item === 'string' && item.trim().startsWith('{')) {
         try {
             const parsed = JSON.parse(item);
-            return { name: parsed.name || "", logoUrl: parsed.logoUrl || "" };
+            return { name: parsed.name || "", logoUrl: parsed.logo || parsed.logoUrl || "" };
         } catch {
             return { name: item, logoUrl: "" };
         }
