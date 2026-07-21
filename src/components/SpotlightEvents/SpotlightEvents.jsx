@@ -159,16 +159,9 @@ const SpotlightEvents = () => {
     const firstClones = virtualEvents.slice(0, clonesCount);
     const displayEvents = [...lastClones, ...virtualEvents, ...firstClones];
 
-    useEffect(() => {
-        if (!loading && virtualEvents.length > 0) {
-            // Initial positioning for mobile - deterministic scroll positioning
-            if (window.innerWidth <= 768 && carouselRef.current) {
-                const container = carouselRef.current;
-                const stepWidth = 0.9 * window.innerWidth + 10;
-                container.scrollLeft = clonesCount * stepWidth;
-            }
-        }
-    }, [loading, virtualEvents, clonesCount]);
+    const touchStartX = useRef(0);
+    const touchStartY = useRef(0);
+    const touchDeltaX = useRef(0);
 
     useEffect(() => {
         if (!isTransitioning) {
@@ -192,41 +185,13 @@ const SpotlightEvents = () => {
         }
     };
 
-    const handleScroll = () => {
-        if (window.innerWidth <= 768) {
-            const container = carouselRef.current;
-            if (!container) return;
-
-            const stepWidth = 0.9 * window.innerWidth + 10;
-            const scrollLeft = container.scrollLeft;
-            const totalOriginalWidth = virtualEvents.length * stepWidth;
-
-            // If we scrolled too far left into prepended clones
-            if (scrollLeft < 1.5 * stepWidth) {
-                container.scrollLeft = scrollLeft + totalOriginalWidth;
-            }
-            // If we scrolled too far right into appended clones
-            else if (scrollLeft > (clonesCount + virtualEvents.length - 1.5) * stepWidth) {
-                container.scrollLeft = scrollLeft - totalOriginalWidth;
-            }
-        }
-    };
-
     const scroll = (direction) => {
-        if (window.innerWidth > 768) {
-            if (!isTransitioning || index < 0 || index >= virtualEvents.length) return;
+        if (!isTransitioning || index < -clonesCount || index > virtualEvents.length + clonesCount) return;
 
-            if (direction === "left") {
-                setIndex(prev => prev - 1);
-            } else {
-                setIndex(prev => prev + 1);
-            }
+        if (direction === "left") {
+            setIndex(prev => prev - 1);
         } else {
-            if (carouselRef.current) {
-                const stepWidth = 0.9 * window.innerWidth + 10;
-                const scrollAmount = direction === "left" ? -stepWidth : stepWidth;
-                carouselRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
-            }
+            setIndex(prev => prev + 1);
         }
     };
 
@@ -249,7 +214,6 @@ const SpotlightEvents = () => {
         if (!container) return;
 
         const handleWheel = (e) => {
-            if (window.innerWidth <= 768) return;
             if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
                 e.preventDefault();
                 const now = Date.now();
@@ -273,7 +237,6 @@ const SpotlightEvents = () => {
 
     const handlePointerDown = (e) => {
         setIsAutoPaused(true);
-        if (window.innerWidth <= 768) return;
         if (e.button !== 0) return;
         dragStart.current = e.clientX;
         isDragging.current = true;
@@ -281,13 +244,12 @@ const SpotlightEvents = () => {
     };
 
     const handlePointerMove = (e) => {
-        if (window.innerWidth <= 768) return;
         if (!isDragging.current) return;
         const diff = e.clientX - dragStart.current;
 
-        if (Math.abs(diff) > 50) {
+        if (Math.abs(diff) > 40) {
             const now = Date.now();
-            if (now - lastWheelTime.current > 800) {
+            if (now - lastWheelTime.current > 400) {
                 if (diff < 0) {
                     scrollRef.current("right");
                 } else {
@@ -303,8 +265,41 @@ const SpotlightEvents = () => {
     const handlePointerUp = (e) => {
         isDragging.current = false;
         setIsAutoPaused(false);
-        // keep dragOccurred true briefly so the card onClick check fires after pointerUp
         setTimeout(() => { dragOccurred.current = false; }, 100);
+    };
+
+    const handleTouchStart = (e) => {
+        setIsAutoPaused(true);
+        touchStartX.current = e.touches[0].clientX;
+        touchStartY.current = e.touches[0].clientY;
+        touchDeltaX.current = 0;
+    };
+
+    const handleTouchMove = (e) => {
+        if (e.touches && e.touches.length > 0) {
+            const currentX = e.touches[0].clientX;
+            const currentY = e.touches[0].clientY;
+            const diffX = currentX - touchStartX.current;
+            const diffY = currentY - touchStartY.current;
+
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                touchDeltaX.current = diffX;
+            }
+        }
+    };
+
+    const handleTouchEnd = () => {
+        setIsAutoPaused(false);
+        if (Math.abs(touchDeltaX.current) > 30) {
+            dragOccurred.current = true;
+            if (touchDeltaX.current < 0) {
+                scroll("right");
+            } else {
+                scroll("left");
+            }
+            setTimeout(() => { dragOccurred.current = false; }, 100);
+        }
+        touchDeltaX.current = 0;
     };
 
     const handleCardNavigate = (slugOrId) => {
@@ -354,14 +349,16 @@ const SpotlightEvents = () => {
                             "--current-index": index + clonesCount,
                             transition: isTransitioning ? undefined : "none",
                             userSelect: "none",
-                            touchAction: "pan-x pan-y"
+                            touchAction: "pan-y"
                         }}
                         onTransitionEnd={handleTransitionEnd}
-                        onScroll={handleScroll}
                         onPointerDown={handlePointerDown}
                         onPointerMove={handlePointerMove}
                         onPointerUp={handlePointerUp}
                         onPointerCancel={handlePointerUp}
+                        onTouchStart={handleTouchStart}
+                        onTouchMove={handleTouchMove}
+                        onTouchEnd={handleTouchEnd}
                     >
                         {displayEvents.map((event, idx) => {
                             return (
