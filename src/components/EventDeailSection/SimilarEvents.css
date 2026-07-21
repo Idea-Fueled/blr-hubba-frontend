@@ -157,7 +157,7 @@
 }
 
 .cards-grid.single-card {
-    justify-content: center !important;
+    justify-content: flex-start !important;
 }
 
 /* On desktop, hide navigation when there are few cards */
