@@ -470,7 +470,7 @@ const EventDetails = ({ event }) => {
                                                 style={{ textDecoration: 'underline', cursor: 'pointer', textTransform: 'uppercase', fontWeight: 600 }}
                                                 onClick={() => setVenuesModalOpen(true)}
                                             >
-                                                {`${uniqueVenues.length} Venues`}
+                                                {`${uniqueVenues.length} Hubba Venues Across Bengaluru`}
                                             </span>
                                         ) : (
                                             <span className="item-detail">{event.venue?.name || "Freedom Park"}</span>
