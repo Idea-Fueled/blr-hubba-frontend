@@ -75,7 +75,11 @@ export const EventCard = React.memo(({ event, isLiked, onToggleLike }) => {
                     </div>
                     <div className="card-top-content">
                         <h3 className="card-title">{event.title}</h3>
-                        <p className="card-performer" title={event.performer}>{truncatePerformer(event.performer, 15)}</p>
+                        {event.performer && (
+                            <p className="card-performer" title={event.performer.replace(/^by\s+/i, '')}>
+                                {event.performer.replace(/^by\s+/i, '')}
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>
