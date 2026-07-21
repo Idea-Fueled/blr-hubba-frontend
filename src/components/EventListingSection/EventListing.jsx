@@ -175,8 +175,15 @@ export const EventListing = () => {
                     const dynamicSubfestivals = Array.from(new Set(mapped.map(e => e.subfestivalName).filter(Boolean))).sort((a, b) => a.localeCompare(b));
                     setSubfestivals(dynamicSubfestivals);
 
-                    // Generate curators dynamically from backend events
-                    const dynamicCurators = Array.from(new Set(mapped.map(e => e.curatedBy).filter(Boolean))).sort((a, b) => a.localeCompare(b));
+                    // Generate curators dynamically from currently published events only
+                    const dynamicCurators = Array.from(
+                        new Set(
+                            mapped
+                                .map(e => e.curatedBy)
+                                .filter(c => Boolean(c) && typeof c === 'string' && c.trim() !== '')
+                                .map(c => c.trim())
+                        )
+                    ).sort((a, b) => a.localeCompare(b));
                     setCurators(dynamicCurators);
                 }
 
