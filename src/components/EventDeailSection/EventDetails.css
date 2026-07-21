@@ -1343,3 +1343,36 @@
         box-sizing: border-box !important;
     }
 }
+
+@media (min-width: 1025px) and (max-width: 1290px) {
+    .detail-container-wrapper {
+        padding: 60px 48px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+    }
+
+    .event-detail-section {
+        flex-direction: row !important;
+        gap: 40px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .left-container {
+        flex: 1 !important;
+        min-width: 0 !important;
+        width: auto !important;
+    }
+
+    .right-container {
+        width: 380px !important;
+        height: auto !important;
+        flex-shrink: 0 !important;
+    }
+
+    .event-details-row {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+}
