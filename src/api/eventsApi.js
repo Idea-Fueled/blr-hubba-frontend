@@ -65,6 +65,7 @@ const normalizeEventImages = (event) => {
 // ----------------------------------------------------
 // Caching & Request Deduplication Mechanisms
 // ----------------------------------------------------
+const CACHE_VERSION = 'v2'; // Bump this to invalidate all caches
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes TTL
 const eventsCache = new Map();
 let spotlightCache = null;
@@ -189,7 +190,7 @@ export const fetchEvents = async (params = {}) => {
     }
   });
 
-  const cacheKey = query.toString();
+  const cacheKey = CACHE_VERSION + ':' + query.toString();
   const cached = eventsCache.get(cacheKey);
 
   if (cached && (Date.now() - cached.timestamp < CACHE_TTL_MS)) {
