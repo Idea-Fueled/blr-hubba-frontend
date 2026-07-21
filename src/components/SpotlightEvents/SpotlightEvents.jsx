@@ -79,7 +79,7 @@ const SpotlightCardLarge = ({ event, onNavigate }) => {
                             <div className="large-card-venue-time">
                                 <span className="large-card-venue">
                                     {venues && venues.length > 1
-                                        ? `${venues.length} Hubba Venues Across Bengaluru`
+                                        ? `${venues.length} Venues`
                                         : formatVenueDisplay(venues || [venue])}
                                 </span>
                                 <div className="venue-time-divider"></div>

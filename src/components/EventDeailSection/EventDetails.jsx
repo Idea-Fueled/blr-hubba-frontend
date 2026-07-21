@@ -470,7 +470,7 @@ const EventDetails = ({ event }) => {
                                                 style={{ textDecoration: 'underline', cursor: 'pointer', textTransform: 'uppercase', fontWeight: 600 }}
                                                 onClick={() => setVenuesModalOpen(true)}
                                             >
-                                                {event.venue?.name || "Freedom Park"}
+                                                {`${uniqueVenues.length} Venues`}
                                             </span>
                                         ) : (
                                             <span className="item-detail">{event.venue?.name || "Freedom Park"}</span>

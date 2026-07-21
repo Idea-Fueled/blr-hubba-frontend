@@ -42,7 +42,7 @@ export const EventCard = React.memo(({ event, isLiked, onToggleLike }) => {
                     {/* <div className="card-venue-time"> */}
                     <span className="card-venue">
                         {event.venues && event.venues.length > 1
-                            ? `${event.venues.length} Hubba Venues Across Bengaluru`
+                            ? `${event.venues.length} Venues`
                             : formatVenueDisplay(event.venues || [event.venue])}
                     </span>
                     <div className="venue-time-divider">

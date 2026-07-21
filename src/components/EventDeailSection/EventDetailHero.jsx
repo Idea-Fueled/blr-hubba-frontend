@@ -216,7 +216,7 @@ const EventDeatilHero = ({ event }) => {
                                         style={{ cursor: 'pointer' }}
                                         onClick={() => setVenuesModalOpen(true)}
                                     >
-                                        {venueName}
+                                        {`${uniqueVenues.length} Venues`}
                                     </span>
                                 ) : (
                                     <span className="hero-venue-name">{venueName}</span>
