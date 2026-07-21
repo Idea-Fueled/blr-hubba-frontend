@@ -14,6 +14,20 @@ const cleanPerformerDescription = (html) => {
     return cleaned;
 };
 
+const parseSupporterItem = (item) => {
+    if (!item) return { name: "", logoUrl: "" };
+    if (typeof item === 'object') return { name: item.name || "", logoUrl: item.logoUrl || "" };
+    if (typeof item === 'string' && item.trim().startsWith('{')) {
+        try {
+            const parsed = JSON.parse(item);
+            return { name: parsed.name || "", logoUrl: parsed.logoUrl || "" };
+        } catch {
+            return { name: item, logoUrl: "" };
+        }
+    }
+    return { name: String(item), logoUrl: "" };
+};
+
 const EventDetails = ({ event }) => {
     if (!event) return null;
 
@@ -307,79 +321,98 @@ const EventDetails = ({ event }) => {
                                             className="presented-by-desc"
                                             dangerouslySetInnerHTML={{ __html: cleanPerformerDescription(event.performerDescription || event.presentedBy || "Presented by our featured artist lineup.") }}
                                         />
-                                        {event.supportedBy && event.supportedBy.length > 0 && (
-                                            <p className="presented-by-desc" style={{ marginTop: '16px' }}>
-                                                This event is supported by {event.supportedBy.join(', ')}.
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="section-bottom-content">
-                                    {presentedByColumns.map((column, columnIndex) => (
-                                        <div key={columnIndex} className="presented-by-column">
-                                            {column.map((person) => (
-                                                <div key={person.id} className="presented-by-person">
-                                                    <svg className="presented-by-person-star-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FFF509" stroke="#000" strokeWidth="2">
-                                                        <path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9Z" strokeLinejoin="round" />
-                                                    </svg>
-                                                    <img
-                                                        src={person.imageUrl}
-                                                        alt={person.name}
-                                                        className="presented-by-person-avatar"
-                                                        onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150"; }}
-                                                    />
-                                                    <div className="presented-by-person-info">
-                                                        <h4 className="presented-by-person-name">{person.name}</h4>
-                                                        <p className="presented-by-person-role">{person.role}</p>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                                        {event.supportedBy && event.supportedBy.length > 0 && (() => {
+                                            const supporterNames = event.supportedBy.map(item => parseSupporterItem(item).name).filter(Boolean);
+                                            if (supporterNames.length === 0) return null;
+                                            return (
+                                                <p className="presented-by-desc" style={{ marginTop: '16px' }}>
+                                                    This event is supported by {supporterNames.join(', ')}.
+                                                </p>
+                                            );
+                                        })()}
+                                     </div>
+                                 </div>
+                                 <div className="section-bottom-content">
+                                     {presentedByColumns.map((column, columnIndex) => (
+                                         <div key={columnIndex} className="presented-by-column">
+                                             {column.map((person) => (
+                                                 <div key={person.id} className="presented-by-person">
+                                                     <svg className="presented-by-person-star-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FFF509" stroke="#000" strokeWidth="2">
+                                                         <path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9Z" strokeLinejoin="round" />
+                                                     </svg>
+                                                     <img
+                                                         src={person.imageUrl}
+                                                         alt={person.name}
+                                                         className="presented-by-person-avatar"
+                                                         onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150"; }}
+                                                     />
+                                                     <div className="presented-by-person-info">
+                                                         <h4 className="presented-by-person-name">{person.name}</h4>
+                                                         <p className="presented-by-person-role">{person.role}</p>
+                                                     </div>
+                                                 </div>
+                                             ))}
+                                         </div>
+                                     ))}
+                                 </div>
+                             </div>
+                         )}
 
-                        {event.curatedBy && (
-                            <div className="section-container">
-                                <h2 className="curator-section-title">Curated By</h2>
-                                <div className="curator-card-container">
-                                    <div className="curator-card-content">
-                                        <svg className="curator-star-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FFF509" stroke="#000" strokeWidth="2">
-                                            <path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9Z" strokeLinejoin="round" />
-                                        </svg>
-                                        <div className="curator-image" style={{ background: '#E9E9E9', borderRadius: '50%' }}></div>
-                                        <div className="curator-name">
-                                            <h2 className="c-name">{event.curatedBy}</h2>
-                                            <p className="c-desc">Curator</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                         {event.curatedBy && (
+                             <div className="section-container">
+                                 <h2 className="curator-section-title">Curated By</h2>
+                                 <div className="curator-card-container">
+                                     <div className="curator-card-content">
+                                         <svg className="curator-star-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FFF509" stroke="#000" strokeWidth="2">
+                                             <path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9Z" strokeLinejoin="round" />
+                                         </svg>
+                                         <div className="curator-image" style={{ background: '#E9E9E9', borderRadius: '50%' }}></div>
+                                         <div className="curator-name">
+                                             <h2 className="c-name">{event.curatedBy}</h2>
+                                             <p className="c-desc">Curator</p>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                         )}
 
-                        <div className="section-container">
-                            <h2 className="section-title">Language</h2>
-                            <p className="section-languages">{event.languages?.join(', ') || "English"}</p>
-                        </div>
+                         <div className="section-container">
+                             <h2 className="section-title">Language</h2>
+                             <p className="section-languages">{event.languages?.join(', ') || "English"}</p>
+                         </div>
 
-                        <div className="section-container">
-                            <h2 className="age-suitability-section-title">
-                                Age Suitability
-                            </h2>
-                            <p className="age-suitability-section-desc">
-                                {event.suitability ? event.suitability.replace(/_/g, ' ') : "All Ages"}
-                            </p>
-                        </div>
+                         <div className="section-container">
+                             <h2 className="age-suitability-section-title">
+                                 Age Suitability
+                             </h2>
+                             <p className="age-suitability-section-desc">
+                                 {event.suitability ? event.suitability.replace(/_/g, ' ') : "All Ages"}
+                             </p>
+                         </div>
 
-                        <div className="section-container">
-                            <h2 className="supported-by-section-title">Supported By</h2>
-                            <div className="supported-by-card-container">
-                                <div className="supported-by-logo-card">
-                                    <img src={siffLogo} className="supported-by-logo" alt="SIFF" />
-                                </div>
-                            </div>
-                        </div>
+                         <div className="section-container">
+                             <h2 className="supported-by-section-title">Supported By</h2>
+                             <div className="supported-by-card-container" style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'center' }}>
+                                 {event.supportedBy && event.supportedBy.length > 0 ? (
+                                     event.supportedBy.map((item, idx) => {
+                                         const supporter = parseSupporterItem(item);
+                                         return (
+                                             <div key={idx} className="supported-by-logo-card" title={supporter.name} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px', minHeight: '60px' }}>
+                                                 {supporter.logoUrl ? (
+                                                     <img src={supporter.logoUrl} className="supported-by-logo" alt={supporter.name || "Supporter"} style={{ maxHeight: '48px', maxWidth: '140px', objectFit: 'contain' }} />
+                                                 ) : (
+                                                     <span style={{ fontFamily: 'Roboto Condensed', fontSize: '18px', fontWeight: 600, color: '#000' }}>{supporter.name}</span>
+                                                 )}
+                                             </div>
+                                         );
+                                     })
+                                 ) : (
+                                     <div className="supported-by-logo-card">
+                                         <img src={siffLogo} className="supported-by-logo" alt="SIFF" />
+                                     </div>
+                                 )}
+                             </div>
+                         </div>
 
                         <div className="section-container">
                             <h2 className="additional-information-section-title">
