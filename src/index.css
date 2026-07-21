@@ -46,16 +46,6 @@
   font-weight: 700;
 }
 
-html, body {
-  overflow-x: hidden;
-  max-width: 100vw;
-  box-sizing: border-box;
-}
-
-*, *:before, *:after {
-  box-sizing: border-box;
-}
-
 body {
   font-family: 'DM Sans', sans-serif;
   margin: 0px !important;

@@ -1248,20 +1248,18 @@
     }
 }
 
-@media (min-width: 481px) and (max-width: 1290px) {
+@media (min-width: 481px) and (max-width: 1024px) {
     .event-listing-wrapper {
-        width: 100% !important;
-        box-sizing: border-box !important;
-        overflow-x: hidden !important;
+        padding: 60px 32px !important;
+        gap: 40px !important;
+    }
+
+    .left-filter-sidebar {
+        width: 250px !important;
     }
 }
 
 @media (min-width: 481px) and (max-width: 850px) {
-    .event-listing-wrapper {
-        padding: 40px 24px !important;
-        gap: 32px !important;
-    }
-
     .event-listing-header {
         flex-direction: column !important;
         align-items: flex-start !important;
@@ -1271,53 +1269,23 @@
     .download-calendar-btn {
         width: 100% !important;
     }
+}
 
-    .main-layout {
-        flex-direction: column !important;
-        gap: 32px !important;
-    }
-
-    .left-filter-sidebar {
-        width: 100% !important;
-        position: static !important;
-    }
-
+@media (min-width: 481px) and (max-width: 899px) {
     .events-grid {
         grid-template-columns: repeat(1, 1fr) !important;
         gap: 20px !important;
     }
 }
 
-@media (min-width: 851px) and (max-width: 1120px) {
-    .event-listing-wrapper {
-        padding: 60px 32px !important;
-        gap: 40px !important;
-    }
-
-    .left-filter-sidebar {
-        width: 250px !important;
-        flex-shrink: 0 !important;
-    }
-
+@media (min-width: 900px) and (max-width: 1280px) {
     .events-grid {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 20px !important;
     }
-}
 
-@media (min-width: 1121px) and (max-width: 1290px) {
     .event-listing-wrapper {
-        padding: 60px 48px !important;
+        padding: 80px 40px !important;
         gap: 40px !important;
-    }
-
-    .left-filter-sidebar {
-        width: 260px !important;
-        flex-shrink: 0 !important;
-    }
-
-    .events-grid {
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 20px !important;
     }
 }
