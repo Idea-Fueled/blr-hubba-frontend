@@ -69,7 +69,16 @@ export const mapBackendEventToCard = (event) => {
 
     const timeStr = `${formatTimePart(startDate)} - ${formatTimePart(endDate)}`;
 
-    const imageStr = event.imageUrl || event.coverImage || "";
+    const imageStr =
+        event.imageUrl ||
+        event.coverImage ||
+        (event.images && event.images.length > 0
+            ? (typeof event.images[0] === 'string' ? event.images[0] : event.images[0]?.url)
+            : "") ||
+        (event.mediaItems && event.mediaItems.length > 0
+            ? (typeof event.mediaItems[0] === 'string' ? event.mediaItems[0] : event.mediaItems[0]?.url)
+            : "") ||
+        "";
     const isFree = event.pricingType === 'FREE' || event.ticketPrice === 0 || !event.ticketPrice;
     const genresList = event.genres ? event.genres.map(g => g.name) : [];
 
@@ -154,7 +163,16 @@ export const mapBackendEventToSpotlight = (event) => {
     const monthStr = startDate.toLocaleString('en-US', { month: 'short' }).toUpperCase();
 
     const timeStr = `${formatTimePart(startDate)} – ${formatTimePart(endDate)}`;
-    const imageStr = event.imageUrl || event.coverImage || "";
+    const imageStr =
+        event.imageUrl ||
+        event.coverImage ||
+        (event.images && event.images.length > 0
+            ? (typeof event.images[0] === 'string' ? event.images[0] : event.images[0]?.url)
+            : "") ||
+        (event.mediaItems && event.mediaItems.length > 0
+            ? (typeof event.mediaItems[0] === 'string' ? event.mediaItems[0] : event.mediaItems[0]?.url)
+            : "") ||
+        "";
 
     const venuesSet = new Set();
     if (event.venue?.name) {

@@ -81,11 +81,20 @@ const EventDetails = ({ event }) => {
 
     if (event.images) {
         event.images.forEach(img => {
-            if (img && img.url && img.url.trim() !== '' && !seenUrls.has(img.url)) {
-                seenUrls.add(img.url);
-                allImages.push(img);
+            const url = typeof img === 'string' ? img : img?.url;
+            if (url && typeof url === 'string' && url.trim() !== '' && !seenUrls.has(url)) {
+                seenUrls.add(url);
+                allImages.push(typeof img === 'string' ? { url: img } : img);
             }
         });
+    }
+
+    if (allImages.length === 0) {
+        const fallbackUrl = event.imageUrl || event.coverImage;
+        if (fallbackUrl && typeof fallbackUrl === 'string' && fallbackUrl.trim() !== '' && !seenUrls.has(fallbackUrl)) {
+            seenUrls.add(fallbackUrl);
+            allImages.push({ url: fallbackUrl });
+        }
     }
 
     const scrollMediaLeft = () => {
