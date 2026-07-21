@@ -18,7 +18,8 @@ export const getZoneFromVenueName = (venueName) => {
 export const formatVenueDisplay = (venues) => {
     if (!venues || !Array.isArray(venues) || venues.length === 0) return "";
     if (venues.length === 1) return venues[0];
-    return `${venues.length} Venues`;
+    if (venues.length === 2) return `${venues[0]}, ${venues[1]}`;
+    return `${venues[0]}, ${venues[1]} +${venues.length - 2}`;
 };
 
 export const formatEventTiming = (showCount, subfestivalName) => {
