@@ -70,7 +70,7 @@
     leading-trim: both;
     text-edge: cap;
     /* Body_Regular */
-    font-family: "Roboto Condensed";
+    font-family: "Roboto";
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
@@ -124,7 +124,7 @@
     leading-trim: both;
     text-edge: cap;
     /* Body_Regular */
-    font-family: "Roboto Condensed";
+    font-family: "Roboto";
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
@@ -197,7 +197,7 @@
 
 .presented-by-person-role {
     color: #4E4E4E;
-    font-family: "Roboto Condensed";
+    font-family: "Roboto";
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
@@ -268,7 +268,7 @@
     leading-trim: both;
     text-edge: cap;
     /* Body_Regular */
-    font-family: "Roboto Condensed";
+    font-family: "Roboto";
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
@@ -310,7 +310,7 @@
     leading-trim: both;
     text-edge: cap;
     /* Body_Regular */
-    font-family: "Roboto Condensed";
+    font-family: "Roboto";
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
@@ -352,7 +352,7 @@
     margin: 0;
     text-edge: cap;
     /* Body_Regular */
-    font-family: "Roboto Condensed";
+    font-family: "Roboto";
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
@@ -420,7 +420,7 @@
     line-height: 32px;
     /* 133.333% */
     width: 216px;
-    height: 17px;
+
     margin: 0;
 }
 
@@ -429,12 +429,16 @@
     leading-trim: both;
     text-edge: cap;
     /* Body_Regular */
-    font-family: "Roboto Condensed";
+    font-family: "Roboto";
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
     line-height: 24px;
     /* 150% */
+    margin: 0;
+}
+
+.additional-information-section-desc p {
     margin: 0;
 }
 
@@ -482,7 +486,7 @@
     text-edge: cap;
     text-transform: capitalize;
     /* Body_Regular */
-    font-family: "Roboto Condensed";
+    font-family: "Roboto";
     font-size: 16px;
     font-style: normal;
     font-weight: 400;

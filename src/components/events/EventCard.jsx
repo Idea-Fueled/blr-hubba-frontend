@@ -4,6 +4,12 @@ import "./EventCard.css";
 import heartIcon from "../../assets/heart_icon.png";
 import { formatVenueDisplay, formatEventTiming } from "../../utils/eventMappers";
 
+const truncatePerformer = (text, limit = 15) => {
+    if (!text) return "";
+    if (text.length <= limit) return text;
+    return text.slice(0, limit).trim() + "...";
+};
+
 const formatTime = (timeStr) => {
     if (!timeStr) return "";
     const parts = timeStr.split(/\s*[-–]\s*/);
@@ -25,7 +31,7 @@ export const EventCard = React.memo(({ event, isLiked, onToggleLike }) => {
     if (!event) return null;
 
     return (
-        <article 
+        <article
             className="event-listing-card"
             onClick={() => navigate(`/events/${event.slug || event.id}`)}
             style={{ cursor: "pointer" }}
@@ -69,7 +75,7 @@ export const EventCard = React.memo(({ event, isLiked, onToggleLike }) => {
                     </div>
                     <div className="card-top-content">
                         <h3 className="card-title">{event.title}</h3>
-                        <p className="card-performer">{event.performer}</p>
+                        <p className="card-performer" title={event.performer}>{truncatePerformer(event.performer, 15)}</p>
                     </div>
                 </div>
             </div>
@@ -95,8 +101,8 @@ export const EventCard = React.memo(({ event, isLiked, onToggleLike }) => {
                 </div>
 
                 {/* CTA Button */}
-                <button 
-                    className="card-cta-btn" 
+                <button
+                    className="card-cta-btn"
                     onClick={(e) => {
                         e.stopPropagation();
                         navigate(`/events/${event.slug || event.id}`);

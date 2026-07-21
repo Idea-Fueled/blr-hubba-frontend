@@ -211,7 +211,7 @@
     font-size: 20px;
     font-style: normal;
     font-weight: 600;
-    line-height: 26px;
+
     /* 130% */
 
     margin: 0;
@@ -222,12 +222,16 @@
     leading-trim: both;
     text-edge: cap;
     /* Body_Regular */
-    font-family: "Roboto Condensed";
+    font-family: "Roboto";
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
-    line-height: 24px;
     margin-top: 16px;
+    line-height: 24px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
     /* 150% */
 }
 
