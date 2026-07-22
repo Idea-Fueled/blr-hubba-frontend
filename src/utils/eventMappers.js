@@ -148,6 +148,7 @@ export const mapBackendEventToCard = (event) => {
         eventLength: event.eventLength || 0,
         duration: event.eventLength || (event.endDateTime && event.startDateTime ? (new Date(event.endDateTime) - new Date(event.startDateTime)) / (60 * 1000) : 0),
         curatedBy: event.curatedBy || "",
+        curatorPhoto: event.curatorPhoto || "",
         pricingType: event.pricingType || ""
     };
 };
@@ -228,6 +229,7 @@ export const mapBackendEventToSpotlight = (event) => {
         image: imageStr,
         genres: event.genres ? event.genres.map(g => g.genre?.name || g.name) : [],
         curatedBy: event.curatedBy || "",
+        curatorPhoto: event.curatorPhoto || "",
         pricingType: event.pricingType || ""
     };
 };
