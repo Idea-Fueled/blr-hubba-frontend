@@ -738,7 +738,7 @@
     padding: 24px;
     align-items: flex-start;
     gap: 10px;
-    height: 621px;
+    height: auto;
     border-radius: 16px;
     border: 2px solid #000;
     background: #FFF;
