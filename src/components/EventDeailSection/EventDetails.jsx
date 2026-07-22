@@ -339,12 +339,24 @@ const EventDetails = ({ event }) => {
                                                      <svg className="presented-by-person-star-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FFF509" stroke="#000" strokeWidth="2">
                                                          <path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9Z" strokeLinejoin="round" />
                                                      </svg>
-                                                     <img
-                                                         src={person.imageUrl}
-                                                         alt={person.name}
-                                                         className="presented-by-person-avatar"
-                                                         onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150"; }}
-                                                     />
+                                                     {person.imageUrl ? (
+                                                         <img
+                                                             src={person.imageUrl}
+                                                             alt={person.name}
+                                                             className="presented-by-person-avatar"
+                                                             onError={(e) => {
+                                                                 e.target.style.display = 'none';
+                                                                 const fallback = e.target.nextSibling;
+                                                                 if (fallback) fallback.style.display = 'flex';
+                                                             }}
+                                                         />
+                                                     ) : null}
+                                                     <div
+                                                         className="presented-by-person-avatar presented-by-person-avatar-initial"
+                                                         style={{ display: person.imageUrl ? 'none' : 'flex' }}
+                                                     >
+                                                         {person.name ? person.name.trim().charAt(0).toUpperCase() : "P"}
+                                                     </div>
                                                      <div className="presented-by-person-info">
                                                          <h4 className="presented-by-person-name">{person.name}</h4>
                                                          <p className="presented-by-person-role">{person.role}</p>

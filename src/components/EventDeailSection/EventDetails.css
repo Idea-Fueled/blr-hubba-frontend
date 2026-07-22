@@ -180,6 +180,18 @@
     /* jab tak image load na ho tab tak placeholder */
 }
 
+.presented-by-person-avatar-initial {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #E9E9E9 !important;
+    color: #000000 !important;
+    font-family: "Roboto Condensed", sans-serif !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+}
+
 .presented-by-person-info {
     display: flex;
     flex-direction: column;
