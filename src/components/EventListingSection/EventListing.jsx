@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import "./EventListing.css";
 import xIcon from "../../assets/x_icon.png";
 import EventCard from "../events/EventCard";
@@ -120,16 +120,17 @@ export const EventListing = () => {
     const [visibleCount, setVisibleCount] = useState(6);
 
     // Accordion expand/collapse state
-    const [genreOpen, setGenreOpen] = useState(true);
-    const [zonesOpen, setZonesOpen] = useState(true);
-    const [languageOpen, setLanguageOpen] = useState(true);
-    const [moreFiltersOpen, setMoreFiltersOpen] = useState(true);
+    const [genreOpen, setGenreOpen] = useState(false);
+    const [zonesOpen, setZonesOpen] = useState(false);
+    const [languageOpen, setLanguageOpen] = useState(false);
+    const [moreFiltersOpen, setMoreFiltersOpen] = useState(false);
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
     const [isSticky, setIsSticky] = useState(false);
 
     const venueRowRef = useRef(null);
     const sentinelRef = useRef(null);
-    const [venueScrolledLeft, setVenueScrolledLeft] = useState(false);
+    const [canScrollVenuesLeft, setCanScrollVenuesLeft] = useState(false);
+    const [canScrollVenuesRight, setCanScrollVenuesRight] = useState(false);
 
     // Fetch filters and events on mount
     useEffect(() => {
@@ -369,11 +370,30 @@ export const EventListing = () => {
         }
     };
 
-    const handleVenueScroll = () => {
+    const updateVenueScrollState = useCallback(() => {
         if (venueRowRef.current) {
-            setVenueScrolledLeft(venueRowRef.current.scrollLeft > 10);
+            const el = venueRowRef.current;
+            const scrollLeft = el.scrollLeft;
+            const maxScrollLeft = el.scrollWidth - el.clientWidth;
+
+            setCanScrollVenuesLeft(scrollLeft > 5);
+            setCanScrollVenuesRight(maxScrollLeft > 5 && (maxScrollLeft - scrollLeft > 5));
         }
+    }, []);
+
+    const handleVenueScroll = () => {
+        updateVenueScrollState();
     };
+
+    useEffect(() => {
+        updateVenueScrollState();
+        window.addEventListener("resize", updateVenueScrollState);
+        const timer = setTimeout(updateVenueScrollState, 150);
+        return () => {
+            window.removeEventListener("resize", updateVenueScrollState);
+            clearTimeout(timer);
+        };
+    }, [venues, updateVenueScrollState]);
 
     if (error) {
         return (
@@ -453,26 +473,26 @@ export const EventListing = () => {
                                         </svg>
                                     </>
                                 )}
-                                <button
-                                    className="venue-next-btn"
-                                    onClick={scrollVenuesLeft}
-                                    aria-label="Previous Venues"
-                                    disabled={!venueScrolledLeft}
-                                    style={{ opacity: venueScrolledLeft ? 1 : 0.3, cursor: venueScrolledLeft ? "pointer" : "default" }}
-                                >
-                                    <svg
-                                        className="venue-next-svg"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
+                                {canScrollVenuesLeft && (
+                                    <button
+                                        className="venue-next-btn"
+                                        onClick={scrollVenuesLeft}
+                                        aria-label="Previous Venues"
                                     >
-                                        <line x1="19" y1="12" x2="5" y2="12"></line>
-                                        <polyline points="12 19 5 12 12 5"></polyline>
-                                    </svg>
-                                </button>
+                                        <svg
+                                            className="venue-next-svg"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                                            <polyline points="12 19 5 12 12 5"></polyline>
+                                        </svg>
+                                    </button>
+                                )}
                                 <div ref={venueRowRef} className="venue-filter-row" onScroll={handleVenueScroll}>
                                     {venues.map((venue) => {
                                         const isSelected = selectedVenues.includes(venue);
@@ -487,20 +507,22 @@ export const EventListing = () => {
                                         );
                                     })}
                                 </div>
-                                <button className="venue-next-btn" onClick={scrollVenuesRight} aria-label="Next Venues">
-                                    <svg
-                                        className="venue-next-svg"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    >
-                                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                                        <polyline points="12 5 19 12 12 19"></polyline>
-                                    </svg>
-                                </button>
+                                {canScrollVenuesRight && (
+                                    <button className="venue-next-btn" onClick={scrollVenuesRight} aria-label="Next Venues">
+                                        <svg
+                                            className="venue-next-svg"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            <polyline points="12 5 19 12 12 19"></polyline>
+                                        </svg>
+                                    </button>
+                                )}
                             </div>
                         )}
                     </div>
