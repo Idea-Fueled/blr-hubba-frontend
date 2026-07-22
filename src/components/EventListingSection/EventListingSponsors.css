@@ -382,6 +382,8 @@
 }
 
 .bottom-row-right-container {
+    position: relative;
+    top: 52px;
     display: flex;
     padding: 24px;
     flex-direction: column;
