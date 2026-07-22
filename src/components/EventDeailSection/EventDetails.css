@@ -738,8 +738,7 @@
     padding: 24px;
     align-items: flex-start;
     gap: 10px;
-    height: auto;
-    max-height: 85vh;
+    height: 621px;
     border-radius: 16px;
     border: 2px solid #000;
     background: #FFF;
@@ -748,11 +747,10 @@
 .venue-modal-content-container {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: flex-start;
-    gap: 24px;
+    gap: 40px;
     flex: 1 0 0;
-    width: 100%;
 }
 
 .venue-modal-title-container {
@@ -761,7 +759,6 @@
     gap: 43px;
     align-self: stretch;
     justify-content: space-between;
-    margin-bottom: 8px;
 }
 
 .venue-modal-title {
@@ -782,22 +779,18 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    width: 100%;
+    flex: 1 0 0;
 }
 
 .venue-content-container {
     display: flex;
+    padding: 32px 0;
     flex-direction: column;
     align-items: flex-start;
-    gap: 20px;
+    gap: 32px;
     align-self: stretch;
-    padding: 0 0 24px 0;
+    padding: 0;
     border-bottom: 1px solid var(--Neutral-40, #A4A4A4);
-}
-
-.venue-modal-bottom-content-container:last-child .venue-content-container {
-    border-bottom: none !important;
-    padding-bottom: 0 !important;
 }
 
 .venue-heading-container {
