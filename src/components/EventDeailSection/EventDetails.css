@@ -391,34 +391,32 @@
 }
 
 .supported-by-card-container {
-    border-radius: 14px;
     display: flex;
-    width: 200px;
-    height: 84px;
-    padding: 12px 24px;
+    min-width: 180px;
+    height: 72px;
+    padding: 10px 20px;
     justify-content: center;
     align-items: center;
-    gap: 24px;
-    aspect-ratio: 50 / 21;
-    border-radius: 16px;
+    border-radius: 14px;
     border: 1px solid var(--Neutral-40, #A4A4A4);
     background: #FFF;
+    box-sizing: border-box;
 }
 
 .supported-by-logo-card {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
-    flex: 1 0 0;
-    align-self: stretch;
+    width: 100%;
+    height: 100%;
 }
 
 .supported-by-logo {
-    /* width: 60px; */
-    align-self: stretch;
-    aspect-ratio: 1/1;
-    background: url(<path-to-image>) -1.622px -2.31px / 107.432% 109.05% no-repeat;
+    max-height: 52px;
+    max-width: 150px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
 }
 
 .additional-information-section-title {

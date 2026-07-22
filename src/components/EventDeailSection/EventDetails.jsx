@@ -415,20 +415,20 @@ const EventDetails = ({ event }) => {
 
                          <div className="section-container">
                              <h2 className="supported-by-section-title">Supported By</h2>
-                             <div className="supported-by-card-wrapper" style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'flex-start' }}>
+                             <div className="supported-by-card-wrapper" style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'flex-start' }}>
                                  {event.supportedBy && event.supportedBy.length > 0 ? (
                                      event.supportedBy.map((item, idx) => {
                                          const supporter = parseSupporterItem(item);
                                          return (
                                              <div key={idx} className="supported-by-item" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
                                                  {supporter.name ? (
-                                                     <span className="supported-by-item-title" style={{ fontFamily: 'Roboto Condensed', fontSize: '16px', fontWeight: 600, color: '#000', textAlign: 'center' }}>
+                                                     <span className="supported-by-item-title" style={{ fontFamily: 'Roboto Condensed', fontSize: '15px', fontWeight: 600, color: '#000', textAlign: 'center', textTransform: 'capitalize' }}>
                                                          {supporter.name}
                                                      </span>
                                                  ) : null}
-                                                 <div className="supported-by-card-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px 20px', minHeight: '60px' }}>
+                                                 <div className="supported-by-card-container">
                                                      {supporter.logoUrl ? (
-                                                         <img src={supporter.logoUrl} className="supported-by-logo" alt={supporter.name || "Supporter"} style={{ maxHeight: '48px', maxWidth: '140px', objectFit: 'contain' }} />
+                                                         <img src={supporter.logoUrl} className="supported-by-logo" alt={supporter.name || "Supporter"} />
                                                      ) : (
                                                          <span style={{ fontFamily: 'Roboto Condensed', fontSize: '18px', fontWeight: 600, color: '#000' }}>{supporter.name || "SIFF"}</span>
                                                      )}
