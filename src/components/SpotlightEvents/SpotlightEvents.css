@@ -456,7 +456,7 @@
     height: 40px;
     border-radius: 50%;
     background: #FFFFFF;
-    border: 2px solid #000000;
+    border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -472,20 +472,15 @@
 }
 
 .heart-icon-img {
-    width: 20px;
-    height: 18px;
-    object-fit: contain;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
     display: block;
-    transition: filter 0.15s ease;
 }
 
 .heart-btn.liked {
-    background-color: #000000;
-    border-color: #000000;
-}
-
-.heart-btn.liked .heart-icon-img {
-    filter: invert(1);
+    background-color: #FFFFFF;
+    border: none;
 }
 
 /* Navigation Buttons styling */

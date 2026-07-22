@@ -141,12 +141,11 @@ const EventDetails = ({ event }) => {
     };
 
     const startDate = new Date(event.startDateTime);
-    const dateStr = startDate.toLocaleDateString('en-US', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-    });
+    const weekday = startDate.toLocaleDateString('en-US', { weekday: 'long' });
+    const day = startDate.getDate();
+    const month = startDate.toLocaleDateString('en-US', { month: 'short' });
+    const year2Digit = startDate.toLocaleDateString('en-US', { year: '2-digit' });
+    const dateStr = `${weekday} ${day}, ${month} ${year2Digit}`;
 
     const formatTimePart = (date) => {
         return date.toLocaleTimeString('en-US', {
@@ -358,23 +357,47 @@ const EventDetails = ({ event }) => {
                              </div>
                          )}
 
-                         {event.curatedBy && (
-                             <div className="section-container">
-                                 <h2 className="curator-section-title">Curated By</h2>
-                                 <div className="curator-card-container">
-                                     <div className="curator-card-content">
-                                         <svg className="curator-star-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FFF509" stroke="#000" strokeWidth="2">
-                                             <path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9Z" strokeLinejoin="round" />
-                                         </svg>
-                                         <div className="curator-image" style={{ background: '#E9E9E9', borderRadius: '50%' }}></div>
-                                         <div className="curator-name">
-                                             <h2 className="c-name">{event.curatedBy}</h2>
-                                             <p className="c-desc">Curator</p>
+                         {event.curatedBy && (() => {
+                             const curatorName = typeof event.curatedBy === 'string' ? event.curatedBy : (event.curator?.name || event.curatedBy?.name || "");
+                             const curatorInitial = curatorName ? curatorName.trim().charAt(0).toUpperCase() : "C";
+                             const curatorPhoto = event.curatorPhoto || event.curatorImage || event.curator?.photo || event.curator?.imageUrl || null;
+
+                             return (
+                                 <div className="section-container">
+                                     <h2 className="curator-section-title">Curated By</h2>
+                                     <div className="curator-card-container">
+                                         <div className="curator-card-content">
+                                             <svg className="curator-star-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FFF509" stroke="#000" strokeWidth="2">
+                                                 <path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9Z" strokeLinejoin="round" />
+                                             </svg>
+                                             {curatorPhoto ? (
+                                                 <img
+                                                     src={curatorPhoto}
+                                                     alt={curatorName}
+                                                     className="curator-image"
+                                                     style={{ objectFit: 'cover' }}
+                                                     onError={(e) => {
+                                                         e.target.style.display = 'none';
+                                                         const fallback = e.target.nextSibling;
+                                                         if (fallback) fallback.style.display = 'flex';
+                                                     }}
+                                                 />
+                                             ) : null}
+                                             <div
+                                                 className="curator-image curator-image-initial"
+                                                 style={{ display: curatorPhoto ? 'none' : 'flex' }}
+                                             >
+                                                 {curatorInitial}
+                                             </div>
+                                             <div className="curator-name">
+                                                 <h2 className="c-name">{curatorName}</h2>
+                                                 <p className="c-desc">Curator</p>
+                                             </div>
                                          </div>
                                      </div>
                                  </div>
-                             </div>
-                         )}
+                             );
+                         })()}
 
                          <div className="section-container">
                              <h2 className="section-title">Language</h2>

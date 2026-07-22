@@ -307,11 +307,7 @@
 }
 
 .heart-icon.liked {
-    background-color: #ff4757 !important;
-}
-
-.heart-icon.liked .heart-icon-img {
-    filter: brightness(0) invert(1);
+    background-color: #FFF !important;
 }
 
 .mobile-only {

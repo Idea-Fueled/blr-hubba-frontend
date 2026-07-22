@@ -691,7 +691,7 @@
     gap: 10px;
     border-radius: 49px;
     background: #FFFFFF;
-    border: 2px solid #000000;
+    border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -705,20 +705,15 @@
 }
 
 .card-wishlist-icon {
-    width: 20px;
-    height: 18px;
-    object-fit: contain;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
     display: block;
-    transition: filter 0.15s ease;
 }
 
 .card-wishlist-btn.liked {
-    background-color: #000000;
-    border-color: #000000;
-}
-
-.card-wishlist-btn.liked .card-wishlist-icon {
-    filter: invert(1);
+    background-color: #FFFFFF;
+    border: none;
 }
 
 
