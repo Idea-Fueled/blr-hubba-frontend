@@ -1,0 +1,451 @@
+/* =========================================================
+   COMING SOON (EVENTS & VENUES) — REDESIGNED BANNER UI
+   ========================================================= */
+
+.coming-soon-page-container,
+.venues-coming-soon-page-container {
+    width: 100%;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 32px 60px 32px;
+    box-sizing: border-box;
+}
+
+/* Single Unified Hero Card */
+.coming-soon-card {
+    width: 100%;
+    max-width: 1376px;
+    border-radius: 32px;
+    overflow: hidden;
+    background: #FFFFFF;
+    /* box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06); */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Top Banner Section */
+.coming-soon-banner-top {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 5504 / 1712;
+    min-height: 428px;
+    background-image: var(--desktop-banner);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: right center;
+    background-color: #F4F4F4;
+    display: flex;
+    align-items: center;
+    border-radius: 32px 32px 0 0;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 64px;
+}
+
+.mobile-only {
+    display: none !important;
+}
+
+.desktop-only {
+    display: inline !important;
+}
+
+/* Content Frame on the Left */
+.coming-soon-content-frame {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 520px;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 2;
+}
+
+.coming-soon-banner-title {
+    color: var(--Hubba-Black, #000);
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Roboto Condensed";
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 43px;
+    /* 107.5% */
+    margin: 0 0 32px 0;
+    /* letter-spacing: -0.5px; */
+}
+
+.coming-soon-banner-desc {
+    color: var(--Hubba-Black, #000);
+    leading-trim: both;
+    text-edge: cap;
+    font-family: Roboto;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 28px;
+    /* 155.556% */
+    margin: 0 0 40px 0;
+}
+
+/* Bottom Black Bar (EXACT CSS FROM FIGMA/USER) */
+.coming-soon-bottom-bar {
+    display: flex;
+    height: 60px;
+    padding: 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    border-radius: 0 0 32px 32px;
+    background: #000000;
+    box-sizing: border-box;
+}
+
+.coming-soon-bar-text {
+    color: #FFFFFF;
+    font-family: "Roboto", sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 26px;
+    letter-spacing: 0.4px;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* Yellow Highlight Text (EXACT CSS FROM FIGMA/USER) */
+.coming-soon-bar-yellow {
+    color: var(--Hubba-Yellow, #FDFF53);
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Roboto", sans-serif;
+    font-size: 20px;
+    font-style: italic;
+    font-weight: 700;
+    line-height: 26px;
+    letter-spacing: 0.6px;
+}
+
+/* "KNOW MORE" Interactive Roll-up Button */
+.coming-soon-know-more-btn {
+    position: relative !important;
+    overflow: hidden !important;
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: 40px !important;
+    padding: 16px 24px !important;
+    border-radius: 8px !important;
+    border: 2px solid var(--Hubba-Black, #000000) !important;
+    background: transparent !important;
+    color: var(--Hubba-Black, #000000) !important;
+    text-align: center !important;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    font-variant: all-small-caps;
+    margin: 0 !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+    outline: none !important;
+    transition: border-color 0.65s cubic-bezier(0.25, 1, 0.3, 1), transform 0.2s ease !important;
+}
+
+/* Yellow Layer Exits Up on Hover */
+.coming-soon-know-more-btn::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-color: #FDFF53 !important;
+    border-radius: 0 !important;
+    transform: translateY(0%) !important;
+    transition: transform 0.65s cubic-bezier(0.25, 1, 0.3, 1), border-radius 0.65s cubic-bezier(0.25, 1, 0.3, 1) !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+}
+
+.coming-soon-know-more-btn:hover::after {
+    transform: translateY(-100%) !important;
+    border-radius: 0 0 100% 100% !important;
+}
+
+/* Black Layer Enters from Bottom on Hover */
+.coming-soon-know-more-btn::before {
+    content: '' !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-color: #000000 !important;
+    border-radius: 100% 100% 0 0 !important;
+    transform: translateY(100%) !important;
+    transition: transform 0.65s cubic-bezier(0.25, 1, 0.3, 1), border-radius 0.65s cubic-bezier(0.25, 1, 0.3, 1) !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+}
+
+.coming-soon-know-more-btn:hover::before {
+    transform: translateY(0%) !important;
+    border-radius: 0 !important;
+}
+
+/* Dual Text Conveyor Layers */
+.coming-soon-know-more-btn .btn-text-primary {
+    position: relative !important;
+    z-index: 2 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #000000 !important;
+    transform: translateY(0) !important;
+    transition: transform 0.65s cubic-bezier(0.25, 1, 0.3, 1), color 0.65s cubic-bezier(0.25, 1, 0.3, 1) !important;
+}
+
+.coming-soon-know-more-btn .btn-text-secondary {
+    position: absolute !important;
+    z-index: 2 !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, 160%) !important;
+    width: 100% !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    color: #FFFFFF !important;
+    transition: transform 0.65s cubic-bezier(0.25, 1, 0.3, 1), color 0.65s cubic-bezier(0.25, 1, 0.3, 1) !important;
+}
+
+.coming-soon-know-more-btn:hover .btn-text-primary {
+    transform: translateY(-160%) !important;
+}
+
+.coming-soon-know-more-btn:hover .btn-text-secondary {
+    transform: translate(-50%, -50%) !important;
+}
+
+.coming-soon-know-more-btn:active {
+    transform: scale(0.98) !important;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1200px) {
+    .coming-soon-banner-top {
+        min-height: 380px;
+        padding: 32px;
+    }
+
+    .coming-soon-content-frame {
+        max-width: 460px;
+    }
+
+    .coming-soon-banner-title {
+        font-size: 34px;
+        line-height: 42px;
+        margin-bottom: 20px;
+    }
+
+    .coming-soon-banner-desc {
+        font-size: 16px;
+        line-height: 24px;
+        margin-bottom: 32px;
+    }
+}
+
+@media (max-width: 992px) {
+
+    .coming-soon-page-container,
+    .venues-coming-soon-page-container {
+        padding: 24px 20px 40px 20px;
+    }
+
+    .coming-soon-banner-top {
+        aspect-ratio: auto;
+        min-height: 360px;
+        padding: 28px;
+        background-position: 80% center;
+    }
+
+    .coming-soon-content-frame {
+        max-width: 440px;
+        background: rgba(244, 244, 244, 0.88);
+        padding: 24px;
+        border-radius: 20px;
+        backdrop-filter: blur(8px);
+    }
+}
+
+@media (max-width: 768px) {
+    .mobile-only {
+        display: inline !important;
+    }
+
+    .desktop-only {
+        display: none !important;
+    }
+
+    .coming-soon-page-container,
+    .venues-coming-soon-page-container {
+        padding: 24px 16px 40px 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+    }
+
+    /* Single Unified Hero Card (Mobile Frame: 327px width) */
+    .coming-soon-card {
+        width: 100%;
+        max-width: 327px;
+        border-radius: 20px;
+        margin: 0 auto;
+        /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06); */
+    }
+
+    /* Top Banner Section with Mobile Banner Graphic */
+    .coming-soon-banner-top {
+        width: 100%;
+        aspect-ratio: 300 / 370;
+        min-height: unset;
+        height: auto;
+        background-image: var(--mobile-banner) !important;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center top;
+        background-color: #F0F0F0;
+        border-radius: 20px 20px 0 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 40px 24px 0 24px;
+        box-sizing: border-box;
+    }
+
+    /* Centered Content Frame */
+    .coming-soon-content-frame {
+        width: 100%;
+        max-width: 279px;
+        padding: 0;
+        margin: 0;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    /* Title CSS: EXACT FROM FIGMA/USER SPECS */
+    .coming-soon-banner-title {
+        color: var(--Hubba-Black, #000);
+        text-align: center;
+        leading-trim: both;
+        text-edge: cap;
+        font-feature-settings: 'liga' off, 'clig' off;
+        /* Heading2_Bold */
+        font-family: "Roboto Condensed", sans-serif;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 32px;
+        /* 133.333% */
+        margin: 0 0 24px 0;
+    }
+
+    /* Subtitle CSS: EXACT FROM FIGMA/USER SPECS */
+    .coming-soon-banner-desc {
+        color: var(--Hubba-Black, #000);
+        text-align: center;
+        leading-trim: both;
+        text-edge: cap;
+        /* Body_Regular */
+        font-family: Roboto, sans-serif;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 26px;
+        /* 162.5% */
+        height: 45px;
+        align-self: stretch;
+        margin: 0 0 24px 0;
+    }
+
+    /* KNOW MORE Button */
+    .coming-soon-know-more-btn {
+        width: 100% !important;
+        max-width: 279px !important;
+        height: 40px !important;
+        margin: 0 0 24px 0 !important;
+    }
+
+    /* Black Section: EXACT FROM FIGMA/USER SPECS */
+    .coming-soon-bottom-bar {
+        border-radius: 0 0 20px 20px;
+        background: #000000;
+        display: flex;
+        width: 100%;
+        max-width: 327px;
+        height: 60px;
+        min-height: 60px;
+        padding: 0 16px;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        box-sizing: border-box;
+    }
+
+    /* White Text: EXACT FROM FIGMA/USER SPECS */
+    .coming-soon-bar-text {
+        color: var(--Hubba-White, #FFF);
+        leading-trim: both;
+        text-edge: cap;
+        font-family: Roboto, sans-serif;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 22px;
+        letter-spacing: 0.48px;
+        text-align: center;
+        margin: 0;
+        display: block;
+    }
+
+    /* Yellow Text: EXACT FROM FIGMA/USER SPECS */
+    .coming-soon-bar-yellow {
+        color: var(--Hubba-Yellow, #FDFF53);
+        text-align: center;
+        leading-trim: both;
+        text-edge: cap;
+        font-family: Roboto, sans-serif;
+        font-size: 16px;
+        font-style: italic;
+        font-weight: 700;
+        line-height: 22px;
+        /* 137.5% */
+        letter-spacing: 0.48px;
+        display: inline;
+    }
+}
+
+@media (min-width: 375px) and (max-width: 768px) {
+
+    .coming-soon-page-container,
+    .venues-coming-soon-page-container {
+        padding: 24px 24px 24px 24px;
+    }
+}

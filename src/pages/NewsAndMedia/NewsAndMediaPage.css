@@ -1,0 +1,137 @@
+/* NewsAndMediaPage.css */
+
+/* ================= KANNADA FONT FACES ================= */
+@font-face {
+    font-family: 'Noto Sans Kannada';
+    src: url('../../assets/fonts/Noto-Sans-Kannada/NotoSansKannada-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Noto Sans Kannada';
+    src: url('../../assets/fonts/Noto-Sans-Kannada/NotoSansKannada-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Noto Sans Kannada';
+    src: url('../../assets/fonts/Noto-Sans-Kannada/NotoSansKannada-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Noto Sans Kannada';
+    src: url('../../assets/fonts/Noto-Sans-Kannada/NotoSansKannada-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+.news-media-page {
+    width: 100%;
+    min-height: calc(100vh - 80px);
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+    padding-bottom: 60px;
+}
+
+.news-media-about-section {
+    margin-top: 40px !important;
+    margin-bottom: 40px !important;
+}
+
+.news-media-info-card-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.news-media-kannada-card,
+.news-media-english-card {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+}
+
+/* ================= KANNADA TYPOGRAPHY ================= */
+.news-media-kannada-subtitle {
+    color: #000 !important;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: 'Noto Sans Kannada', sans-serif !important;
+    font-size: 14px !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    line-height: 40px !important;
+    /* 285.714% */
+    text-transform: uppercase !important;
+}
+
+.news-media-kannada-title {
+    align-self: stretch !important;
+    color: #000 !important;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: 'Noto Sans Kannada', sans-serif !important;
+    font-size: 24px !important;
+    font-style: normal !important;
+    font-weight: 700 !important;
+    line-height: 36px !important;
+    /* 150% */
+}
+
+.news-media-kannada-desc {
+    color: #000 !important;
+    leading-trim: both;
+    text-edge: cap;
+    /* Body_Regular */
+    font-family: 'Noto Sans Kannada', sans-serif !important;
+    font-size: 16px !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    line-height: 26px !important;
+    /* 162.5% */
+}
+
+.news-media-kannada-btn {
+    color: var(--Hubba-Black, #000) !important;
+    text-align: center !important;
+    leading-trim: both;
+    text-edge: cap;
+    /* Title2_Medium */
+    font-family: 'Noto Sans Kannada', sans-serif !important;
+    font-size: 18px !important;
+    font-style: normal !important;
+    font-weight: 500 !important;
+    line-height: 24px !important;
+    /* 133.333% */
+    font-variant: all-small-caps !important;
+}
+
+.news-media-kannada-btn .btn-text-primary,
+.news-media-kannada-btn .btn-text-secondary {
+    font-family: 'Noto Sans Kannada', sans-serif !important;
+    font-size: 18px !important;
+    font-weight: 500 !important;
+    line-height: 24px !important;
+    font-variant: all-small-caps !important;
+}
+
+@media (max-width: 768px) {
+    .news-media-page {
+        min-height: auto;
+        padding-bottom: 40px;
+    }
+
+    .news-media-about-section {
+        margin-top: 20px !important;
+        margin-bottom: 20px !important;
+    }
+}

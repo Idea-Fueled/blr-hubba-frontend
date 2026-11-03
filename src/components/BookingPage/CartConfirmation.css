@@ -1,0 +1,211 @@
+.cart-confirmation-container,
+.cart-confirmation-container * {
+    box-sizing: border-box;
+}
+
+.cart-confirmation-container {
+    width: 100%;
+    min-height: calc(100vh - 80px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 80px 20px;
+    background: #ffffff;
+}
+
+.cart-confirmation-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+}
+
+.cart-confirmation-icon {
+    display: flex;
+    width: 76px;
+    padding: 10px;
+    align-items: center;
+    gap: 10px;
+    margin: 0 auto;
+    margin-bottom: 36px;
+}
+
+.cart-confirmation-content {
+    display: flex;
+    width: 327px;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.cart-confirmation-title {
+    color: #000;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Heading1_Bold */
+    font-family: "Roboto Condensed";
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 36px;
+    margin: 0;
+    /* 125% */
+}
+
+.cart-confirmation-description {
+    color: var(--Hubba-Black, #000);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Body_Regular */
+    font-family: "Roboto";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    margin: 0;
+    /* 150% */
+}
+
+.cart-confirmation-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.cart-confirmation-buttons button {
+    display: flex;
+    height: 38px;
+    padding: 16px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+.view-cart-btn {
+    border-radius: 8px;
+    border: 2px solid var(--Hubba-Black, #000);
+    background: var(--Hubba-Yellow, #FDFF53);
+    color: var(--Hubba-Black, #000);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+    cursor: pointer;
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+
+    /* Title2_Medium */
+    font-family: "Roboto Condensed";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    /* 133.333% */
+    font-variant: all-small-caps;
+}
+
+.view-cart-btn:hover {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border-color: #000000 !important;
+}
+
+.view-cart-btn:hover .btn-text-primary,
+.view-cart-btn:hover .btn-text-secondary {
+    color: #FFFFFF !important;
+}
+
+.browse-events-btn {
+    color: var(--Hubba-Black, #000);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+    cursor: pointer;
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+
+    /* Title2_Medium */
+    font-family: "Roboto Condensed";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    /* 133.333% */
+    font-variant: all-small-caps;
+    border-radius: 8px;
+    border: 2px solid var(--Hubba-Black, #000);
+    background: var(--Hubba-White, #FFF);
+}
+
+/* ---------- Responsive ---------- */
+
+
+@media (max-width: 1024px) {
+    .cart-confirmation-container {
+        width: 100%;
+        min-height: calc(40vh - 80px) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .cart-confirmation-container {
+        padding: 48px 16px;
+    }
+
+    .cart-confirmation-card {
+        max-width: 100%;
+    }
+
+    .cart-confirmation-title {
+        font-size: 28px;
+        line-height: 36px;
+    }
+
+    .cart-confirmation-description {
+        font-size: 15px;
+    }
+
+    .cart-confirmation-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .view-cart-btn {
+        border-right: none;
+        border-bottom: 1px solid #181c20;
+    }
+}
+
+@media (max-width: 480px) {
+    .cart-confirmation-container {
+        padding: 89px 24px 392px 24px !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
+        min-height: auto !important;
+    }
+
+    .cart-confirmation-card {
+        width: 100% !important;
+        gap: 40px !important;
+    }
+
+    .cart-confirmation-content {
+        width: 100% !important;
+    }
+
+    .cart-confirmation-buttons {
+        display: flex !important;
+        flex-direction: row !important;
+        width: 100% !important;
+        gap: 12px !important;
+    }
+
+    .cart-confirmation-buttons button {
+        flex: 1 !important;
+        width: auto !important;
+        padding: 16px 8px !important;
+        box-sizing: border-box !important;
+        border: 2px solid #000 !important;
+    }
+}

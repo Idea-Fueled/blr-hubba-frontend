@@ -1,0 +1,298 @@
+/* web/2027/src/components/WebsiteLandingPopup/WebsiteLandingPopup.css */
+
+.website-landing-popup-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.website-landing-popup-card {
+    position: relative;
+    width: 100%;
+    max-width: 920px;
+    min-height: 395px;
+    background-color: #ffffff;
+    background-image: url("../../assets/website-landing-popup-image/image.png");
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: cover;
+    border: 1.5px solid #000000;
+    border-radius: 28px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+    padding: 80px 40px 40px 40px;
+    box-sizing: border-box;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Close Button (Figma: Fixed 32x32, 10px inner padding) */
+.website-landing-popup-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    background: var(--Hubba-Yellow, #FDFF53);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 10px;
+    box-sizing: border-box;
+    z-index: 10;
+}
+
+.website-landing-popup-close-btn:hover {
+    background: #000000;
+    border-color: #000000;
+    transform: scale(1.05);
+}
+
+.website-landing-popup-close-btn svg {
+    width: 12px;
+    height: 12px;
+    stroke: #000000;
+    transition: stroke 0.2s ease;
+}
+
+.website-landing-popup-close-btn:hover svg {
+    stroke: #ffffff;
+}
+
+/* Left Content Column */
+.website-landing-popup-content {
+    max-width: 440px;
+    width: 100%;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main Heading */
+.website-landing-popup-title {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+    width: 355px;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: "Roboto Condensed";
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 37px;
+    margin: 0;
+    margin-bottom: 27px;
+    /* 123.333% */
+}
+
+/* Description Text */
+.website-landing-popup-desc {
+    color: #000;
+    leading-trim: both;
+    width: 377px;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: "Roboto Condensed";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    /* 150% */
+    margin: 0;
+    margin-bottom: 40px;
+}
+
+
+/* Form Row */
+.website-landing-popup-form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    /* Exact 12px gap from Figma */
+    width: 100%;
+}
+
+/* Email Input (Figma: 10px top/bottom, 16px left/right) */
+.website-landing-popup-input {
+    flex: 1;
+    min-width: 0;
+    height: 44px;
+    padding: 10px 16px;
+    font-family: "Roboto Condensed";
+    font-size: 16px;
+    font-weight: 500;
+    color: #888;
+    background: #ffffff;
+    border: 2px solid #888;
+    border-radius: 8px;
+    outline: none;
+    box-sizing: border-box;
+    /* transition: border-color 0.2s ease, box-shadow 0.2s ease; */
+}
+
+.website-landing-popup-input::placeholder {
+    color: #767676;
+}
+
+.website-landing-popup-input:focus {
+    /* border-color: #000000; */
+    /* box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.15); */
+}
+
+/* NOTIFY ME Button with Signature Rising Wave */
+.website-landing-popup-submit-btn {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    height: 44px;
+    padding: 0 24px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    border: 2px solid var(--Hubba-Black, #000);
+    background: var(--Hubba-Yellow, #FDFF53);
+    color: var(--Hubba-Black, #000);
+    text-align: center;
+    cursor: pointer;
+    white-space: nowrap;
+    box-sizing: border-box;
+
+    /* Title2_Medium */
+    font-family: "Roboto Condensed";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px;
+    /* 133.333% */
+    font-variant: all-small-caps;
+    transition: color 0.35s ease, border-color 0.3s ease;
+}
+
+/* Rising Black Wave Fill Layer */
+.website-landing-popup-submit-btn::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    border-radius: 100% 100% 0 0;
+    transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.3, 1), border-radius 0.5s cubic-bezier(0.25, 1, 0.3, 1);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Wave activates on hover */
+.website-landing-popup-submit-btn:hover::before {
+    transform: translateY(0%);
+    border-radius: 0;
+}
+
+/* Text is above the wave layer (z-index: 2) and smoothly transitions to pure WHITE on hover */
+.website-landing-popup-submit-btn span {
+    position: relative;
+    z-index: 2;
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.35s ease;
+}
+
+.website-landing-popup-submit-btn:hover,
+.website-landing-popup-submit-btn:hover span {
+    color: #FFFFFF !important;
+}
+
+.website-landing-popup-submit-btn:active {
+    transform: scale(0.98);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 860px) {
+    .website-landing-popup-card {
+        max-width: 600px;
+        min-height: auto;
+        padding: 60px 30px 30px 30px;
+        background-position: right 10% center;
+    }
+
+    .website-landing-popup-content {
+        max-width: 380px;
+    }
+
+    .website-landing-popup-title {
+        font-size: 28px;
+        margin-bottom: 20px;
+        width: auto;
+    }
+
+    .website-landing-popup-desc {
+        font-size: 14px;
+        margin-bottom: 30px;
+        width: auto;
+    }
+}
+
+@media (max-width: 640px) {
+    .website-landing-popup-backdrop {
+        padding: 16px;
+    }
+
+    .website-landing-popup-card {
+        padding: 50px 20px 24px 20px;
+        border-radius: 20px;
+        background: #ffffff;
+        max-height: 90dvh;
+        overflow-y: auto;
+        /* Solid white on small mobile so text doesn't clash with collage */
+    }
+
+    .website-landing-popup-content {
+        max-width: 100%;
+    }
+
+    .website-landing-popup-title {
+        font-size: 24px;
+        margin-bottom: 16px;
+        width: auto;
+    }
+
+    .website-landing-popup-desc {
+        font-size: 14px;
+        line-height: 1.45;
+        margin-bottom: 24px;
+        width: auto;
+    }
+
+    .website-landing-popup-form {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .website-landing-popup-input,
+    .website-landing-popup-submit-btn {
+        width: 100%;
+    }
+}

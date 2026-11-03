@@ -1,0 +1,252 @@
+/* ADD TO CALENDAR MODAL STYLES */
+
+.add-to-calendar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    padding: 16px;
+    box-sizing: border-box;
+    animation: calFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes calFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.add-to-calendar-card {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    background: #FFFFFF;
+    border-radius: 24px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: calSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+}
+
+@keyframes calSlideUp {
+    from {
+        transform: translateY(20px) scale(0.96);
+    }
+    to {
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Header */
+.add-to-calendar-header {
+    padding: 24px 24px 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid #F0F0F0;
+    background: #FAFAFA;
+}
+
+.add-to-calendar-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.add-to-calendar-tag {
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #666666;
+}
+
+.add-to-calendar-title {
+    margin: 0;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #000000;
+    line-height: 28px;
+}
+
+.add-to-calendar-subtitle {
+    margin: 0;
+    font-family: Roboto, sans-serif;
+    font-size: 13px;
+    color: #666666;
+    line-height: 18px;
+}
+
+.add-to-calendar-close-btn {
+    background: #EFEFEF;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: #333333;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.add-to-calendar-close-btn:hover {
+    background: #E0E0E0;
+    transform: scale(1.05);
+}
+
+/* Calendar Options */
+.add-to-calendar-options {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.calendar-option-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: 1px solid #EEEEEE;
+    background: #FFFFFF;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.calendar-option-item:hover {
+    background: #F8F9FA;
+    border-color: #000000;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.calendar-option-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.google-cal-icon {
+    background: #E8F0FE;
+}
+
+.apple-cal-icon {
+    background: #F5F5F7;
+    color: #000000;
+}
+
+.outlook-cal-icon {
+    background: #DEECF9;
+}
+
+.ics-cal-icon {
+    background: #FDFF53;
+}
+
+.calendar-option-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 2px;
+}
+
+.calendar-option-name {
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #000000;
+}
+
+.calendar-option-desc {
+    font-family: Roboto, sans-serif;
+    font-size: 12px;
+    color: #666666;
+}
+
+.calendar-option-arrow {
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #888888;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.calendar-option-item:hover .calendar-option-arrow {
+    transform: translateX(4px);
+    color: #000000;
+}
+
+/* Footer Note */
+.add-to-calendar-footer {
+    padding: 14px 24px 18px 24px;
+    background: #FDFDFD;
+    border-top: 1px solid #F0F0F0;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.add-to-calendar-tip-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.add-to-calendar-tip-text {
+    font-family: Roboto, sans-serif;
+    font-size: 12px;
+    color: #777777;
+    line-height: 16px;
+}
+
+.add-to-calendar-tip-text strong {
+    color: #222222;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+    .add-to-calendar-card {
+        border-radius: 20px;
+    }
+
+    .add-to-calendar-header {
+        padding: 20px 16px 14px 16px;
+    }
+
+    .add-to-calendar-options {
+        padding: 12px 14px;
+    }
+
+    .calendar-option-item {
+        padding: 10px 12px;
+    }
+
+    .add-to-calendar-footer {
+        padding: 12px 16px 16px 16px;
+    }
+}

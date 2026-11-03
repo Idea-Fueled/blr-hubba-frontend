@@ -4,18 +4,105 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wdth,wght@62.5..100,100..900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
     rel="stylesheet">
 
-  <title>blrhubba-user-web</title>
+  <title>BLR Hubba</title>
+  <meta property="og:title" content="BLR Hubba" />
+  <meta property="og:description" content="BLR Hubba Events & Cultural Festival" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://blrhubba.in/" />
+  <meta property="og:image" content="https://blrhubba.in/og-image.png" />
+  <meta property="og:image:secure_url" content="https://blrhubba.in/og-image.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="675" />
+  <meta property="og:image:alt" content="BLR Hubba - Bengaluru's Arts & Culture Festival" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="BLR Hubba" />
+  <meta name="twitter:description" content="BLR Hubba Events & Cultural Festival" />
+  <meta name="twitter:image" content="https://blrhubba.in/og-image.png" />
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 
 <body>
+  <div id="google_translate_element" style="display:none"></div>
   <div id="root"></div>
+  <script type="text/javascript">
+    window.googleTranslateElementInit = function() {
+      try {
+        new window.google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,kn',
+          autoDisplay: false
+        }, 'google_translate_element');
+      } catch (e) {
+        console.warn('Google Translate init:', e);
+      }
+    };
+  </script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   <script type="module" src="/src/main.jsx"></script>
+  <!-- Accessibility Code for "blrhubba-staging-user-web.onrender.com" -->
+  <script>
+    /*
+    Want to customize your button? visit our documentation page:
+    https://login.equalweb.com/custom-button
+    */
+    window.interdeal = {
+        get sitekey (){ return "ad95a3805e2bf57b86bcdc74e0650c7a"} ,
+        get domains(){
+            return {
+                "js": "https://cdn.equalweb.com/",
+                "acc": "https://access.equalweb.com/"
+            }
+        },
+        "Position": "right",
+        "Menulang": "EN",
+        "draggable": false,
+        "btnStyle": {
+            "vPosition": [
+                "20px",
+                "20px"
+            ],
+            "margin": [
+                "36px",
+                "16px"
+            ],
+            "scale": [
+                "0.5",
+                "0.5"
+            ],
+            "color": {
+                "main": "#FDFF53",
+                "second": "#000000"
+            },
+            "icon": {
+                "outline": true,
+                "outlineColor": "#000000",
+                "type":  11 ,
+                "shape": "circle"
+            }
+        },
+                                       
+    };
+
+    (function(doc, head, body){
+        var coreCall             = doc.createElement('script');
+        coreCall.src             = interdeal.domains.js + 'core/5.3.1/accessibility.js';
+        coreCall.defer           = true;
+        coreCall.integrity       = 'sha512-3qLj5jbjMQnXk+FqEdVJjUnjJBGuBTRVOwaiT0ms6mQKQcrz4nulBxl2Hsr0/PpvEqdyJsMsU1NB+Mtfzw8hxA==';
+        coreCall.crossOrigin     = 'anonymous';
+        coreCall.setAttribute('data-cfasync', true );
+        body? body.appendChild(coreCall) : head.appendChild(coreCall);
+    })(document, document.head, document.body);
+  </script>
 </body>
 
 </html>

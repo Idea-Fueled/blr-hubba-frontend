@@ -1,0 +1,3695 @@
+/* =========================================================
+   BLR HUBBA HOMEPAGE — FIGMA PIXEL PERFECT CSS
+   Base Grid: 1440px width, 32px horizontal padding
+========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Roboto+Condensed:wght@400;600;700;800&display=swap');
+
+.hp-main {
+    width: 100%;
+    background-color: #FFFFFF;
+    box-sizing: border-box;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #181C20;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* =========================================================
+   1. HERO SECTION
+========================================================= */
+
+.hp-hero-section {
+    display: flex;
+    /* height: 720px; */
+    padding: 0 32px;
+    align-items: flex-start;
+    gap: 24px;
+    align-self: stretch;
+}
+
+.hp-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+    position: relative;
+    width: 100%;
+    min-height: 500px;
+}
+
+.hp-hero-left,
+.hp-hero-right {
+    max-height: 916px;
+}
+
+/* LEFT DARK CARD */
+.hp-hero-left {
+    display: flex;
+    padding: 80px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    /* gap: 10px; */
+    flex: 1 0 0;
+    align-self: stretch;
+    border-radius: 40px;
+    background: #000;
+}
+
+.hp-save-date-label {
+    color: #FFF;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Label1_Regular */
+    font-family: "Roboto Condensed";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    /* 285.714% */
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 14px;
+}
+
+.hp-save-date-label.kannada {
+    font-family: "Noto Sans Kannada", sans-serif;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+}
+
+.hp-hero-title {
+    color: #FFF;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Display1_SemiBold */
+    font-family: "Roboto Condensed";
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 60px;
+    align-self: stretch;
+    margin: 0;
+    margin-bottom: 24px;
+    /* 125% */
+}
+
+.hp-hero-title.kannada {
+    color: #FFF;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Noto Sans Kannada Condensed", "Noto Sans Kannada", sans-serif;
+    font-stretch: condensed;
+    font-size: clamp(34px, 3.2vw, 46px);
+    font-style: normal;
+    font-weight: 600;
+    line-height: 1.18;
+    margin: 0;
+    margin-bottom: 24px;
+}
+
+.hp-hero-title.kannada .hp-title-line {
+    display: block;
+    white-space: nowrap;
+}
+
+.hp-hero-desc {
+    color: var(--Hubba-White, #FFF);
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Title1_Regular */
+    font-family: "Roboto Condensed";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    margin: 0;
+    /* 160% */
+}
+
+.hp-hero-desc.kannada {
+    color: var(--Hubba-White, #FFF);
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Noto Sans Kannada", sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 28px;
+    width: 440px;
+    max-width: 100%;
+    margin: 0;
+}
+
+.hp-hero-date {
+    color: var(--Hubba-Yellow, #FDFF53);
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Title1_Regular */
+    font-family: "Roboto Condensed";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 32px;
+    margin-bottom: 0;
+    margin-top: 6px;
+}
+
+/* BUTTONS ROW */
+.hp-hero-btns {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 60px;
+}
+
+.hp-btn-yellow {
+    display: flex;
+    height: 40px;
+    padding: 16px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    border: 2px solid var(--Hubba-Yellow, #FDFF53);
+    background: var(--Hubba-Yellow, #FDFF53);
+    color: var(--Hubba-Black, #000);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Title2_Medium */
+    font-family: "Roboto Condensed";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    /* 133.333% */
+    font-variant: all-small-caps;
+    cursor: pointer;
+    transition: all 0.3s ease !important;
+}
+
+.hp-btn-yellow:hover {
+    background: #000000 !important;
+    color: #FFFFFF !important;
+    border-color: #000000 !important;
+}
+
+.hp-btn-outline-white {
+    display: flex;
+    height: 40px;
+    padding: 16px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    border: 2px solid var(--Hubba-White, #FFF);
+    background: var(--Hubba-Black, #000);
+    color: var(--Hubba-White, #FFF);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Title2_Medium */
+    font-family: "Roboto Condensed";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    /* 133.333% */
+    font-variant: all-small-caps;
+    cursor: pointer;
+    transition: all 0.3s ease !important;
+}
+
+.hp-btn-outline-white:hover {
+    border-color: #FDFF53 !important;
+}
+
+.hp-btn-outline-white:hover .btn-text-primary,
+.hp-btn-outline-white:hover .btn-text-secondary {
+    color: #000000 !important;
+}
+
+.hp-btn-yellow.kannada,
+.hp-btn-yellow.kannada span,
+.hp-btn-yellow.kannada .btn-text-primary,
+.hp-btn-yellow.kannada .btn-text-secondary,
+.hp-btn-outline-white.kannada,
+.hp-btn-outline-white.kannada span,
+.hp-btn-outline-white.kannada .btn-text-primary,
+.hp-btn-outline-white.kannada .btn-text-secondary,
+.hp-about-btn.kannada,
+.hp-about-btn.kannada span,
+.hp-about-btn.kannada .btn-text-primary,
+.hp-about-btn.kannada .btn-text-secondary,
+.hp-festivals-view-all-btn.kannada,
+.hp-festivals-view-all-btn.kannada span,
+.hp-festivals-view-all-btn.kannada .btn-text-primary,
+.hp-festivals-view-all-btn.kannada .btn-text-secondary {
+    font-family: "Noto Sans Kannada", sans-serif !important;
+    font-size: 18px !important;
+    font-weight: 500 !important;
+    font-variant: normal !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+}
+
+/* STATS ROW */
+.hp-hero-stats {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    align-self: stretch;
+    margin-top: 60px;
+}
+
+.hp-hero-stats svg {
+    flex-shrink: 0;
+}
+
+.hp-stat {
+    display: flex;
+    padding: 24px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+}
+
+.hp-stat-number {
+    color: #FDFF53;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Heading1_Bold */
+    font-family: "Roboto Condensed";
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 25px;
+    /* 125% */
+}
+
+.hp-stat-label {
+    color: var(--Hubba-White, #FFF);
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Label1_Regular */
+    font-family: "Roboto Condensed";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 15px;
+    /* 285.714% */
+    letter-spacing: 2.8px;
+    text-transform: uppercase;
+}
+
+.hp-stat-label.kannada {
+    color: var(--Hubba-White, #FFF);
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Noto Sans Kannada Condensed", "Noto Sans Kannada", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    letter-spacing: normal;
+}
+
+.hp-stat-divider {
+    width: 1px;
+    height: 36px;
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* RIGHT HERO IMAGE CARD */
+.hp-hero-right {
+    border-radius: 40px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    background: #000000;
+    width: 100%;
+    height: auto;
+    align-self: start;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: aspect-ratio 0.4s ease;
+}
+
+.hp-hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+}
+
+/* HERO DISSOLVE CAROUSEL */
+.hp-hero-carousel-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 40px;
+    background: #000000;
+}
+
+.hp-hero-carousel-slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.hp-hero-carousel-slide.active {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 2;
+}
+
+/* CENTER OVERLAPPING ROTATING BADGE */
+.hp-hero-badge-overlay {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.hp-badge-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.16)); */
+}
+
+.hp-badge-ring-svg {
+    /* width: 100%; */
+    height: 100%;
+    display: block;
+    aspect-ratio: 1/1;
+    animation: hp-badge-spin 22s linear infinite;
+    z-index: 1;
+}
+
+.hp-badge-center-disc {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 134px;
+    height: 134px;
+    border-radius: 50%;
+    background-color: #FDFF53;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    pointer-events: none;
+    /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); */
+}
+
+@keyframes hp-badge-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================================================
+   2. THREE ACTION CARDS SECTION
+========================================================= */
+
+.hp-info-cards-section {
+    width: 100%;
+    /* max-width: 1440px; */
+    margin: 24px auto 24px auto;
+    padding: 0 32px;
+    box-sizing: border-box;
+}
+
+.hp-info-cards-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    width: 100%;
+}
+
+.hp-info-card {
+    display: flex;
+    padding: 14px;
+    align-items: center;
+    gap: 20px;
+    flex: 1 0 0;
+    border-radius: 24px;
+    border: 2px solid #000;
+    background: #FDFF53;
+    cursor: pointer;
+}
+
+/* .hp-info-card:hover {
+    background-color: #F5F738;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+} */
+
+.hp-info-card-left {
+    width: 100px;
+    height: 100px;
+    border-radius: 16px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: none;
+    background-color: transparent;
+    transform: translateZ(0);
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+
+.hp-info-card-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    will-change: transform;
+}
+
+.hp-info-card:hover .hp-info-card-img,
+.hp-info-card-left:hover .hp-info-card-img {
+    transform: scale(1.12);
+}
+
+.hp-info-card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px !important;
+    flex: 1 0 0;
+}
+
+.hp-info-card-label {
+    color: #0B0000;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Label1_Regular */
+    font-family: "Roboto Condensed";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 15px;
+    /* 285.714% */
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.hp-info-card-label.kannada {
+    color: #0B0000;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Noto Sans Kannada Condensed", "Noto Sans Kannada", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: normal;
+    text-transform: uppercase;
+}
+
+.hp-info-card-text {
+    color: #141416;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Title1_Semibold */
+    font-family: "Roboto Condensed";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 26px;
+    align-self: stretch;
+    margin: 0;
+    /* 130% */
+}
+
+.hp-info-card-text.kannada {
+    color: #141416;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Noto Sans Kannada", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px;
+    align-self: stretch;
+    margin: 0;
+}
+
+.b1 {
+    align-items: flex-start;
+}
+
+.hp-info-card-arrow {
+    position: relative;
+    top: -30px;
+    display: flex;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: #000000;
+    color: #FFFFFF;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1), color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hp-info-card-arrow svg path {
+    fill: currentColor;
+    transition: fill 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hp-info-card:hover .hp-info-card-arrow,
+.hp-info-card-arrow:hover {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.hp-info-card:hover .hp-info-card-arrow svg path,
+.hp-info-card-arrow:hover svg path {
+    fill: #000000 !important;
+}
+
+/* =========================================================
+   3. SPONSORS SECTION
+========================================================= */
+
+.hp-sponsors-section {
+    width: 100%;
+    /* max-width: 1440px; */
+    /* margin: 32px auto 0 auto; */
+    /* padding: 0 32px 48px 32px; */
+    box-sizing: border-box;
+    /* margin: 0 auto; */
+}
+
+.hp-sponsors-row {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    padding: 80px 32px;
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 0px;
+}
+
+.hp-sponsors-heading {
+    color: #141416;
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    /* Heading2_Bold */
+    font-family: "Roboto Condensed";
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 32px;
+    /* 133.333% */
+}
+
+/* .hp-sponsors-v-divider {
+    width: 1px;
+    height: 32px;
+    background-color: #D1D5DB;
+    flex-shrink: 0;
+} */
+
+.hp-sponsors-logos-wrapper {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.hp-sponsors-logos-track {
+    display: flex;
+    width: max-content;
+    animation: hpSponsorsMarquee 25s linear infinite;
+}
+
+.hp-sponsors-logos-track:hover {
+    animation-play-state: paused;
+}
+
+.hp-sponsors-logos-set {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    padding-right: 40px;
+    flex-shrink: 0;
+}
+
+@keyframes hpSponsorsMarquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.hp-sponsor-logo {
+    height: 38px;
+    width: auto;
+    max-width: 120px;
+    object-fit: contain;
+    filter: grayscale(10%);
+    opacity: 0.9;
+    transition: opacity 0.2s ease, filter 0.2s ease, transform 0.2s ease;
+}
+
+.hp-sponsor-logo:hover {
+    opacity: 1;
+    filter: grayscale(0%);
+    transform: scale(1.04);
+}
+
+/* =========================================================
+   RESPONSIVE LAYOUT
+========================================================= */
+
+@media (max-width: 1200px) {
+    .hp-hero-title {
+        font-size: 34px;
+    }
+
+    .hp-hero-left {
+        padding: 36px 30px 30px 30px;
+    }
+
+    .hp-info-cards-grid {
+        gap: 16px;
+    }
+
+    .hp-sponsors-logos {
+        gap: 18px;
+    }
+}
+
+@media (max-width: 992px) {
+    .hp-hero-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .hp-hero-badge-overlay {
+        display: none;
+    }
+
+    .hp-info-cards-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hp-sponsors-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 32px;
+        padding: 40px 32px;
+        height: auto;
+        padding-right: 0px;
+    }
+
+    .hp-sponsors-v-divider {
+        display: none;
+    }
+
+    .hp-sponsors-logos-wrapper {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .hp-sponsors-logos-set {
+        gap: 24px;
+        padding-right: 24px;
+    }
+
+    .hp-sponsor-logo {
+        height: 32px;
+        max-width: 100px;
+    }
+}
+
+/* =========================================================
+   2. ABOUT US SECTION (PIXEL PERFECT FIGMA SPEC)
+========================================================= */
+
+.hp-about-section {
+    width: 100%;
+    margin: 60px 0 60px 0;
+    padding: 0 80px;
+    box-sizing: border-box;
+}
+
+.hp-about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: stretch;
+    width: 100%;
+}
+
+
+
+.hp-about-video-card {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    border-radius: 32px;
+    overflow: hidden;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.hp-about-video-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 32px;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.hp-about-video-card:hover .hp-about-video-img {
+    transform: scale(1.04);
+}
+
+.hp-about-play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hp-about-play-btn svg {
+    width: 100px;
+    height: 100px;
+    display: block;
+    filter: drop-shadow(0px 4px 16px rgba(0, 0, 0, 0.4));
+}
+
+.hp-about-video-card:hover .hp-about-play-btn {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* Frame 2423 - Right About Us Info Card */
+.hp-about-info-card {
+    display: flex;
+    padding: 0px 80px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    /* gap: 60px; */
+    flex: 1 0 0;
+    align-self: stretch;
+    border-radius: 24px;
+}
+
+.hp-about-subtitle {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Label1_Regular */
+    font-family: "Roboto Condensed";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    /* 285.714% */
+    letter-spacing: 2.8px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    align-self: stretch;
+}
+
+.hp-about-subtitle.kannada {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Noto Sans Kannada", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: normal;
+    text-transform: uppercase;
+}
+
+.hp-about-title {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Heading1_Bold */
+    font-family: "Roboto Condensed";
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 40px;
+    margin: 0;
+    margin-bottom: 24px;
+    /* 125% */
+}
+
+.hp-about-title.kannada {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Noto Sans Kannada Condensed", "Noto Sans Kannada", sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 42px;
+}
+
+.hp-about-desc {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Body_Regular */
+    font-family: "Roboto";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 26px;
+    align-self: stretch;
+    margin: 0;
+    margin-bottom: 40px;
+    /* 162.5% */
+}
+
+.hp-about-desc.kannada {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Noto Sans Kannada", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 26px;
+}
+
+.hp-about-btn {
+    display: flex;
+    height: 40px;
+    padding: 16px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    border: 2px solid var(--Hubba-Black, #000);
+    background: var(--Hubba-Yellow, #FDFF53);
+    color: var(--Hubba-Black, #000);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Title2_Medium */
+    font-family: "Roboto Condensed";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    /* 133.333% */
+    font-variant: all-small-caps;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.hp-about-btn:hover {
+    background: #000000 !important;
+    color: #FFFFFF !important;
+    border-color: #000000 !important;
+}
+
+.hp-about-btn:active {
+    transform: translateY(0);
+}
+
+/* Modal video player styling */
+.hp-video-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    animation: fadeIn 0.25s ease;
+}
+
+.hp-video-modal-container {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    background: #000000;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    border: 2px solid #333;
+}
+
+.hp-video-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: #FFFFFF;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.hp-video-modal-close:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.hp-video-wrapper {
+    position: relative;
+    padding-top: 56.25%;
+    /* 16:9 aspect ratio */
+    width: 100%;
+}
+
+.hp-video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* =========================================================
+   3. OUR FESTIVALS SECTION (PIXEL PERFECT FIGMA SPEC)
+========================================================= */
+
+.hp-festivals-section {
+    width: 100%;
+    padding: 80px 0 60px 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.hp-festivals-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 60px;
+    width: 100%;
+    padding: 0 80px;
+    box-sizing: border-box;
+    gap: 20px;
+}
+
+.hp-festivals-header-left {
+    display: flex;
+    width: auto;
+    max-width: calc(100% - 160px);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.hp-festivals-subtitle {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Label1_Regular */
+    font-family: "Roboto Condensed";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    /* 285.714% */
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    align-self: stretch;
+}
+
+.hp-festivals-subtitle.kannada {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Noto Sans Kannada", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: normal;
+    text-transform: uppercase;
+}
+
+.hp-festivals-title {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Heading1_Bold */
+    font-family: "Roboto Condensed";
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 38px;
+    width: 559px;
+    margin: 0;
+    /* 125% */
+}
+
+.hp-festivals-title.kannada {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Noto Sans Kannada Condensed", "Noto Sans Kannada", sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 42px;
+    width: auto;
+    max-width: 100%;
+    margin: 0;
+}
+
+.hp-festivals-view-all-btn {
+    display: flex;
+    height: 40px;
+    padding: 16px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    border: 2px solid var(--Hubba-Black, #000);
+    background: var(--Hubba-White, #FFF);
+    color: var(--Hubba-Black, #000);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Title2_Medium */
+    font-family: "Roboto Condensed";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    /* 133.333% */
+    font-variant: all-small-caps;
+    cursor: pointer;
+    transition: all 0.3s ease !important;
+    flex-shrink: 0;
+}
+
+.hp-festivals-view-all-btn:hover {
+    background: #FDFF53 !important;
+    color: #000000 !important;
+    border-color: #000000 !important;
+}
+
+.hp-festivals-marquee-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    position: relative;
+    padding: 10px 0 20px 0;
+    box-sizing: border-box;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    touch-action: pan-y;
+    scroll-behavior: auto;
+}
+
+.hp-festivals-marquee-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.hp-festivals-marquee-wrapper.is-dragging {
+    cursor: grabbing;
+    cursor: -webkit-grabbing;
+}
+
+.hp-festivals-track {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+    width: max-content;
+    will-change: scroll-position;
+}
+
+.hp-festival-card {
+    flex: 0 0 auto;
+    width: auto;
+    height: 360px;
+    border-radius: 24px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+    flex-shrink: 0;
+}
+
+.hp-festival-card:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.hp-festival-card-img {
+    width: auto;
+    height: 360px;
+    object-fit: contain;
+    border-radius: 24px;
+    display: block;
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.hp-festival-card:hover .hp-festival-card-img {
+    transform: scale(1.08);
+}
+
+/* =========================================================
+   4. EVENT CALENDAR BANNER SECTION (PIXEL PERFECT FIGMA SPEC)
+========================================================= */
+
+.hp-calendar-section {
+    width: 100%;
+    margin: 0;
+    /* margin-bottom: 80px; */
+    padding: 0 80px;
+    box-sizing: border-box;
+}
+
+.hp-calendar-card {
+    width: 100%;
+    min-height: 560px;
+    background-image: url("../../assets/home-page-event-calendar-image.png");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 32px;
+    padding: 60px 32px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hp-calendar-subtitle {
+    color: var(--Hubba-White, #FFF);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Label1_Regular */
+    font-family: "Roboto Condensed";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 16px;
+    margin: 0px 0px 14px 0px;
+    /* 285.714% */
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    align-self: stretch;
+}
+
+.hp-calendar-title {
+    color: var(--Hubba-White, #FFF);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Heading1_Bold */
+    font-family: "Roboto Condensed";
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 40px;
+    width: 490px;
+    margin: 0;
+    margin-bottom: 60px;
+    /* 125% */
+}
+
+.hp-calendar-btns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+}
+
+.hp-calendar-btn-yellow {
+    display: flex;
+    height: 40px;
+    padding: 16px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    border: 2px solid var(--Hubba-Yellow, #FDFF53);
+    background: var(--Hubba-Yellow, #FDFF53);
+    color: var(--Hubba-Black, #000);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Title2_Medium */
+    font-family: "Roboto Condensed";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    /* 133.333% */
+    font-variant: all-small-caps;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.hp-calendar-btn-yellow:active {
+    transform: scale(0.98);
+}
+
+.hp-calendar-btn-outline {
+    display: flex;
+    height: 40px;
+    padding: 16px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    border: 2px solid var(--Hubba-White, #FFF);
+    color: var(--Hubba-White, #FFF);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+    background-color: transparent;
+
+    /* Title2_Medium */
+    font-family: "Roboto Condensed";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    /* 133.333% */
+    font-variant: all-small-caps;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.hp-calendar-btn-outline:active {
+    transform: scale(0.98);
+}
+
+.hp-calendar-mobile-img {
+    display: none;
+}
+
+/* Media Query Responsive Adjustments */
+@media (max-width: 1200px) {
+    .hp-about-info-card {
+        padding: 56px 40px;
+    }
+
+    .hp-festivals-grid {
+        gap: 16px;
+    }
+}
+
+@media (max-width: 992px) {
+    .hp-about-section {
+        padding: 0 32px;
+        margin: 48px 0;
+    }
+
+    .hp-about-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .hp-about-video-card {
+        min-height: 380px;
+    }
+
+    .hp-about-info-card {
+        padding: 48px 32px;
+    }
+
+    .hp-festivals-section {
+        padding: 0 32px;
+        /* margin: 48px 0; */
+    }
+
+    .hp-festivals-header {
+        margin-bottom: 36px;
+    }
+
+    .hp-festivals-grid {
+        width: calc(100% + 64px);
+        margin-left: -32px;
+        margin-right: -32px;
+        padding-left: 32px;
+        padding-right: 32px;
+        gap: 16px;
+    }
+
+    .hp-festival-card {
+        flex: 0 0 220px;
+        width: 220px;
+        height: 320px;
+    }
+
+    .hp-calendar-section {
+        padding: 0 32px;
+        margin: 48px 0;
+    }
+
+    .hp-calendar-card {
+        min-height: 380px;
+        padding: 40px 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hp-hero-section {
+        padding: 16px 24px 0 24px;
+        box-sizing: border-box;
+    }
+
+    .hp-hero-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        position: relative;
+    }
+
+    .hp-hero-left {
+        display: flex;
+        padding: 40px 24px 80px 24px;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        align-self: stretch;
+        border-radius: 20px;
+        background: #000;
+    }
+
+    .hp-save-date-label {
+        color: #FFF;
+        text-align: center;
+        leading-trim: both;
+        text-edge: cap;
+
+        /* Label1_Regular */
+        font-family: "Roboto Condensed";
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 20px;
+        margin-bottom: 24px;
+        /* 285.714% */
+        letter-spacing: 2.8px;
+        text-transform: uppercase;
+    }
+
+    .hp-save-date-label.kannada {
+        font-family: "Noto Sans Kannada", sans-serif;
+        letter-spacing: normal !important;
+        text-transform: none !important;
+    }
+
+    .hp-hero-title {
+        font-size: 32px;
+        line-height: 36px;
+        text-align: center;
+        margin-bottom: 24px;
+        font-weight: 700;
+    }
+
+    .hp-hero-title.kannada {
+        font-size: 28px;
+        line-height: 38px;
+        text-align: center;
+        margin-bottom: 24px;
+        font-weight: 700;
+    }
+
+    .hp-hero-desc {
+        color: var(--Hubba-White, #FFF);
+        text-align: center;
+        leading-trim: both;
+        text-edge: cap;
+        font-feature-settings: 'liga' off, 'clig' off;
+        font-family: "Roboto Condensed";
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 26px;
+        /* 162.5% */
+    }
+
+    .hp-hero-desc.kannada {
+        font-size: 16px;
+        line-height: 26px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .hp-hero-date {
+        color: var(--Hubba-Yellow, #FDFF53);
+        leading-trim: both;
+        text-edge: cap;
+        font-feature-settings: 'liga' off, 'clig' off;
+        font-family: "Roboto Condensed";
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 26px;
+        text-align: center;
+    }
+
+    .hp-hero-btns {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 40px;
+    }
+
+    .hp-btn-yellow,
+    .hp-btn-outline-white,
+    .hp-hero-know-more-btn,
+    .hp-hero-discover-btn {
+        width: 100%;
+        height: 48px;
+        border-radius: 8px;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 700;
+        box-sizing: border-box;
+    }
+
+    .hp-btn-yellow {
+        display: flex;
+        height: 44px;
+        padding: 16px 24px;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        align-self: stretch;
+        border-radius: 8px;
+        border: 2px solid var(--Hubba-Yellow, #FDFF53);
+        background: var(--Hubba-Yellow, #FDFF53);
+        color: var(--Hubba-Black, #000);
+        text-align: center;
+        leading-trim: both;
+        text-edge: cap;
+
+        /* Title2_Medium */
+        font-family: "Roboto Condensed";
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+        /* 133.333% */
+        font-variant: all-small-caps;
+    }
+
+    .hp-btn-outline-white {
+        display: flex;
+        height: 44px;
+        padding: 16px 24px;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        align-self: stretch;
+        border-radius: 8px;
+        border: 2px solid var(--Hubba-White, #FFF);
+        background: var(--Hubba-Black, #000);
+        color: var(--Hubba-White, #FFF);
+        text-align: center;
+        leading-trim: both;
+        text-edge: cap;
+
+        /* Title2_Medium */
+        font-family: "Roboto Condensed";
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+        /* 133.333% */
+        font-variant: all-small-caps;
+    }
+
+    .hp-hero-stats {
+        display: none;
+    }
+
+    .hp-hero-badge-overlay {
+        position: relative;
+        left: auto;
+        right: auto;
+        top: auto;
+        bottom: auto;
+        transform: none;
+        margin: -54px auto;
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    .hp-badge-container {
+        width: 120px;
+        height: 120px;
+    }
+
+    .hp-badge-ring-svg {
+        width: 120px;
+        height: 120px;
+        padding: 8px;
+    }
+
+    .hp-badge-center-disc {
+        width: 80px;
+        height: 80px;
+    }
+
+    .hp-badge-center-disc svg {
+        width: 32px;
+        height: 36px;
+    }
+
+    .hp-hero-right {
+        border-radius: 24px;
+        min-height: auto;
+        width: 100%;
+        overflow: hidden;
+        background: #000000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hp-hero-image {
+        border-radius: 24px;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+    }
+
+    .hp-hero-carousel-container {
+        border-radius: 24px;
+    }
+
+    .hp-info-cards-section {
+        padding: 0;
+        margin-top: 24px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    .hp-info-cards-grid {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 14px;
+        padding-left: 24px;
+        padding-right: 24px;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        box-sizing: border-box;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .hp-info-cards-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .hp-info-card {
+        flex: 0 0 340px;
+        width: 310px;
+        padding: 14px;
+        border-radius: 16px;
+        border: 1px solid #000000;
+        background-color: #FDFF53;
+        display: flex;
+        align-items: flex-start;
+        box-sizing: border-box;
+        gap: 16px;
+    }
+
+    .hp-info-card-left {
+        width: 70px;
+        height: 70px;
+        border-radius: 16px;
+        overflow: hidden;
+        flex-shrink: 0;
+        transform: translateZ(0);
+        -webkit-mask-image: -webkit-radial-gradient(white, black);
+        /* margin-right: 16px; */
+    }
+
+    .hp-info-card-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+
+    .hp-info-card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex: 1;
+        gap: 8px;
+        /* margin-right: 16px; */
+    }
+
+    .hp-info-card-label {
+        color: #000000;
+        font-family: "Roboto Condensed";
+        font-size: 12px;
+        font-weight: 400;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        /* margin-bottom: 4px; */
+    }
+
+    .hp-info-card-text {
+        color: #141416;
+        /* font-family: "Roboto"; */
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 24px;
+        margin: 0;
+    }
+
+    .hp-info-card-arrow {
+        width: 32px;
+        top: 0px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: #000000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border: none;
+    }
+
+    .hp-info-card-arrow svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .hp-about-section {
+        padding: 0 24px;
+        margin: 40px 0 24px 0;
+        box-sizing: border-box;
+    }
+
+    .hp-about-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+        width: 100%;
+    }
+
+    .hp-about-video-card {
+        width: 100%;
+        height: auto;
+        border-radius: 24px;
+        overflow: hidden;
+        aspect-ratio: 1 / 1;
+    }
+
+    .hp-about-video-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 24px;
+    }
+
+    .hp-about-play-btn {
+        width: 64px;
+        height: 64px;
+    }
+
+    .hp-about-play-btn svg {
+        width: 64px;
+        height: 64px;
+    }
+
+    .hp-about-info-card {
+        padding: 0;
+        border-radius: 0;
+        background: transparent;
+        align-items: flex-start;
+    }
+
+    .hp-about-subtitle {
+        color: #000;
+        leading-trim: both;
+        text-edge: cap;
+
+        /* Label1_Regular */
+        font-family: "Roboto Condensed";
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 40px;
+        /* 285.714% */
+        letter-spacing: 2.8px;
+        text-transform: uppercase;
+        margin-bottom: 0px !important;
+    }
+
+    .hp-about-title {
+        color: #000;
+        leading-trim: both;
+        text-edge: cap;
+        font-feature-settings: 'liga' off, 'clig' off;
+
+        /* Heading2_Bold */
+        font-family: "Roboto Condensed";
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 32px;
+        align-self: stretch;
+        /* 133.333% */
+    }
+
+    .hp-about-desc {
+        color: #000;
+        leading-trim: both;
+        text-edge: cap;
+
+        /* Body_Regular */
+        font-family: Roboto;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 26px;
+        align-self: stretch;
+        margin: 0 0 40px 0
+            /* 162.5% */
+    }
+
+    .hp-about-btn {
+        display: flex;
+        height: 44px;
+        padding: 16px 24px;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        flex: 1 0 0;
+        border-radius: 8px;
+        border: 2px solid var(--Hubba-Black, #000);
+        background: var(--Hubba-Yellow, #FDFF53);
+        color: var(--Hubba-Black, #000);
+        text-align: center;
+        leading-trim: both;
+        text-edge: cap;
+
+        /* Title2_Medium */
+        font-family: "Roboto Condensed";
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+        /* 133.333% */
+        font-variant: all-small-caps;
+        width: 100%;
+    }
+
+    .hp-festivals-section {
+        display: flex;
+        width: 100%;
+        padding: 40px 24px;
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+        box-sizing: border-box;
+    }
+
+    .hp-festivals-header {
+        display: contents !important;
+    }
+
+    .hp-festivals-header-left {
+        order: 1 !important;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        /* gap: 8px; */
+        width: 100%;
+    }
+
+    .hp-festivals-subtitle {
+        color: #000;
+        font-family: "Roboto Condensed";
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+        letter-spacing: 2.8px;
+        text-transform: uppercase;
+    }
+
+    .hp-festivals-title {
+        color: #000;
+        font-family: "Roboto Condensed";
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 32px;
+        width: 100%;
+        margin: 0;
+    }
+
+    .hp-festivals-marquee-wrapper {
+        order: 2 !important;
+        width: calc(100% + 48px) !important;
+        margin-left: -24px !important;
+        margin-right: -24px !important;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+    }
+
+    .hp-festivals-btn-desktop,
+    .hp-festivals-view-all-btn.hp-festivals-btn-desktop {
+        display: none !important;
+    }
+
+    .hp-festivals-btn-mobile,
+    .hp-festivals-view-all-btn.hp-festivals-btn-mobile {
+        order: 3 !important;
+        display: flex !important;
+        height: 44px;
+        padding: 16px 24px;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        align-self: stretch;
+        border-radius: 8px;
+        border: 2px solid var(--Hubba-Black, #000);
+        background: var(--Hubba-White, #FFF);
+        color: var(--Hubba-Black, #000);
+        text-align: center;
+        leading-trim: both;
+        text-edge: cap;
+
+        /* Title2_Medium */
+        font-family: "Roboto Condensed";
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+        /* 133.333% */
+        font-variant: all-small-caps;
+    }
+
+    .hp-festival-card {
+        flex: 0 0 156px !important;
+        width: 156px !important;
+        height: 204px !important;
+        border-radius: 16px !important;
+    }
+
+    .hp-calendar-section {
+        padding: 24px 24px;
+        margin: 0px;
+        box-sizing: border-box;
+    }
+
+    .hp-calendar-card {
+        background-image: none !important;
+        background-color: #000000 !important;
+        border-radius: 32px !important;
+        padding: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+        min-height: auto !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .hp-calendar-card-content {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        padding: 40px 24px 0 24px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .hp-calendar-subtitle {
+        color: var(--Hubba-White, #FFF);
+        text-align: center;
+        leading-trim: both;
+        text-edge: cap;
+
+        /* Label1_Regular */
+        font-family: "Roboto Condensed";
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 40px;
+        /* 285.714% */
+        letter-spacing: 2.8px;
+        text-transform: uppercase;
+        align-self: stretch;
+    }
+
+    .hp-calendar-title-break {
+        display: none;
+    }
+
+
+    .hp-calendar-title {
+        color: var(--Hubba-White, #FFF);
+        text-align: center;
+        leading-trim: both;
+        text-edge: cap;
+        font-feature-settings: 'liga' off, 'clig' off;
+
+        /* Heading2_Bold */
+        font-family: "Roboto Condensed";
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 32px;
+        align-self: stretch;
+        width: 100%;
+        /* 👈 add this */
+        max-width: 100%;
+        /* 👈 add this */
+        box-sizing: border-box;
+        /* 👈 add this */
+        margin: 0;
+        margin-bottom: 40px;
+        /* 133.333% */
+    }
+
+    .hp-calendar-btns {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 24px !important;
+        width: 100% !important;
+    }
+
+    .hp-calendar-btn-yellow {
+        display: flex;
+        height: 44px;
+        padding: 16px 24px;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        align-self: stretch;
+        border-radius: 8px;
+        border: 2px solid var(--Hubba-Yellow, #FDFF53);
+        background: var(--Hubba-Yellow, #FDFF53);
+        color: var(--Hubba-Black, #000);
+        text-align: center;
+        leading-trim: both;
+        text-edge: cap;
+
+        /* Title2_Medium */
+        font-family: "Roboto Condensed";
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+        /* 133.333% */
+        font-variant: all-small-caps;
+    }
+
+    .hp-calendar-btn-outline {
+        display: flex;
+        height: 44px;
+        padding: 16px 24px;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        align-self: stretch;
+        border-radius: 8px;
+        border: 2px solid var(--Hubba-White, #FFF);
+        color: var(--Hubba-White, #FFF);
+        text-align: center;
+        leading-trim: both;
+        text-edge: cap;
+
+        /* Title2_Medium */
+        font-family: "Roboto Condensed";
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+        /* 133.333% */
+        font-variant: all-small-caps;
+    }
+
+    .hp-calendar-mobile-img {
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        object-fit: cover !important;
+        margin-top: 40px !important;
+    }
+}
+
+/* =========================================================
+   FRIENDS OF HUBBA SECTION (PIXEL PERFECT FIGMA SPEC)
+========================================================= */
+
+.hp-friends-section {
+    width: 100%;
+    padding: 40px 80px;
+    box-sizing: border-box;
+    background-color: #FFFFFF;
+}
+
+.hp-friends-grid {
+    display: flex;
+    align-items: stretch;
+    gap: 24px;
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+}
+
+.hp-friends-image-col {
+    /* flex: 1; */
+    border-radius: 40px;
+    overflow: hidden;
+    min-height: 440px;
+}
+
+.hp-friends-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 40px;
+    display: block;
+}
+
+.hp-friends-desktop-img-view {
+    display: block !important;
+}
+
+.hp-friends-mobile-img-view {
+    display: none !important;
+}
+
+.hp-friends-card {
+    display: flex;
+    padding: 80px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex: 1;
+    border-radius: 40px;
+    background: var(--Hubba-Yellow, #FDFF53);
+    box-sizing: border-box;
+}
+
+.hp-friends-subtitle {
+    color: var(--Hubba-Black, #000);
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Label1_Regular */
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+.hp-friends-title {
+    color: var(--Hubba-Black, #000);
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Heading1_Bold */
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 32px;
+    align-self: stretch;
+    margin: 0 0 24px 0;
+}
+
+.hp-friends-desc {
+    color: var(--Hubba-Black, #000);
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Body_Regular */
+    font-family: Roboto;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 26px;
+    /* 162.5% */
+    align-self: stretch;
+    margin: 0 0 40px 0;
+}
+
+.hp-friends-btn {
+    display: flex;
+    height: 40px;
+    padding: 16px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    border: 2px solid var(--Hubba-Black, #000);
+    background: var(--Hubba-Black, #000);
+    color: var(--Hubba-White, #FFF);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Title2_Medium */
+    font-family: "Roboto Condensed";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    /* 133.333% */
+    font-variant: all-small-caps;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.hp-friends-btn:hover {
+    background-color: #000000 !important;
+    color: #FDFF53 !important;
+    border-color: #000000 !important;
+}
+
+.hp-friends-desktop-btn {
+    display: flex !important;
+}
+
+.hp-friends-mobile-actions {
+    display: none !important;
+}
+
+@media (max-width: 1024px) {
+    .hp-friends-section {
+        padding: 40px 24px;
+    }
+
+    .hp-friends-card {
+        padding: 48px 36px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hp-friends-section {
+        padding: 32px 16px;
+    }
+
+    .hp-friends-grid {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .hp-friends-image-col {
+        min-height: 280px;
+    }
+
+    .hp-friends-card {
+        padding: 36px 24px;
+    }
+
+    .hp-friends-title {
+        font-size: 26px;
+        line-height: 34px;
+    }
+
+    .hp-visitor-guides-title {
+        color: #000 !important;
+        text-align: center !important;
+        leading-trim: both !important;
+        text-edge: cap !important;
+        font-feature-settings: 'liga' off, 'clig' off !important;
+
+        /* Heading2_Bold */
+        font-family: "Roboto Condensed";
+        font-size: 24px !important;
+        font-style: normal !important;
+        font-weight: 600 !important;
+        line-height: 32px !important;
+        /* 133.333% */
+    }
+
+    .hp-friends-desktop-img-view {
+        display: none !important;
+    }
+
+    .hp-friends-mobile-img-view {
+        display: block !important;
+    }
+
+    .hp-friends-desktop-btn,
+    .hp-friends-btn.hp-friends-desktop-btn {
+        display: none !important;
+    }
+
+    .hp-friends-mobile-actions {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+        width: 100% !important;
+        margin-top: 40px !important;
+    }
+
+    .hp-friends-btn-explore {
+        display: flex !important;
+        width: 100% !important;
+        height: 44px !important;
+        padding: 16px 24px !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 12px !important;
+        border-radius: 8px !important;
+        border: 2px solid var(--Hubba-Black, #000) !important;
+        background: var(--Hubba-Yellow, #FDFF53) !important;
+        color: var(--Hubba-Black, #000) !important;
+        text-align: center !important;
+        leading-trim: both !important;
+        text-edge: cap !important;
+        font-family: "Roboto Condensed" !important;
+        font-size: 18px !important;
+        font-style: normal !important;
+        font-weight: 600 !important;
+        line-height: 24px !important;
+        font-variant: all-small-caps !important;
+        cursor: pointer !important;
+        box-sizing: border-box !important;
+    }
+
+    .hp-friends-desc {
+        margin: 0px;
+    }
+
+    .hp-friends-btn-know {
+        display: flex !important;
+        width: 100% !important;
+        height: 44px !important;
+        padding: 16px 24px !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 12px !important;
+        border-radius: 8px !important;
+        border: 2px solid var(--Hubba-Black, #000) !important;
+        background: var(--Hubba-Black, #000) !important;
+        color: var(--Hubba-White, #FFF) !important;
+        text-align: center !important;
+        leading-trim: both !important;
+        text-edge: cap !important;
+        font-family: "Roboto Condensed" !important;
+        font-size: 18px !important;
+        font-style: normal !important;
+        font-weight: 600 !important;
+        line-height: 24px !important;
+        font-variant: all-small-caps !important;
+        cursor: pointer !important;
+        box-sizing: border-box !important;
+    }
+}
+
+/* =========================================================
+   VISITOR GUIDES SECTION (PIXEL PERFECT FIGMA SPEC)
+========================================================= */
+
+.hp-visitor-guides-section {
+    width: 100%;
+    padding: 60px 80px;
+    box-sizing: border-box;
+    background-color: #FFFFFF;
+}
+
+.hp-visitor-guides-container {
+    max-width: 1920px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.hp-visitor-guides-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    align-self: stretch;
+    margin-bottom: 60px;
+}
+
+.hp-visitor-guides-subtitle {
+    color: #000;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Label1_Regular */
+    font-family: "Roboto Condensed";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 14px;
+    /* 285.714% */
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.hp-visitor-guides-title {
+    color: #000;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Heading1_Bold */
+    font-family: "Roboto Condensed";
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 38px;
+    /* 125% */
+    margin: 0;
+}
+
+.hp-visitor-guides-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 60px;
+    row-gap: 60px;
+    width: 100%;
+}
+
+.hp-visitor-guide-card {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 24px;
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--Neutral-30, #C3C3C3);
+}
+
+.hp-visitor-guide-img-box {
+    width: 160px;
+    height: 160px;
+    flex-shrink: 0;
+    border-radius: 24px;
+    background-color: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.hp-visitor-guide-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.hp-visitor-guide-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.hp-visitor-guide-card-title {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    /* Heading2_Bold */
+    font-family: "Roboto Condensed";
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 32px;
+    /* 133.333% */
+    margin: 0 0 8px 0;
+    align-self: stretch;
+}
+
+.hp-visitor-guide-card-desc {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Body_Regular */
+    font-family: Roboto;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 26px;
+    margin: 0 0 18px 0;
+    /* 162.5% */
+    align-self: stretch;
+}
+
+.hp-visitor-guide-action {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    /* align-self: flex-start; */
+}
+
+.hp-visitor-guide-action:hover {
+    opacity: 1 !important;
+}
+
+.hp-visitor-guide-action span {
+    color: var(--Hubba-Black, #000);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Title2_Medium */
+    font-family: "Roboto Condensed";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    /* 133.333% */
+    font-variant: all-small-caps;
+}
+
+.hp-visitor-guide-arrow-circle {
+    display: flex;
+    width: 24px;
+    height: 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    aspect-ratio: 1/1;
+    border-radius: 67px;
+    border: 1px solid var(--Hubba-Black, #000);
+    background: var(--Hubba-Yellow, #FDFF53);
+    transition: background-color 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.hp-visitor-guide-arrow-circle svg path {
+    transition: fill 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.hp-visitor-guide-action:hover .hp-visitor-guide-arrow-circle,
+.hp-visitor-guide-card:hover .hp-visitor-guide-arrow-circle {
+    background-color: #000000 !important;
+    border-color: #000000 !important;
+    transform: none !important;
+}
+
+.hp-visitor-guide-action:hover .hp-visitor-guide-arrow-circle svg path,
+.hp-visitor-guide-card:hover .hp-visitor-guide-arrow-circle svg path {
+    fill: #FFFFFF !important;
+}
+
+@media (max-width: 1024px) {
+    .hp-visitor-guides-section {
+        padding: 40px 24px;
+    }
+
+    .hp-visitor-guides-grid {
+        column-gap: 32px;
+        row-gap: 40px;
+    }
+
+    .hp-visitor-guide-img-box {
+        width: 130px;
+        height: 130px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hp-visitor-guides-section {
+        padding: 32px 24px !important;
+    }
+
+    .hp-visitor-guides-grid {
+        grid-template-columns: 1fr !important;
+        row-gap: 0 !important;
+    }
+
+    .hp-visitor-guide-card {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: flex-start !important;
+        gap: 20px !important;
+        padding: 32px 0 !important;
+        border-bottom: 1.5px solid var(--Neutral-30, #C3C3C3) !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .hp-visitor-guide-card:last-child {
+        /* border-bottom: none !important; */
+    }
+
+    .hp-visitor-guide-img-box {
+        width: 100px !important;
+        height: 100px !important;
+        border-radius: 16px !important;
+        border: 1.5px solid #000000 !important;
+        background-color: #FFFFFF !important;
+        flex-shrink: 0 !important;
+    }
+
+    .hp-visitor-guide-img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+    }
+
+    .hp-visitor-guide-info {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 0 !important;
+        flex: 1 !important;
+    }
+
+    .hp-visitor-guide-card-title {
+        font-family: "Roboto Condensed", sans-serif !important;
+        font-size: 20px !important;
+        line-height: 26px !important;
+        font-weight: 600 !important;
+        color: #000000 !important;
+        margin: 0 0 8px 0 !important;
+    }
+
+    .hp-visitor-guide-card-desc {
+        font-family: "Roboto", sans-serif !important;
+        font-size: 16px !important;
+        line-height: 24px !important;
+        color: #000000 !important;
+        margin: 0 0 20px 0 !important;
+        align-self: stretch !important;
+    }
+
+    .hp-visitor-guide-action {
+        display: flex !important;
+        align-items: center !important;
+        gap: 16px !important;
+        cursor: pointer !important;
+    }
+
+    .hp-visitor-guide-action span {
+        font-family: "Roboto Condensed" !important;
+        font-size: 18px !important;
+        font-weight: 500 !important;
+        line-height: 24px !important;
+        font-variant: all-small-caps !important;
+        color: #000000 !important;
+    }
+
+    .hp-visitor-guide-arrow-circle {
+        width: 24px !important;
+        height: 24px !important;
+        border-radius: 50% !important;
+        background: #FDFF53 !important;
+        border: 1px solid #000000 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+}
+
+/* =========================================================
+   OUR PASSES SECTION (PIXEL PERFECT FIGMA SPEC)
+========================================================= */
+
+.hp-passes-section {
+    width: 100%;
+    padding: 80px 80px;
+    box-sizing: border-box;
+    background-color: #FFFFFF;
+}
+
+.hp-passes-container {
+    /* max-width: 1320px; */
+    margin: 0 auto;
+    width: 100%;
+    background-color: #000000;
+    border-radius: 40px;
+    padding: 80px 40px 40px 40px;
+    box-sizing: border-box;
+}
+
+.hp-passes-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    margin-bottom: 60px;
+}
+
+.hp-passes-subtitle {
+    color: #FFF;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Label1_Regular */
+    font-family: "Roboto Condensed";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    /* 285.714% */
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    align-self: stretch;
+    margin-bottom: 24px;
+}
+
+.hp-passes-title {
+    color: var(--Hubba-White, #FFF);
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Heading1_Bold */
+    font-family: "Roboto Condensed";
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 40px;
+    align-self: stretch;
+    margin: 14px 0 0 0;
+    /* 125% */
+}
+
+.hp-passes-explore-btn {
+    display: flex;
+    height: 40px;
+    padding: 16px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    border: 2px solid var(--Hubba-Yellow, #FDFF53);
+    background: var(--Hubba-Yellow, #FDFF53);
+    color: var(--Hubba-Black, #000);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Title2_Medium */
+    font-family: "Roboto Condensed";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    /* 133.333% */
+    font-variant: all-small-caps;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.hp-passes-explore-btn:hover {
+    background-color: #000000 !important;
+    color: #FDFF53 !important;
+    border-color: #FDFF53 !important;
+}
+
+.hp-passes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    width: 100%;
+}
+
+/* Base Pass Card */
+.hp-pass-card {
+    position: relative;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    background: transparent;
+    flex: 1;
+}
+
+.hp-pass-header-bg {
+    position: relative;
+    width: 100%;
+    height: 100px;
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
+}
+
+.hp-pass-header-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.hp-pass-body {
+    position: relative;
+    margin-top: -50px;
+    z-index: 2;
+    background-color: #FFFFFF;
+    border-radius: 24px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    border: 1px solid var(--Neutral-20, #E9E9E9);
+}
+
+.hp-pass-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.hp-pass-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.hp-pass-ticket-icon {
+    flex-shrink: 0;
+}
+
+.hp-pass-name {
+    color: #200;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    /* Heading2_Bold */
+    font-family: "Roboto Condensed";
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 32px;
+    margin: 0;
+    /* 133.333% */
+}
+
+.hp-pass-price {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Title1_Semibold */
+    font-family: "Roboto Condensed";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 26px;
+    /* 130% */
+}
+
+.hp-pass-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.hp-pass-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    color: #000000;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+.hp-pass-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.hp-check-purple {
+    background-color: #8C52FF;
+}
+
+.hp-check-yellow {
+    background-color: #FDFF53;
+}
+
+.hp-pass-note {
+    color: var(--Hubba-Black, #000);
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Body_Regular */
+    font-family: "Roboto";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 26px;
+    align-self: stretch;
+    margin: 0;
+    /* 162.5% */
+}
+
+/* Card 3: Passes Sold Out? */
+.hp-pass-soldout {
+    position: relative;
+    /* margin-top: 50px; */
+    border-radius: 24px;
+    border: 1px solid var(--Neutral-20, #E9E9E9);
+    background: #000;
+    flex: 1;
+}
+
+.hp-pass-soldout-body {
+    display: flex;
+    padding: 32px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    flex: 1 0 0;
+    align-self: stretch;
+}
+
+.hp-pass-soldout-title {
+    color: #FFF;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    /* Heading2_Bold */
+    font-family: "Roboto Condensed";
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 22px;
+    /* 133.333% */
+
+    /* Heading2_Bold */
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 32px;
+    margin: 0;
+}
+
+.hp-pass-soldout-desc {
+    color: var(--Hubba-White, #FFF);
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Body_Regular */
+    font-family: "Roboto";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 26px;
+    /* 162.5% */
+    align-self: stretch;
+    margin: 0;
+}
+
+.hp-pass-soldout-features {
+    margin-top: auto;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin: 0;
+}
+
+.hp-passes-explore-btn-mobile {
+    display: none;
+}
+
+.hp-pass-soldout-features li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    align-self: stretch;
+    color: var(--Hubba-White, #FFF);
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Body_Regular */
+    font-family: Roboto;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 26px;
+    /* 162.5% */
+}
+
+/* Responsive adjustments for Our Passes */
+@media (max-width: 1024px) {
+    .hp-passes-section {
+        padding: 32px 24px;
+    }
+
+    .hp-passes-container {
+        padding: 48px 24px 32px 24px;
+    }
+
+    .hp-passes-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .hp-passes-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .hp-passes-explore-btn {
+        display: none !important;
+    }
+
+    .hp-passes-explore-btn-mobile {
+        display: flex !important;
+        width: 100% !important;
+        height: 48px !important;
+        padding: 16px 24px !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 12px !important;
+        border-radius: 8px !important;
+        border: 2px solid var(--Hubba-Black, #000) !important;
+        background: var(--Hubba-Yellow, #FDFF53) !important;
+        color: var(--Hubba-Black, #000) !important;
+        text-align: center !important;
+        leading-trim: both !important;
+        text-edge: cap !important;
+        font-family: "Roboto Condensed" !important;
+        font-size: 18px !important;
+        font-style: normal !important;
+        font-weight: 500 !important;
+        line-height: 24px !important;
+        font-variant: all-small-caps !important;
+        cursor: pointer !important;
+        box-sizing: border-box !important;
+        margin-top: 24px !important;
+    }
+
+    .hp-passes-desktop-br,
+    .hp-visitor-desktop-br {
+        display: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .hp-passes-desktop-br,
+    .hp-visitor-desktop-br {
+        display: none !important;
+    }
+
+    .hp-passes-section {
+        padding: 24px 16px !important;
+    }
+
+    .hp-passes-container {
+        padding: 40px 24px 24px 24px !important;
+        border-radius: 40px !important;
+    }
+
+    .hp-passes-header-row {
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 24px !important;
+        margin-bottom: 24px !important;
+        text-align: center !important;
+    }
+
+    .hp-passes-subtitle {
+        text-align: center !important;
+        margin-bottom: 24px !important;
+        line-height: 20px !important;
+    }
+
+    .hp-passes-title {
+        text-align: center !important;
+        font-size: 24px !important;
+        line-height: 32px !important;
+        font-weight: 700 !important;
+        margin: 0 !important;
+        margin-top: 24px !important;
+    }
+
+    .hp-passes-grid {
+        grid-template-columns: 1fr !important;
+        gap: 32px !important;
+    }
+
+    .hp-pass-card {
+        width: 100% !important;
+        margin-top: 0 !important;
+    }
+
+    .hp-pass-body {
+        padding: 24px !important;
+        border-radius: 24px !important;
+    }
+
+    .hp-pass-top {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        margin-bottom: 24px !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+
+    .hp-pass-title-group {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .hp-pass-title-group svg {
+        width: 28px !important;
+        height: auto !important;
+        flex-shrink: 0 !important;
+    }
+
+    .hp-pass-name {
+        font-size: 20px !important;
+        font-weight: 700 !important;
+        line-height: 26px !important;
+        white-space: nowrap !important;
+    }
+
+    .hp-pass-price {
+        font-size: 18px !important;
+        font-weight: 600 !important;
+        line-height: 24px !important;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+    }
+
+    .hp-pass-features {
+        gap: 24px !important;
+        margin-bottom: 24px !important;
+    }
+
+    .hp-pass-features li {
+        font-size: 16px !important;
+        line-height: 24px !important;
+        gap: 12px !important;
+    }
+
+    .hp-pass-check {
+        width: 24px !important;
+        height: 24px !important;
+        margin-top: 0 !important;
+    }
+
+    .hp-pass-check svg {
+        width: 10px !important;
+        height: 8px !important;
+    }
+
+    .hp-pass-note {
+        font-size: 16px !important;
+        line-height: 26px !important;
+    }
+
+    .hp-pass-soldout-body {
+        padding: 24px !important;
+    }
+
+    /* Mobile Responsive & Touch Drag for OUR FESTIVALS section */
+    .hp-festivals-section {
+        padding: 40px 24px !important;
+    }
+
+    .hp-festivals-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 20px !important;
+        margin-bottom: 32px !important;
+    }
+
+    .hp-festivals-header-left {
+        width: 100% !important;
+        gap: 12px !important;
+    }
+
+    .hp-festivals-title {
+        width: 100% !important;
+        font-size: 24px !important;
+        line-height: 32px !important;
+    }
+
+    .hp-festivals-title.kannada {
+        font-family: "Noto Sans Kannada", sans-serif !important;
+        font-size: clamp(15px, 4.4vw, 20px) !important;
+        line-height: 1.35 !important;
+        letter-spacing: normal !important;
+        width: 100% !important;
+        word-break: normal !important;
+    }
+
+    .hp-festivals-btn-desktop,
+    .hp-festivals-view-all-btn.hp-festivals-btn-desktop {
+        display: none !important;
+    }
+
+    .hp-festivals-btn-mobile,
+    .hp-festivals-view-all-btn.hp-festivals-btn-mobile {
+        display: flex !important;
+        /* width: 100% !important; */
+    }
+
+    .hp-festivals-marquee-wrapper {
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+        touch-action: pan-x !important;
+        padding: 10px 16px 20px 16px !important;
+        margin-left: -16px !important;
+        width: calc(100% + 32px) !important;
+    }
+
+    .hp-festivals-marquee-wrapper::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    .hp-festivals-track {
+        gap: 16px !important;
+        animation: none !important;
+    }
+
+    .hp-festival-card {
+        width: 156px !important;
+        height: 204px !important;
+        border-radius: 16px !important;
+        flex: 0 0 156px !important;
+    }
+
+    .hp-festival-card-img {
+        width: 156px !important;
+        height: 204px !important;
+        object-fit: cover !important;
+        border-radius: 16px !important;
+    }
+}
+
+/* ==========================================================================
+   HOMEPAGE BUTTONS DOME ARC & VERTICAL TEXT ROLL HOVER SYSTEM
+   ========================================================================== */
+.hp-btn-yellow,
+.hp-btn-outline-white,
+.hp-about-btn,
+.hp-festivals-view-all-btn,
+.hp-calendar-btn-yellow,
+.hp-calendar-btn-outline,
+.hp-friends-btn,
+.hp-friends-btn-explore,
+.hp-friends-btn-know,
+.hp-passes-explore-btn,
+.hp-passes-explore-btn-mobile {
+    position: relative !important;
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    overflow: hidden !important;
+    z-index: 1 !important;
+    cursor: pointer !important;
+    outline: none !important;
+    transition: border-color 0.65s cubic-bezier(0.25, 1, 0.3, 1) !important;
+}
+
+.hp-passes-explore-btn-mobile {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+
+    .hp-festivals-btn-desktop,
+    .hp-festivals-view-all-btn.hp-festivals-btn-desktop {
+        display: none !important;
+    }
+}
+
+.hp-btn-yellow::before,
+.hp-btn-outline-white::before,
+.hp-about-btn::before,
+.hp-festivals-view-all-btn::before,
+.hp-calendar-btn-yellow::before,
+.hp-calendar-btn-outline::before,
+.hp-friends-btn::before,
+.hp-friends-btn-explore::before,
+.hp-friends-btn-know::before,
+.hp-passes-explore-btn::before,
+.hp-passes-explore-btn-mobile::before {
+    content: '' !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 100% 100% 0 0 !important;
+    transform: translateY(100%) !important;
+    transition: transform 0.65s cubic-bezier(0.25, 1, 0.3, 1), border-radius 0.65s cubic-bezier(0.25, 1, 0.3, 1) !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+}
+
+/* Base Yellow Buttons with Dual Push-Up Conveyor (Yellow Out Top, Black In Bottom) */
+.hp-btn-yellow,
+.hp-about-btn,
+.hp-calendar-btn-yellow,
+.hp-passes-explore-btn,
+.hp-passes-explore-btn-mobile {
+    background: transparent !important;
+}
+
+.hp-btn-yellow::after,
+.hp-about-btn::after,
+.hp-calendar-btn-yellow::after,
+.hp-passes-explore-btn::after,
+.hp-passes-explore-btn-mobile::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-color: #FDFF53 !important;
+    border-radius: 0 !important;
+    transform: translateY(0%) !important;
+    transition: transform 0.65s cubic-bezier(0.25, 1, 0.3, 1), border-radius 0.65s cubic-bezier(0.25, 1, 0.3, 1) !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+}
+
+.hp-btn-yellow:hover::after,
+.hp-about-btn:hover::after,
+.hp-calendar-btn-yellow:hover::after,
+.hp-passes-explore-btn:hover::after,
+.hp-passes-explore-btn-mobile:hover::after {
+    transform: translateY(-100%) !important;
+    border-radius: 0 0 100% 100% !important;
+}
+
+/* Base White Static Buttons with Push-Up Transparent Hover */
+.hp-btn-outline-white,
+.hp-calendar-btn-outline {
+    background: transparent !important;
+    border: 2px solid #FFFFFF !important;
+}
+
+.hp-btn-outline-white::after,
+.hp-calendar-btn-outline::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-color: #FFFFFF !important;
+    border-radius: 0 !important;
+    transform: translateY(0%) !important;
+    transition: transform 0.65s cubic-bezier(0.25, 1, 0.3, 1), border-radius 0.65s cubic-bezier(0.25, 1, 0.3, 1) !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+}
+
+.hp-btn-outline-white:hover::after,
+.hp-calendar-btn-outline:hover::after {
+    transform: translateY(-100%) !important;
+    border-radius: 0 0 100% 100% !important;
+}
+
+/* Yellow BG buttons rise Black fill layer */
+.hp-btn-yellow::before,
+.hp-about-btn::before,
+.hp-calendar-btn-yellow::before,
+.hp-passes-explore-btn::before,
+.hp-passes-explore-btn-mobile::before {
+    background-color: #000000 !important;
+}
+
+/* White BG & Black BG buttons rise Yellow fill layer */
+.hp-btn-outline-white::before,
+.hp-festivals-view-all-btn::before,
+.hp-friends-btn::before,
+.hp-friends-btn-explore::before,
+.hp-friends-btn-know::before {
+    background-color: #FDFF53 !important;
+}
+
+.hp-btn-yellow:hover::before,
+.hp-btn-outline-white:hover::before,
+.hp-about-btn:hover::before,
+.hp-festivals-view-all-btn:hover::before,
+.hp-calendar-btn-yellow:hover::before,
+.hp-friends-btn:hover::before,
+.hp-friends-btn-explore:hover::before,
+.hp-friends-btn-know:hover::before,
+.hp-passes-explore-btn:hover::before,
+.hp-passes-explore-btn-mobile:hover::before {
+    transform: translateY(0%) !important;
+    border-radius: 0 !important;
+}
+
+.hp-btn-yellow .btn-text-primary,
+.hp-btn-outline-white .btn-text-primary,
+.hp-about-btn .btn-text-primary,
+.hp-festivals-view-all-btn .btn-text-primary,
+.hp-calendar-btn-yellow .btn-text-primary,
+.hp-calendar-btn-outline .btn-text-primary,
+.hp-friends-btn .btn-text-primary,
+.hp-friends-btn-explore .btn-text-primary,
+.hp-friends-btn-know .btn-text-primary,
+.hp-passes-explore-btn .btn-text-primary,
+.hp-passes-explore-btn-mobile .btn-text-primary {
+    position: relative !important;
+    z-index: 2 !important;
+    display: block !important;
+    transform: translateY(0) !important;
+    transition: transform 0.65s cubic-bezier(0.25, 1, 0.3, 1), color 0.65s cubic-bezier(0.25, 1, 0.3, 1) !important;
+}
+
+.hp-btn-yellow .btn-text-primary,
+.hp-about-btn .btn-text-primary,
+.hp-calendar-btn-yellow .btn-text-primary,
+.hp-passes-explore-btn .btn-text-primary,
+.hp-passes-explore-btn-mobile .btn-text-primary,
+.hp-calendar-btn-outline .btn-text-primary,
+.hp-btn-outline-white .btn-text-primary {
+    color: #000000 !important;
+}
+
+.hp-btn-yellow .btn-text-secondary,
+.hp-btn-outline-white .btn-text-secondary,
+.hp-about-btn .btn-text-secondary,
+.hp-festivals-view-all-btn .btn-text-secondary,
+.hp-calendar-btn-yellow .btn-text-secondary,
+.hp-calendar-btn-outline .btn-text-secondary,
+.hp-friends-btn .btn-text-secondary,
+.hp-friends-btn-explore .btn-text-secondary,
+.hp-friends-btn-know .btn-text-secondary,
+.hp-passes-explore-btn .btn-text-secondary,
+.hp-passes-explore-btn-mobile .btn-text-secondary {
+    position: absolute !important;
+    z-index: 2 !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, 160%) !important;
+    width: 100% !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    transition: transform 0.65s cubic-bezier(0.25, 1, 0.3, 1), color 0.65s cubic-bezier(0.25, 1, 0.3, 1) !important;
+}
+
+/* On hover get White Text */
+.hp-btn-yellow .btn-text-secondary,
+.hp-about-btn .btn-text-secondary,
+.hp-calendar-btn-yellow .btn-text-secondary,
+.hp-calendar-btn-outline .btn-text-secondary,
+.hp-passes-explore-btn .btn-text-secondary,
+.hp-passes-explore-btn-mobile .btn-text-secondary {
+    color: #FFFFFF !important;
+}
+
+/* On hover get Black Text */
+.hp-btn-outline-white .btn-text-secondary,
+.hp-festivals-view-all-btn .btn-text-secondary,
+.hp-friends-btn .btn-text-secondary,
+.hp-friends-btn-explore .btn-text-secondary,
+.hp-friends-btn-know .btn-text-secondary {
+    color: #000000 !important;
+}
+
+.hp-btn-yellow:hover .btn-text-primary,
+.hp-btn-outline-white:hover .btn-text-primary,
+.hp-about-btn:hover .btn-text-primary,
+.hp-festivals-view-all-btn:hover .btn-text-primary,
+.hp-calendar-btn-yellow:hover .btn-text-primary,
+.hp-calendar-btn-outline:hover .btn-text-primary,
+.hp-friends-btn:hover .btn-text-primary,
+.hp-friends-btn-explore:hover .btn-text-primary,
+.hp-friends-btn-know:hover .btn-text-primary,
+.hp-passes-explore-btn:hover .btn-text-primary,
+.hp-passes-explore-btn-mobile:hover .btn-text-primary {
+    transform: translateY(-160%) !important;
+}
+
+.hp-btn-yellow:hover .btn-text-secondary,
+.hp-btn-outline-white:hover .btn-text-secondary,
+.hp-about-btn:hover .btn-text-secondary,
+.hp-festivals-view-all-btn:hover .btn-text-secondary,
+.hp-calendar-btn-yellow:hover .btn-text-secondary,
+.hp-calendar-btn-outline:hover .btn-text-secondary,
+.hp-friends-btn:hover .btn-text-secondary,
+.hp-friends-btn-explore:hover .btn-text-secondary,
+.hp-friends-btn-know:hover .btn-text-secondary,
+.hp-passes-explore-btn:hover .btn-text-secondary,
+.hp-passes-explore-btn-mobile:hover .btn-text-secondary {
+    transform: translate(-50%, -50%) !important;
+}
+
+@media (max-width: 1024px) {
+    .hp-passes-explore-btn {
+        display: none !important;
+    }
+
+    .hp-passes-explore-btn-mobile {
+        display: inline-flex !important;
+        position: relative !important;
+        overflow: hidden !important;
+        width: 100% !important;
+        height: 44px !important;
+        padding: 0 24px !important;
+        justify-content: center !important;
+        align-items: center !important;
+        border-radius: 8px !important;
+        border: 2px solid var(--Hubba-Black, #000) !important;
+        background: transparent !important;
+        color: var(--Hubba-Black, #000) !important;
+        text-align: center !important;
+        font-family: "Roboto Condensed" !important;
+        font-size: 18px !important;
+        font-style: normal !important;
+        font-weight: 600 !important;
+        line-height: 24px !important;
+        font-variant: all-small-caps !important;
+        cursor: pointer !important;
+        box-sizing: border-box !important;
+        margin-top: 24px !important;
+        z-index: 1 !important;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .hp-friends-desktop-btn,
+    .hp-friends-btn.hp-friends-desktop-btn {
+        display: none !important;
+    }
+
+    .hp-passes-explore-btn {
+        display: none !important;
+    }
+
+    .hp-passes-container {
+        padding: 40px 24px 40px 24px !important;
+    }
+
+    .hp-passes-explore-btn-mobile {
+        display: inline-flex !important;
+        position: relative !important;
+        overflow: hidden !important;
+        width: 100% !important;
+        height: 44px !important;
+        padding: 0 24px !important;
+        justify-content: center !important;
+        align-items: center !important;
+        border-radius: 8px !important;
+        border: 2px solid var(--Hubba-Black, #000) !important;
+        background: transparent !important;
+        color: var(--Hubba-Black, #000) !important;
+        text-align: center !important;
+        font-family: "Roboto Condensed" !important;
+        font-size: 18px !important;
+        font-style: normal !important;
+        font-weight: 600 !important;
+        line-height: 24px !important;
+        font-variant: all-small-caps !important;
+        cursor: pointer !important;
+        box-sizing: border-box !important;
+        margin-top: 24px !important;
+        z-index: 1 !important;
+    }
+}
+
+/* ========================================================
+   KANNADA BUTTON VERTICAL CENTERING (OPTICAL ALIGNMENT)
+   ======================================================== */
+.hp-festivals-btn-mobile {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .hp-festivals-btn-mobile {
+        display: flex !important;
+    }
+}
+
+.hp-about-btn.kannada,
+.hp-festivals-btn-desktop.kannada,
+.hp-btn-yellow.kannada,
+.hp-btn-outline-white.kannada {
+    leading-trim: normal !important;
+    text-edge: normal !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    /* padding: 0 24px !important; */
+}
+
+.hp-about-btn.kannada .btn-text-primary,
+.hp-festivals-view-all-btn.kannada .btn-text-primary,
+.hp-btn-yellow.kannada .btn-text-primary,
+.hp-btn-outline-white.kannada .btn-text-primary {
+    transform: translateY(3.5px) !important;
+    line-height: normal !important;
+}
+
+.hp-about-btn.kannada:hover .btn-text-primary,
+.hp-festivals-view-all-btn.kannada:hover .btn-text-primary,
+.hp-btn-yellow.kannada:hover .btn-text-primary,
+.hp-btn-outline-white.kannada:hover .btn-text-primary {
+    transform: translateY(-160%) !important;
+}
+
+.hp-about-btn.kannada .btn-text-secondary,
+.hp-festivals-view-all-btn.kannada .btn-text-secondary,
+.hp-btn-yellow.kannada .btn-text-secondary,
+.hp-btn-outline-white.kannada .btn-text-secondary {
+    transform: translate(-50%, 160%) !important;
+    line-height: normal !important;
+}
+
+.hp-about-btn.kannada:hover .btn-text-secondary,
+.hp-festivals-view-all-btn.kannada:hover .btn-text-secondary,
+.hp-btn-yellow.kannada:hover .btn-text-secondary,
+.hp-btn-outline-white.kannada:hover .btn-text-secondary {
+    transform: translate(-50%, calc(-50% + 3.5px)) !important;
+}

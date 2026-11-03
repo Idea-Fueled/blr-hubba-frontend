@@ -1,0 +1,153 @@
+.hp-ticker-section {
+    width: 100%;
+    margin-bottom: 24px;
+    background: #FFFFFF;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.hp-ticker-wrapper {
+    width: 100%;
+    padding: 16px 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.hp-ticker-track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    animation: hpTickerScroll 55s linear infinite;
+    will-change: transform;
+}
+
+.hp-ticker-track:hover {
+    animation-play-state: paused;
+}
+
+.hp-ticker-track-group {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.hp-ticker-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+}
+
+.hp-ticker-item-multi {
+    gap: 20px;
+}
+
+.hp-ticker-logos-subgroup {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.hp-ticker-label {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Label1_Regular */
+    font-family: "Roboto Condensed";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 40px;
+    letter-spacing: 2.8px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.hp-ticker-logo {
+    display: block;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.hp-logo-1 {
+    width: 54px;
+    height: 54px;
+}
+
+.hp-logo-2 {
+    width: 75px;
+    height: 49px;
+}
+
+.hp-logo-3 {
+    width: 258px;
+    height: 34px;
+}
+
+.hp-logo-4 {
+    width: 101px;
+    height: 34px;
+}
+
+.hp-logo-5 {
+    width: 41px;
+    height: 50px;
+}
+
+.hp-logo-6 {
+    width: 134px;
+    height: 26px;
+}
+
+.hp-ticker-divider {
+    margin: 0 32px;
+    flex-shrink: 0;
+    display: block;
+}
+
+@keyframes hpTickerScroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .hp-ticker-section {
+        margin-bottom: 16px;
+    }
+
+    .hp-ticker-wrapper {
+        padding: 12px 0;
+    }
+
+    .hp-ticker-item {
+        gap: 14px;
+    }
+
+    .hp-ticker-logos-subgroup {
+        gap: 16px;
+    }
+
+    .hp-ticker-label {
+        font-size: 12px;
+        letter-spacing: 1.5px;
+    }
+
+    .hp-ticker-divider {
+        margin: 0 20px;
+    }
+
+    .hp-ticker-track {
+        animation-duration: 40s;
+    }
+}

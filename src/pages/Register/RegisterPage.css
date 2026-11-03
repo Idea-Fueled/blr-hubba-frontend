@@ -1,0 +1,577 @@
+/* =========================================================
+   REGISTER PAGE (Figma Specs: 40px top, 24px gap, 80px gap, 60px gap, 32px row gap)
+========================================================= */
+
+.register-page-container {
+    width: 100%;
+    max-width: 1152px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    box-sizing: border-box;
+}
+
+/* ================= HEADER SECTION ================= */
+
+.register-header-section {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.register-title-row {
+    display: flex;
+    padding-bottom: 24px;
+    align-items: flex-start;
+    gap: 24px;
+    align-self: stretch;
+    border-bottom: 1px solid var(--Neutral-20, #E9E9E9);
+}
+
+.register-back-btn {
+    background: transparent;
+    /* border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px; */
+    border: none;
+}
+
+.register-back-btn:hover {
+    opacity: 0.7;
+}
+
+.register-main-title {
+    color: #200;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    /* Heading2_Bold */
+    font-family: "Roboto Condensed";
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 32px;
+    /* 133.333% */
+    /* margin: 8px; */
+    margin: 0;
+}
+
+/* 24px gap between REGISTER title and Stepper */
+.register-stepper-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.register-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.step-number {
+    display: flex;
+    width: 4px;
+    height: 4px;
+    border-radius: 75px;
+    background: #000;
+    padding: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    color: #FFF;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Body_Regular */
+    font-family: Roboto;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 26px;
+    /* 162.5% */
+}
+
+.register-step.active .step-number {
+    background: var(--Hubba-Black, #000);
+    color: #FFF;
+}
+
+.register-step.inactive .step-number {
+    background: #E0E0E0;
+    color: #888888;
+}
+
+.step-label {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Body_Regular */
+    font-family: Roboto;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 26px;
+    /* 162.5% */
+}
+
+.register-step.active .step-label {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Body_Regular */
+    font-family: Roboto;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 26px;
+    /* 162.5% */
+}
+
+.register-step.inactive .step-label {
+    color: #A3A3A3;
+    font-weight: 400;
+}
+
+.register-header-divider {
+    width: 100%;
+    height: 1px;
+    background: #E5E5E5;
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+
+/* ================= FORM SECTION ================= */
+/* 80px gap between Stepper and Form */
+
+.register-form-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 80px;
+    width: 100%;
+}
+
+/* 60px gap between Heading and Form Grid */
+.register-section-title {
+    color: #200;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    /* Heading2_Bold */
+    font-family: "Roboto Condensed";
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 32px;
+    /* 133.333% */
+    margin: 0;
+    margin-bottom: 60px;
+}
+
+.register-form {
+    width: 100%;
+    max-width: 752px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 32px vertical row gap between input pairs */
+.register-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 24px;
+    width: 100%;
+}
+
+.register-field-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.register-field-full {
+    grid-column: 1 / span 1;
+}
+
+.register-label {
+    overflow: hidden;
+    color: var(--Hubba-Black, #000);
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+    text-overflow: ellipsis;
+
+    /* Title3_Medium */
+    font-family: "Roboto Condensed";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    /* 150% */
+    margin-bottom: 12px;
+}
+
+.register-input {
+    display: flex;
+    padding: 10px 16px;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 8px;
+    border: 2px solid var(--Neutral-50, #888);
+    background: var(--Hubba-White, #FFF);
+    height: 44px;
+}
+
+.register-input::placeholder {
+    overflow: hidden;
+    color: var(--Neutral-50, #888);
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+    text-overflow: ellipsis;
+
+    /* Title3_Medium */
+    font-family: "Roboto Condensed";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    margin: 0;
+}
+
+.register-input:focus {
+    border-color: var(--Hubba-Black, #000);
+}
+
+.register-date-input {
+    position: relative;
+    cursor: pointer;
+}
+
+.register-date-input::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+}
+
+/* Input with icon (Date of Birth) */
+.register-input-with-icon {
+    position: relative;
+    width: 100%;
+}
+
+.register-input-icon {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Action Button */
+.register-action-group {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 60px;
+}
+
+.register-submit-btn {
+    display: flex;
+    height: 48px;
+    padding: 16px 40px;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    border: 2px solid var(--Hubba-Black, #000);
+    background: var(--Hubba-Yellow, #FDFF53);
+    color: var(--Hubba-Black, #000);
+    text-align: center;
+    cursor: pointer;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px;
+    font-variant: all-small-caps;
+    min-width: 240px;
+}
+
+.register-submit-btn:hover {
+    background: #eedf1a;
+}
+
+/* ================= STEP 2: MOBILE VERIFICATION OTP ================= */
+
+.register-otp-title {
+    margin-bottom: 24px !important;
+}
+
+.register-otp-description {
+    color: #000;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: "Roboto Condensed";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    /* 150% */
+    width: 304px;
+    /* height: 35px; */
+    margin: 0;
+    margin-bottom: 40px;
+}
+
+.register-otp-boxes-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.register-otp-box {
+    display: flex;
+    width: 56px;
+    height: 56px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    border: 2px solid var(--Neutral-50, #888888);
+    background: var(--Hubba-White, #FFF);
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    color: #000;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+}
+
+.register-otp-box:focus {
+    border-color: var(--Hubba-Black, #000);
+}
+
+.register-resend-text {
+    align-self: stretch;
+    color: #000;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: "Roboto Condensed";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    /* 125% */
+    margin: 0;
+}
+
+.register-resend-btn {
+    background: transparent;
+    border: none;
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    /* Title3_Semibold */
+    font-family: "Roboto Condensed";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px;
+    text-transform: none;
+}
+
+.register-resend-btn:hover {
+    opacity: 0.7;
+}
+
+/* ================= MOBILE VERIFICATION SUCCESSFUL SCREEN ================= */
+
+.register-success-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.register-success-title {
+    margin-bottom: 40px !important;
+}
+
+/* .register-success-icon-circle {
+    display: flex;
+    width: 56px;
+    height: 56px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: 1.5px solid var(--Hubba-Black, #000);
+    background: transparent;
+/* ================= STEP 3: EMAIL VERIFICATION ================= */
+
+.register-email-title {
+    margin-bottom: 10px !important;
+}
+
+.register-email-description {
+    color: #000;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    max-width: 500px;
+    margin: 0;
+    margin-bottom: 40px;
+}
+
+.register-skip-group {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 40px;
+}
+
+.register-skip-btn {
+    display: flex;
+    height: 44px;
+    padding: 10px 40px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 8px;
+    border: 2px solid var(--Hubba-Black, #000);
+    background: transparent;
+    color: var(--Hubba-Black, #000);
+    text-align: center;
+    cursor: pointer;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    min-width: 120px;
+    transition: all 0.2s ease;
+}
+
+.register-skip-btn:hover {
+    background: var(--Hubba-Black, #000);
+    color: #FFF;
+}
+
+@media (max-width: 768px) {
+    .register-page-container {
+        padding: 24px 16px 60px;
+    }
+
+    .register-form-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .register-field-full {
+        grid-column: 1 / span 1;
+    }
+
+    .register-form-wrapper {
+        margin-top: 40px;
+    }
+
+    .register-section-title {
+        margin-bottom: 32px;
+    }
+
+    .register-stepper-row {
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .step-label {
+        font-size: 13px;
+    }
+
+    .register-otp-boxes-group {
+        gap: 10px;
+    }
+
+    .register-otp-box {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+}
+
+/* ================= STEP 1 LOADING SPINNER ================= */
+
+.register-loading-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 20px;
+    width: 100%;
+}
+
+.register-loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #E5E5E5;
+    border-top: 4px solid #000000;
+    border-radius: 50%;
+    animation: registerSpin 0.9s linear infinite;
+}
+
+@keyframes registerSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.register-loading-text {
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+    text-align: center;
+}

@@ -1,0 +1,264 @@
+/* =========================================================
+   VERIFY MOBILE NUMBER (OTP) MODAL — exact Figma spec
+   Unique "otp-modal-" prefix — zero conflicts with other pages.
+========================================================= */
+
+.otp-modal-overlay,
+.otp-modal-overlay * {
+    box-sizing: border-box;
+}
+
+.otp-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.incorrect-otp-container {
+    display: flex;
+    padding: 6px 8px;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    border-radius: 8px;
+    background: #FFE9E9;
+}
+
+.incorrect-otp-text {
+    color: #B10000;
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: "Roboto Condensed";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    /* 142.857% */
+}
+
+/* Card padding: 100px top, 32px sides, 60px bottom
+   (matches the "100" top / "32" side / "60" bottom annotations) */
+.otp-modal-card {
+    position: relative;
+    width: 368px;
+    padding: 100px 32px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    border-radius: 28px;
+    border: 1.5px solid var(--Hubba-Black, #000);
+    background: var(--Hubba-White, #FFF);
+}
+
+/* ================= CLOSE BUTTON ================= */
+
+.otp-modal-close-btn {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 32px;
+    padding: 10px;
+    border: none;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    flex-shrink: 0;
+    background: var(--Hubba-Yellow, #FDFF53);
+    cursor: pointer;
+}
+
+.otp-modal-close-btn:hover {
+    background: #eedf1a;
+}
+
+/* ================= TITLE + DESCRIPTION GROUP ================= */
+
+.otp-modal-title-desc-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: stretch;
+}
+
+.otp-modal-title {
+    color: #000;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Title1_SemiBold */
+    font-family: "Roboto Condensed";
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    margin: 0;
+    align-self: stretch;
+    line-height: 32px;
+    /* 133.333% */
+}
+
+/* 24px gap between title and description */
+.otp-modal-description {
+    color: #27272E;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: "Roboto Condensed";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    width: 304px;
+    /* height: 35px; */
+    /* 150% */
+    margin: 24px 0 0;
+}
+
+/* ================= OTP INPUT ROW ================= */
+/* 40px gap between the description above and this row.
+   16px gap between each of the 4 boxes, boxes fill the width evenly. */
+
+.otp-modal-otp-row {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 40px;
+}
+
+.otp-modal-otp-box {
+    width: 51px;
+    height: 56px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    border: 2px solid var(--Neutral-50, #888);
+    background: var(--Hubba-White, #FFF);
+    text-align: center;
+    color: var(--Hubba-Black, #000);
+    font-family: "Roboto Condensed";
+    font-size: 24px;
+    font-weight: 700;
+    outline: none;
+    padding: 10px;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.otp-modal-otp-box:focus {
+    border-color: var(--Hubba-Black, #000);
+}
+
+/* ================= RESEND CODE TEXT ================= */
+/* 24px gap between the OTP row above and this line */
+
+.otp-modal-resend-text {
+    color: #27272E;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: "Roboto Condensed";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    /* 125% */
+    margin: 24px 0 0;
+}
+
+.otp-modal-resend-link {
+    color: #27272E;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    /* Title3_Semibold */
+    font-family: "Roboto Condensed";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px;
+    /* 125% */
+    cursor: pointer;
+}
+
+.otp-modal-resend-link:hover {
+    opacity: 0.7;
+}
+
+/* ================= REGISTER NOW TEXT ================= */
+/* 40px gap between "Resend Code" line above and this line */
+
+.otp-modal-register-text {
+    color: #27272E;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: "Roboto Condensed";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    /* 125% */
+    margin: 40px 0 0;
+}
+
+.otp-modal-register-link {
+    color: #27272E;
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+
+    /* Title3_Semibold */
+    font-family: "Roboto Condensed";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px;
+    text-decoration: none;
+}
+
+.otp-modal-register-link:hover {
+    opacity: 0.7;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 480px) {
+
+    .otp-modal-overlay {
+        padding: 0 !important;
+        align-items: flex-end !important;
+        justify-content: center !important;
+    }
+
+    .otp-modal-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 64px 24px 40px 24px !important;
+        border-radius: 24px 24px 0 0 !important;
+        border: 2px solid var(--Hubba-Black, #000) !important;
+        border-bottom: none !important;
+        margin: 0 !important;
+    }
+
+    .otp-modal-title {
+        font-size: 22px;
+        line-height: 28px;
+    }
+
+    .otp-modal-otp-row {
+        margin-top: 32px;
+    }
+
+}

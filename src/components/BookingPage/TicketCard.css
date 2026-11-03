@@ -1,0 +1,352 @@
+/* =========================================================
+   TICKET CARD COMPONENT (Shared between Confirmation & Cancel)
+========================================================= */
+
+.ticket-c-card,
+.ticket-c-card * {
+    box-sizing: border-box;
+}
+
+.ticket-c-card {
+    background: transparent;
+    display: grid;
+    grid-template-columns: 115px auto 1fr;
+    align-items: stretch;
+    position: relative;
+    width: 100%;
+    filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.3));
+}
+
+/* Yellow Date + Image Column */
+.ticket-c-yellow-col {
+    width: auto;
+    background-color: #FDFF53;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    align-self: stretch;
+    flex-shrink: 0;
+    border-radius: 16px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+.ticket-c-date-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.ticket-c-weekday {
+    color: #000000;
+    text-align: center;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+}
+
+.ticket-c-day {
+    color: #000000;
+    text-align: center;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+}
+
+.ticket-c-month {
+    color: #000000;
+    text-align: center;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+}
+
+.ticket-c-thumb-img {
+    width: 95px;
+    height: 95px;
+    border-radius: 12px;
+    object-fit: cover;
+    display: block;
+}
+
+/* Tear Divider Line */
+.ticket-c-tear-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    margin: 0 -1px;
+    align-self: stretch;
+    pointer-events: none;
+}
+
+.ticket-c-tear-divider svg {
+    height: 100%;
+    width: 2px;
+}
+
+/* Right Main Ticket Content Area */
+.ticket-c-main {
+    flex: 1;
+    padding: 32px 32px 24px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+.ticket-c-top-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    gap: 24px;
+}
+
+.ticket-c-left-info {
+    display: flex;
+    width: 308px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 26px;
+}
+
+.ticket-c-title-by-wrapper {
+    display: flex;
+    width: 308px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.ticket-c-date-v-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    align-self: stretch;
+}
+
+.ticket-c-event-title {
+    color: #000000;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 26px;
+    align-self: stretch;
+    margin: 0;
+}
+
+.ticket-c-event-by {
+    color: #000000;
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    align-self: stretch;
+    margin: 0;
+}
+
+.ticket-c-event-datetime {
+    color: #000000;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px;
+    margin: 0;
+}
+
+.ticket-c-event-venue {
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #000000;
+    margin: 0;
+    line-height: 20px;
+}
+
+.ticket-c-subvenue {
+    color: #000000;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 20px;
+}
+
+.ticket-c-event-venue strong {
+    color: #000000;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 20px;
+    text-decoration: underline;
+}
+
+/* Right Meta Column */
+.ticket-c-right-meta {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.ticket-c-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #000000;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.ticket-c-meta-row span {
+    color: #000000;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+}
+
+/* Bottom Action Bar */
+.ticket-c-action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
+    border-top: 1px solid #C3C3C3;
+    margin-top: 24px;
+    padding-top: 16px;
+}
+
+.ticket-c-action-left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.ticket-c-act-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.ticket-c-act-button:hover {
+    opacity: 0.75;
+}
+
+.ticket-c-icon-circle {
+    display: flex;
+    width: 28px;
+    height: 28px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background: #000000;
+}
+
+.ticket-c-action-right {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.ticket-c-action-bar-title {
+    color: #000000;
+    text-align: center;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    font-variant: all-small-caps;
+}
+
+.ticket-c-policy-link {
+    color: #000000;
+    text-align: center;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    font-variant: all-small-caps;
+    text-decoration: underline;
+}
+
+.ticket-c-policy-link:hover {
+    opacity: 0.75;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ticket-c-card {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .ticket-c-yellow-col {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 16px 20px;
+        border-radius: 16px 16px 0 0;
+    }
+
+    .ticket-c-thumb-img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .ticket-c-tear-divider {
+        display: none;
+    }
+
+    .ticket-c-main {
+        border-radius: 0 0 16px 16px;
+    }
+
+    .ticket-c-top-grid {
+        flex-direction: column;
+    }
+
+    .ticket-c-action-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}

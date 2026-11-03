@@ -1,0 +1,357 @@
+/* GENRE FILTER SECTION (EXPLORE WHAT'S ON) */
+.genre-filter-section {
+    width: 100%;
+    background-color: #FFFFFF;
+    background-repeat: no-repeat;
+    background-position: top right;
+    background-size: auto 100%;
+    padding-top: 100px;
+    padding-bottom: 100px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+.genre-filter-inner {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+/* HEADER BLOCK */
+.genre-filter-header {
+    text-align: center;
+    margin-bottom: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.genre-filter-subtitle {
+    color: var(--Hubba-Black, #000);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Label1_Regular */
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 40px;
+    letter-spacing: 2.8px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    display: block;
+}
+
+.genre-filter-title {
+    color: var(--Hubba-Black, #000);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Heading1_Bold */
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 40px;
+    margin: 0;
+}
+
+/* CAROUSEL WRAPPER & TRACK - FULL END-TO-END SCREEN WIDTH */
+.genre-filter-carousel-wrapper {
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.genre-filter-cards-track {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-left: max(80px, calc((100vw - 1440px) / 2 + 80px));
+    padding-right: max(80px, calc((100vw - 1440px) / 2 + 80px));
+    padding-top: 8px;
+    padding-bottom: 20px;
+    box-sizing: border-box;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.genre-filter-cards-track::-webkit-scrollbar {
+    display: none;
+}
+
+.genre-filter-embedded {
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.genre-filter-cards-track.embedded-track {
+    padding-left: 80px !important;
+    padding-right: 80px !important;
+    padding-top: 0 !important;
+    /* padding-bottom: 20px !important; */
+}
+
+/* GENRE CARD (PIXEL PERFECT SPEC FROM FIGMA WITH DYNAMIC IMAGE & TEXT) */
+.genre-card {
+    flex: 0 0 160px;
+    /* width: 160px; */
+    height: 212px;
+    display: flex;
+    position: relative !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    aspect-ratio: 40/53;
+    border-radius: 16px;
+    border-bottom: 8px solid var(--Hubba-Yellow, #FDFF53);
+    background: #000000;
+    cursor: pointer;
+    /* box-sizing: border-box; */
+    overflow: hidden !important;
+    transform: none !important;
+    transition: box-shadow 0.3s ease !important;
+}
+
+.genre-card:hover {
+    transform: none !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+.genre-card.selected {
+    border-bottom-color: #FDFF53 !important;
+    box-shadow: 0 0 0 2px #FDFF53, 0 8px 24px rgba(253, 255, 83, 0.4) !important;
+}
+
+.genre-card-img-wrapper {
+    width: 160px;
+    height: 160px;
+    flex-shrink: 0;
+    align-self: stretch;
+    aspect-ratio: 1/1;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    position: relative;
+}
+
+.genre-card-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    display: block;
+    border-radius: 16px !important;
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), filter 0.3s ease-in-out !important;
+}
+
+.genre-card:hover .genre-card-img {
+    transform: scale(1.08) !important;
+}
+
+.genre-card-info {
+    width: 100%;
+    /* flex: 1; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 8px;
+    box-sizing: border-box;
+    gap: 8px;
+}
+
+.genre-card-title {
+    color: var(--Hubba-White, #FFF);
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 13px;
+    font-variant: all-small-caps;
+    text-align: center;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    transition: color 0.3s ease !important;
+}
+
+.genre-card:hover .genre-card-title {
+    color: var(--Hubba-Yellow, #FDFF53) !important;
+}
+
+.genre-card-subtitle {
+    color: var(--Neutral-40, #A4A4A4);
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 10px;
+    text-align: center;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+/* NAVIGATION ARROWS */
+.genre-filter-nav-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 40px;
+    width: 100%;
+}
+
+.genre-nav-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid #000000;
+    background-color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+    padding: 0;
+}
+
+.genre-nav-btn:hover {
+    background-color: #FDFF53;
+    border-color: #000000;
+    transform: scale(1.05);
+}
+
+.genre-nav-btn:active {
+    transform: scale(0.95);
+}
+
+.genre-nav-btn svg {
+    display: block;
+}
+
+/* RESPONSIVE STYLES */
+@media (max-width: 1024px) {
+    .genre-filter-section {
+        padding-top: 80px;
+        padding-bottom: 80px;
+        background-size: cover;
+    }
+
+    .genre-filter-cards-track {
+        padding-left: 40px;
+        padding-right: 40px;
+        gap: 20px;
+    }
+
+    .genre-card-img {
+        height: 160px;
+    }
+
+    .genre-filter-title {
+        font-size: 28px;
+        line-height: 36px;
+    }
+}
+
+@media (max-width: 768px) {
+    .genre-filter-section {
+        padding-top: 50px;
+        padding-bottom: 50px;
+        background-size: cover;
+    }
+
+    .genre-filter-cards-track {
+        padding-left: 20px;
+        padding-right: 20px;
+        gap: 16px;
+    }
+
+    .genre-filter-cards-track.embedded-track {
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+        padding-bottom: 0px !important;
+        gap: 12px !important;
+    }
+
+    .genre-card {
+        display: flex !important;
+        flex: 0 0 152px !important;
+        width: 152px !important;
+        height: 216px !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        aspect-ratio: auto !important;
+        border-radius: 16px !important;
+        border-bottom: 6px solid var(--Hubba-Yellow, #FDFF53) !important;
+        background: #000000 !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+
+    .genre-card-img {
+        width: 152px !important;
+        height: 152px !important;
+        flex-shrink: 0 !important;
+        aspect-ratio: 1/1 !important;
+        border-radius: 16px !important;
+        object-fit: cover !important;
+        display: block !important;
+    }
+
+    .genre-card-info {
+        width: 100% !important;
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 8px 6px !important;
+        box-sizing: border-box !important;
+        gap: 4px !important;
+    }
+
+    .genre-card-title {
+        font-size: 15px !important;
+        line-height: 16px !important;
+    }
+
+    .genre-card-subtitle {
+        font-size: 11px !important;
+        line-height: 12px !important;
+    }
+
+    .genre-filter-header {
+        margin-bottom: 32px;
+    }
+
+    .genre-filter-subtitle {
+        font-size: 12px;
+        line-height: 24px;
+        letter-spacing: 1.8px;
+        margin-bottom: 16px;
+    }
+
+    .genre-filter-title {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .genre-filter-nav-controls {
+        margin-top: 24px;
+    }
+}

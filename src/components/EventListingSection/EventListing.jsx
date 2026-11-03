@@ -1,14 +1,48 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { MotionSection, MotionMaskText, MotionButton } from "../AnimatedPage";
 import "./EventListing.css";
 import xIcon from "../../assets/x_icon.png";
 import EventCard from "../events/EventCard";
-import HorizontalRow from "../HorizontalRow";
-import { fetchEvents } from "../../api/eventsApi";
-import { mapBackendEventToCard } from "../../utils/eventMappers";
+import { fetchEvents, fetchWishlistApi, toggleWishlistApi } from "../../api/eventsApi";
+import { mapBackendEventToCard, toTitleCase } from "../../utils/eventMappers";
+import { sortEventsByRank, getSessionReferenceTime, calculateEventRank } from "../../utils/eventRanking";
 import { SkeletonCard } from "../Loader/Loader";
+import eventListingBgImage from "../../assets/event-listing-bg-image.png";
+import GenreFilterSection from "../GenreFilterSection/GenreFilterSection";
+import { toast } from "sonner";
+import AddToCalendarModal from "../CalendarModal/AddToCalendarModal";
+
+const CloseIcon = ({ onClick }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ cursor: "pointer" }} onClick={onClick}>
+        <path d="M9 3L3 9M3 3L9 9" stroke="#181C20" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+);
 
 const STATIC_ZONES = ["Central", "North", "South", "East", "West"];
 const MORE_FILTERS = ["Free", "Available", "Multi-Day Events"];
+
+const formatAndDeduplicateItems = (items, standardizeTitleCase = true) => {
+    if (!items || !Array.isArray(items)) return [];
+    const map = new Map();
+
+    items.forEach(rawItem => {
+        if (!rawItem || typeof rawItem !== 'string') return;
+        const trimmed = rawItem.trim();
+        if (!trimmed) return;
+
+        const key = trimmed.toLowerCase();
+        if (!map.has(key)) {
+            if (standardizeTitleCase) {
+                map.set(key, toTitleCase(trimmed));
+            } else {
+                map.set(key, trimmed);
+            }
+        }
+    });
+
+    return Array.from(map.values()).sort((a, b) => a.localeCompare(b));
+};
 
 const getLocalDateString = (dateObjOrStr) => {
     const d = new Date(dateObjOrStr);
@@ -18,48 +52,196 @@ const getLocalDateString = (dateObjOrStr) => {
     return `${year}-${month}-${day}`;
 };
 
+const checkEventOccursOnDate = (event, targetDateStr) => {
+    if (!event || !targetDateStr) return false;
+
+    // Check specific eventDates array if present
+    if (event.eventDates && Array.isArray(event.eventDates) && event.eventDates.length > 0) {
+        const matchesEventDate = event.eventDates.some(ed => {
+            const edDateStr = getLocalDateString(ed.date || ed.startDateTime || ed.dateTime);
+            return edDateStr === targetDateStr;
+        });
+        if (matchesEventDate) return true;
+    }
+
+    // Check startDateTime and endDateTime range
+    if (event.startDateTime) {
+        const startStr = getLocalDateString(event.startDateTime);
+        const endStr = getLocalDateString(event.endDateTime || event.startDateTime);
+        if (targetDateStr >= startStr && targetDateStr <= endStr) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+const downloadIcsCalendar = (eventsList, calendarName = "BLR Hubba 2027 Calendar") => {
+    if (!eventsList || !Array.isArray(eventsList) || eventsList.length === 0) {
+        toast.error("No events available to download");
+        return;
+    }
+
+    const formatIcsDate = (dateObj) => {
+        if (!dateObj || isNaN(dateObj.getTime())) {
+            return new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+        }
+        return dateObj.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+    };
+
+    const escapeIcsText = (text) => {
+        if (!text) return "";
+        return String(text)
+            .replace(/\\/g, "\\\\")
+            .replace(/;/g, "\\;")
+            .replace(/,/g, "\\,")
+            .replace(/\n/g, "\\n");
+    };
+
+    const icsLines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//BLR Hubba//Festival Calendar//EN",
+        "CALSCALE:GREGORIAN",
+        "METHOD:PUBLISH",
+        `X-WR-CALNAME:${escapeIcsText(calendarName)}`,
+        "X-WR-TIMEZONE:Asia/Kolkata"
+    ];
+
+    const nowStamp = formatIcsDate(new Date());
+
+    eventsList.forEach((evt, idx) => {
+        if (!evt) return;
+
+        const titleStr = evt.title || evt.name || `BLR Hubba Event ${idx + 1}`;
+        const performerStr = evt.performer || evt.artist || evt.artistName || "";
+        const venueStr = evt.venue || evt.venueName || evt.address || evt.location || "Bengaluru";
+
+        let startDateObj = evt.startDateTime ? new Date(evt.startDateTime) : null;
+        let endDateObj = evt.endDateTime ? new Date(evt.endDateTime) : null;
+
+        if (!startDateObj || isNaN(startDateObj.getTime())) {
+            if (evt.eventDates && Array.isArray(evt.eventDates) && evt.eventDates.length > 0) {
+                const firstEd = evt.eventDates[0];
+                const rawD = firstEd.startDateTime || firstEd.date || firstEd.dateTime;
+                if (rawD) startDateObj = new Date(rawD);
+            }
+        }
+
+        if (!startDateObj || isNaN(startDateObj.getTime())) {
+            startDateObj = new Date(2027, 0, 16, 18, 0, 0);
+        }
+
+        if (!endDateObj || isNaN(endDateObj.getTime())) {
+            endDateObj = new Date(startDateObj.getTime() + 2 * 60 * 60 * 1000);
+        }
+
+        const dtStartStr = formatIcsDate(startDateObj);
+        const dtEndStr = formatIcsDate(endDateObj);
+        const eventUid = `${evt.id || evt.slug || idx}-${Date.now()}@blrhubba.in`;
+
+        const descriptionStr = performerStr
+            ? `${performerStr} | BLR Hubba 2027 Festival`
+            : `BLR Hubba 2027 Festival Event`;
+
+        icsLines.push(
+            "BEGIN:VEVENT",
+            `UID:${eventUid}`,
+            `DTSTAMP:${nowStamp}`,
+            `DTSTART:${dtStartStr}`,
+            `DTEND:${dtEndStr}`,
+            `SUMMARY:${escapeIcsText(titleStr)}`,
+            `DESCRIPTION:${escapeIcsText(descriptionStr)}`,
+            `LOCATION:${escapeIcsText(venueStr)}`,
+            "STATUS:CONFIRMED",
+            "END:VEVENT"
+        );
+    });
+
+    icsLines.push("END:VCALENDAR");
+
+    const icsContent = icsLines.join("\r\n");
+    const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "BLR_Hubba_2027_Calendar.ics";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+
+    toast.success("BLR Hubba 2027 Calendar downloaded (.ics)");
+};
+
 const generateDateRange = (rawEvents) => {
-    if (!rawEvents || rawEvents.length === 0) {
+    if (!rawEvents || !Array.isArray(rawEvents) || rawEvents.length === 0) {
         return [{ label: "All", value: "ALL" }];
     }
 
-    // Find the minimum and maximum dates among the events
-    let minDate = null;
-    let maxDate = null;
+    const uniqueDateStrs = new Set();
+
+    const addDate = (d) => {
+        if (!d) return;
+        if (typeof d === "string" && d.trim().length < 8 && !d.includes("-") && !d.includes("/")) return;
+
+        const dateObj = new Date(d);
+        if (isNaN(dateObj.getTime())) return;
+        const dateStr = getLocalDateString(dateObj);
+        if (dateStr && dateStr.length === 10) {
+            uniqueDateStrs.add(dateStr);
+        }
+    };
 
     rawEvents.forEach(e => {
-        const start = new Date(e.startDateTime);
-        const end = new Date(e.endDateTime || e.startDateTime);
+        if (!e) return;
 
-        if (!minDate || start < minDate) minDate = start;
-        if (!maxDate || end > maxDate) maxDate = end;
+        addDate(e.startDateTime);
+        addDate(e.endDateTime);
+
+        if (Array.isArray(e.eventDates)) {
+            e.eventDates.forEach(ed => {
+                if (!ed) return;
+                addDate(ed.date);
+                addDate(ed.startDateTime);
+                addDate(ed.endDateTime);
+            });
+        }
     });
+
+    // Filter dates so every pill has AT LEAST ONE matching event, then sort ascending chronologically by date
+    const sortedDateStrs = Array.from(uniqueDateStrs)
+        .filter(dateStr => rawEvents.some(e => checkEventOccursOnDate(e, dateStr)))
+        .sort((a, b) => {
+            const timeA = new Date(a).getTime();
+            const timeB = new Date(b).getTime();
+            if (!isNaN(timeA) && !isNaN(timeB) && timeA !== timeB) {
+                return timeA - timeB;
+            }
+            const [yA, mA, dA] = a.split('-').map(Number);
+            const [yB, mB, dB] = b.split('-').map(Number);
+            if (yA !== yB) return yA - yB;
+            if (mA !== mB) return mA - mB;
+            return dA - dB;
+        });
 
     const dateList = [{ label: "All", value: "ALL" }];
 
-    if (minDate && maxDate) {
-        const current = new Date(minDate);
-        current.setHours(0, 0, 0, 0);
+    sortedDateStrs.forEach(dateStr => {
+        const [year, month, day] = dateStr.split('-').map(Number);
+        const current = new Date(year, month - 1, day);
 
-        const last = new Date(maxDate);
-        last.setHours(0, 0, 0, 0);
+        const dayNumber = current.getDate().toString();
+        const weekday = current.toLocaleString('en-US', { weekday: 'short' }).toUpperCase();
+        const monthStr = current.toLocaleString('en-US', { month: 'short' }).toUpperCase();
 
-        while (current <= last) {
-            const dayNumber = current.getDate().toString();
-            const weekday = current.toLocaleString('en-US', { weekday: 'short' }).toUpperCase();
-
-            if (!dateList.some(d => d.value === dayNumber)) {
-                dateList.push({
-                    day: dayNumber,
-                    weekday: weekday,
-                    value: dayNumber,
-                    dateStr: getLocalDateString(current)
-                });
-            }
-
-            current.setDate(current.getDate() + 1);
-        }
-    }
+        dateList.push({
+            day: dayNumber,
+            weekday: weekday,
+            month: monthStr,
+            value: dateStr,
+            dateStr: dateStr
+        });
+    });
 
     return dateList;
 };
@@ -76,24 +258,50 @@ const generateVenues = (mappedEvents) => {
             venueNames.push(e.venue);
         }
     });
-    return Array.from(new Set(venueNames)).sort((a, b) => a.localeCompare(b));
+    return formatAndDeduplicateItems(venueNames, false);
 };
 
 const generateGenres = (mappedEvents) => {
-    if (!mappedEvents || mappedEvents.length === 0) return [];
-    const genresSet = new Set();
-    mappedEvents.forEach(e => {
-        if (e.genres) {
-            e.genres.forEach(g => genresSet.add(g));
-        }
-    });
-    return Array.from(genresSet).sort((a, b) => a.localeCompare(b));
+    const rawGenres = [];
+    if (mappedEvents && mappedEvents.length > 0) {
+        mappedEvents.forEach(e => {
+            if (e.genres) {
+                e.genres.forEach(g => {
+                    if (g && typeof g === "string" && g.trim()) {
+                        rawGenres.push(g.trim());
+                    }
+                });
+            }
+        });
+    }
+    return formatAndDeduplicateItems(rawGenres, true);
 };
 
-export const EventListing = () => {
+const SAVED_FILTERS_KEY = "blrhubba_event_listing_filters";
+
+const getSavedFilters = () => {
+    try {
+        const saved = sessionStorage.getItem(SAVED_FILTERS_KEY);
+        return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+        return null;
+    }
+};
+
+export const EventListing = ({
+    hideTopHero = false,
+    showHeroHeader = false,
+    hideGenreCarousel = false,
+    sectionEyebrow = "EVENT CALENDAR",
+    sectionTitle = "Upcoming Music Events",
+    className = "",
+    wrapperClassName = ""
+}) => {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const initialSaved = getSavedFilters();
 
     // Dynamic filters populated from events list
     const [dates, setDates] = useState([{ label: "All", value: "ALL" }]);
@@ -103,32 +311,77 @@ export const EventListing = () => {
     const [subfestivals, setSubfestivals] = useState([]);
     const [curators, setCurators] = useState([]);
 
-    // Selection state
-    const [selectedDate, setSelectedDate] = useState("ALL");
-    const [selectedVenues, setSelectedVenues] = useState([]);
-    const [selectedGenres, setSelectedGenres] = useState([]);
-    const [selectedZones, setSelectedZones] = useState([]);
-    const [selectedLanguages, setSelectedLanguages] = useState([]);
-    const [selectedMoreFilters, setSelectedMoreFilters] = useState([]);
-    const [selectedSubfestivals, setSelectedSubfestivals] = useState([]);
-    const [freePassOnly, setFreePassOnly] = useState(false);
-    const [donorPassOnly, setDonorPassOnly] = useState(false);
-    const [selectedCurators, setSelectedCurators] = useState([]);
-    const [likedEvents, setLikedEvents] = useState({});
+    // Selection state initialized from saved session storage if available
+    const [selectedDate, setSelectedDate] = useState(() => initialSaved?.selectedDate || "ALL");
+    const [selectedVenues, setSelectedVenues] = useState(() => initialSaved?.selectedVenues || []);
+    const [selectedGenres, setSelectedGenres] = useState(() => initialSaved?.selectedGenres || []);
+    const [selectedZones, setSelectedZones] = useState(() => initialSaved?.selectedZones || []);
+    const [selectedLanguages, setSelectedLanguages] = useState(() => initialSaved?.selectedLanguages || []);
+    const [selectedMoreFilters, setSelectedMoreFilters] = useState(() => initialSaved?.selectedMoreFilters || []);
+    const [selectedSubfestivals, setSelectedSubfestivals] = useState(() => initialSaved?.selectedSubfestivals || []);
+    const [freePassOnly, setFreePassOnly] = useState(() => initialSaved?.freePassOnly || false);
+    const [donorPassOnly, setDonorPassOnly] = useState(() => initialSaved?.donorPassOnly || false);
+    const [selectedCurators, setSelectedCurators] = useState(() => initialSaved?.selectedCurators || []);
+    const [likedEvents, setLikedEvents] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem("user_favorites") || "{}");
+        } catch (e) {
+            return {};
+        }
+    });
 
     // Client-side pagination/load more
     const [visibleCount, setVisibleCount] = useState(6);
+    const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
 
-    // Accordion expand/collapse state
-    const [genreOpen, setGenreOpen] = useState(false);
-    const [zonesOpen, setZonesOpen] = useState(false);
-    const [languageOpen, setLanguageOpen] = useState(false);
-    const [moreFiltersOpen, setMoreFiltersOpen] = useState(false);
+    // Accordion expand/collapse state - only ONE open accordion at a time (closed by default)
+    const [openAccordion, setOpenAccordion] = useState(null);
+    const [venuesShowAll, setVenuesShowAll] = useState(false);
     const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+    const [activeMobileFilterTab, setActiveMobileFilterTab] = useState("VENUES");
     const [isSticky, setIsSticky] = useState(false);
+
+    // Persist filter selections in sessionStorage
+    useEffect(() => {
+        const filtersToSave = {
+            selectedDate,
+            selectedVenues,
+            selectedGenres,
+            selectedZones,
+            selectedLanguages,
+            selectedMoreFilters,
+            selectedSubfestivals,
+            freePassOnly,
+            donorPassOnly,
+            selectedCurators,
+            openAccordion
+        };
+        try {
+            sessionStorage.setItem(SAVED_FILTERS_KEY, JSON.stringify(filtersToSave));
+        } catch (e) {
+            console.error("Error saving filters to sessionStorage", e);
+        }
+    }, [
+        selectedDate,
+        selectedVenues,
+        selectedGenres,
+        selectedZones,
+        selectedLanguages,
+        selectedMoreFilters,
+        selectedSubfestivals,
+        freePassOnly,
+        donorPassOnly,
+        selectedCurators,
+        openAccordion
+    ]);
+
+    const toggleAccordion = (name) => {
+        setOpenAccordion(prev => (prev === name ? null : name));
+    };
 
     const venueRowRef = useRef(null);
     const sentinelRef = useRef(null);
+    const mainLayoutRef = useRef(null);
     const [canScrollVenuesLeft, setCanScrollVenuesLeft] = useState(false);
     const [canScrollVenuesRight, setCanScrollVenuesRight] = useState(false);
 
@@ -137,54 +390,79 @@ export const EventListing = () => {
         setLoading(true);
         setError(null);
 
-        fetchEvents({ limit: 100 })
-            .then(eventsData => {
+        fetchEvents({ limit: 500 })
+            .then(async (eventsData) => {
                 // Map events using shared mapping utility
                 if (eventsData && eventsData.events) {
                     const mapped = eventsData.events.map(mapBackendEventToCard);
 
-                    // Sort list of events: primarily by start time (earliest to latest), secondarily by duration (shortest to longest)
-                    const sorted = [...mapped].sort((a, b) => {
-                        const timeA = new Date(a.startDateTime || 0).getTime();
-                        const timeB = new Date(b.startDateTime || 0).getTime();
-                        if (timeA !== timeB) {
-                            return timeA - timeB;
-                        }
-                        const durationA = a.duration || 0;
-                        const durationB = b.duration || 0;
-                        return durationA - durationB;
-                    });
+                    // Sort list of events by Rank = T x D x S formula (fixed in user session)
+                    const sessionTime = getSessionReferenceTime();
+                    const sorted = sortEventsByRank(mapped, sessionTime);
 
                     setEvents(sorted);
-                    const dynamicDates = generateDateRange(eventsData.events);
+
+                    // Log ranking table for verification in browser DevTools Console
+                    try {
+                        console.groupCollapsed("🎯 BLR Hubba Event Ranking (Rank = T x D x S)");
+                        console.table(
+                            sorted.map((ev, idx) => {
+                                const r = calculateEventRank(ev, sessionTime);
+                                return {
+                                    Position: idx + 1,
+                                    Title: ev.title,
+                                    Status: r.hasUpcomingShow ? "UPCOMING" : "PAST",
+                                    "T (Hours)": Number(r.T.toFixed(1)),
+                                    "D (Hours)": Number(r.D.toFixed(1)),
+                                    "S (Shows)": r.S,
+                                    "Rank (T*D*S)": Number(r.rank.toFixed(1))
+                                };
+                            })
+                        );
+                        console.groupEnd();
+                    } catch {}
+                    const dynamicDates = generateDateRange([...mapped, ...(eventsData.events || [])]);
                     setDates(dynamicDates);
 
-                    // Generate venues dynamically
-                    const dynamicVenues = generateVenues(mapped);
+                    // Generate venues dynamically (preserve original casing, remove case-insensitive duplicates)
+                    const dynamicVenues = formatAndDeduplicateItems(generateVenues(mapped), false);
                     setVenues(dynamicVenues);
 
-                    // Generate genres dynamically
+                    // Generate genres dynamically from events & API (standardized Title Case & deduplicated)
                     const dynamicGenres = generateGenres(mapped);
-                    setGenres(dynamicGenres);
+                    try {
+                        const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:3000').replace(/\/$/, "");
+                        const genreRes = await fetch(`${API_BASE}/genres?limit=100`);
+                        if (genreRes.ok) {
+                            const genreData = await genreRes.json();
+                            if (genreData && Array.isArray(genreData.genres)) {
+                                const apiGenreNames = genreData.genres.map(g => g.name);
+                                const combined = formatAndDeduplicateItems([...dynamicGenres, ...apiGenreNames], true);
+                                setGenres(combined);
+                            } else {
+                                setGenres(formatAndDeduplicateItems(dynamicGenres, true));
+                            }
+                        } else {
+                            setGenres(formatAndDeduplicateItems(dynamicGenres, true));
+                        }
+                    } catch (e) {
+                        setGenres(formatAndDeduplicateItems(dynamicGenres, true));
+                    }
 
                     // Generate languages dynamically with base languages Kannada, English, Hindi included
                     const baseLanguages = ["Kannada", "English", "Hindi"];
-                    const dynamicLanguages = Array.from(new Set([...baseLanguages, ...mapped.map(e => e.language).filter(Boolean)])).sort((a, b) => a.localeCompare(b));
+                    const dynamicLanguages = formatAndDeduplicateItems([...baseLanguages, ...mapped.map(e => e.language)], true);
                     setLanguages(dynamicLanguages);
 
-                    // Generate subfestivals dynamically
-                    const dynamicSubfestivals = Array.from(new Set(mapped.map(e => e.subfestivalName).filter(Boolean))).sort((a, b) => a.localeCompare(b));
+                    // Generate subfestivals dynamically (standardized Title Case & deduplicated)
+                    const dynamicSubfestivals = formatAndDeduplicateItems(mapped.map(e => e.subfestivalName), true);
                     setSubfestivals(dynamicSubfestivals);
 
-                    // Generate curators dynamically from currently published events only
-                    const dynamicCurators = Array.from(
-                        new Set(
-                            mapped
-                                .map(e => e.curatedBy)
-                                .filter(c => Boolean(c) && typeof c === 'string' && c.trim() !== '')
-                                .map(c => c.trim())
-                        )
-                    ).sort((a, b) => a.localeCompare(b));
+                    // Generate curators dynamically (standardized Title Case & deduplicated)
+                    const dynamicCurators = formatAndDeduplicateItems(
+                        mapped.map(e => e.curatedBy).filter(c => Boolean(c) && typeof c === 'string' && c.trim() !== ''),
+                        true
+                    );
                     setCurators(dynamicCurators);
                 }
 
@@ -195,6 +473,27 @@ export const EventListing = () => {
                 setError(err.message);
                 setLoading(false);
             });
+    }, []);
+
+    // Sync wishlist from backend on mount
+    useEffect(() => {
+        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+        if (isLoggedIn) {
+            fetchWishlistApi()
+                .then((res) => {
+                    if (res && res.success && res.data) {
+                        const backendFavs = {};
+                        res.data.forEach((item) => {
+                            if (item.eventId) {
+                                backendFavs[item.eventId] = true;
+                            }
+                        });
+                        setLikedEvents(backendFavs);
+                        localStorage.setItem("user_favorites", JSON.stringify(backendFavs));
+                    }
+                })
+                .catch((err) => console.error("Error loading backend wishlist:", err));
+        }
     }, []);
 
     // Reset visible count to 6 when filters change
@@ -213,37 +512,74 @@ export const EventListing = () => {
         selectedCurators
     ]);
 
-    // Intersection observer to toggle sticky state
+    // Scroll listener to toggle sticky state only when scrolled past sentinel AND inside main-layout
     useEffect(() => {
-        const sentinel = sentinelRef.current;
-        if (!sentinel) return;
+        const handleScroll = () => {
+            if (!sentinelRef.current) return;
+            const sentinelRect = sentinelRef.current.getBoundingClientRect();
 
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                setIsSticky(!entry.isIntersecting);
-            },
-            { threshold: [0] }
-        );
+            let pastBottom = false;
+            if (mainLayoutRef.current) {
+                const mainLayoutRect = mainLayoutRef.current.getBoundingClientRect();
+                if (mainLayoutRect.bottom <= 200) {
+                    pastBottom = true;
+                }
+            }
 
-        observer.observe(sentinel);
-        return () => {
-            if (sentinel) observer.unobserve(sentinel);
+            // Become sticky ONLY when sentinel has scrolled past navbar (80px) AND not past bottom of main-layout
+            setIsSticky(sentinelRect.top <= 80 && !pastBottom);
         };
-    }, [loading]);
+
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        handleScroll();
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
 
     // Toggle favorite handler
     const toggleLike = (eventId) => {
-        setLikedEvents((prev) => ({
-            ...prev,
-            [eventId]: !prev[eventId]
-        }));
+        setLikedEvents((prev) => {
+            const updated = {
+                ...prev,
+                [eventId]: !prev[eventId]
+            };
+            localStorage.setItem("user_favorites", JSON.stringify(updated));
+            return updated;
+        });
+
+        // Async toggle in backend
+        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+        if (isLoggedIn) {
+            toggleWishlistApi(eventId)
+                .then((res) => {
+                    // Update state if backend returned a different value or to confirm sync
+                    if (res && res.success === false) {
+                        console.warn("Failed to sync wishlist toggle to backend:", res.message);
+                    }
+                    // Dispatch profile-change event so navbar updates if it shows liked count
+                    window.dispatchEvent(new Event("profile-change"));
+                })
+                .catch((err) => console.error("Wishlist sync error:", err));
+        }
     };
 
     // Filter selectors helpers
     const handleGenreToggle = (genre) => {
-        setSelectedGenres((prev) =>
-            prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
-        );
+        if (!genre) return;
+        const canonical = (genres || []).find(g => g.toLowerCase() === genre.toLowerCase()) ||
+            (genre.trim().charAt(0).toUpperCase() + genre.trim().slice(1).toLowerCase());
+
+        setSelectedGenres((prev) => {
+            const exists = prev.some((g) => g.toLowerCase() === canonical.toLowerCase());
+            if (exists) {
+                return prev.filter((g) => g.toLowerCase() !== canonical.toLowerCase());
+            }
+            return [...prev, canonical];
+        });
+
+        setOpenAccordion("GENRE");
     };
 
     const handleZoneToggle = (zone) => {
@@ -276,6 +612,9 @@ export const EventListing = () => {
         setFreePassOnly(false);
         setDonorPassOnly(false);
         setSelectedCurators([]);
+        try {
+            sessionStorage.removeItem(SAVED_FILTERS_KEY);
+        } catch (e) {}
     };
 
     // Filter logic
@@ -283,18 +622,8 @@ export const EventListing = () => {
         return events.filter((event) => {
             // Date Filter (Multi-day support)
             if (selectedDate !== "ALL") {
-                const selectedTab = dates.find(d => d.value === selectedDate);
-                if (selectedTab && selectedTab.dateStr) {
-                    const targetStr = selectedTab.dateStr;
-                    const startStr = getLocalDateString(event.startDateTime);
-                    const endStr = getLocalDateString(event.endDateTime || event.startDateTime);
-
-                    if (targetStr < startStr || targetStr > endStr) {
-                        return false;
-                    }
-                } else if (event.date !== selectedDate) {
-                    return false;
-                }
+                const matches = checkEventOccursOnDate(event, selectedDate);
+                if (!matches) return false;
             }
 
             // Venue Filter (multi-select)
@@ -307,7 +636,9 @@ export const EventListing = () => {
 
             // Genre Filter
             if (selectedGenres.length > 0) {
-                const hasGenre = event.genres.some((g) => selectedGenres.includes(g));
+                const hasGenre = (event.genres || []).some((g) =>
+                    selectedGenres.some((selG) => selG.toLowerCase() === String(g).toLowerCase())
+                );
                 if (!hasGenre) return false;
             }
 
@@ -395,14 +726,6 @@ export const EventListing = () => {
         };
     }, [venues, updateVenueScrollState]);
 
-    if (error) {
-        return (
-            <div className="w-full text-center py-32 bg-red-50 rounded-2xl border border-red-100 p-6">
-                <p className="text-xl text-red-600 font-medium">{error}</p>
-            </div>
-        );
-    }
-
     const visibleEvents = useMemo(() => {
         return filteredEvents.slice(0, visibleCount);
     }, [filteredEvents, visibleCount]);
@@ -411,466 +734,702 @@ export const EventListing = () => {
         return filteredEvents.length > visibleCount;
     }, [filteredEvents.length, visibleCount]);
 
+    if (error) {
+        return (
+            <div className="w-full text-center py-32 bg-red-50 rounded-2xl border border-red-100 p-6">
+                <p className="text-xl text-red-600 font-medium">{error}</p>
+            </div>
+        );
+    }
+
     return (
-        <>
-            <div className="event-listing-wrapper">
-                {/* Header Section */}
-                <div className="event-listing-header">
-                    <div className="event-listing-header-left">
+        <div className={`event-listing-page-container ${className}`.trim()}>
+            {/* Top Hero Header Section (Centered Above Black Box) */}
+            {!hideTopHero && (
+                <div
+                    className="event-listing-top-hero"
+                    style={{ backgroundImage: `url(${eventListingBgImage})` }}
+                >
+                    <MotionMaskText delay={0.05}>
                         <span className="event-listing-label">EVENT CALENDAR</span>
-                        <h2 className="event-listing-heading">
-                            Explore upcoming events for Hubba 2027
-                        </h2>
-                    </div>
-                    <button className="download-calendar-btn">DOWNLOAD CALENDAR</button>
+                    </MotionMaskText>
+                    <MotionMaskText delay={0.12}>
+                        <h1 className="event-listing-heading">
+                            Explore What's On at BLR Hubba 2027
+                        </h1>
+                    </MotionMaskText>
                 </div>
+            )}
+
+            {/* Black Container Wrapper */}
+            <div className={`event-listing-wrapper ${wrapperClassName}`.trim()}>
+                {showHeroHeader && (
+                    <div className="subfest-events-header-box">
+                        <span className="subfest-events-eyebrow">{sectionEyebrow}</span>
+                        <h2 className="subfest-events-title">{sectionTitle}</h2>
+                    </div>
+                )}
+
+                {/* Top Genre Carousel inside Black Container */}
+                {!hideGenreCarousel && (
+                    <div className="genre-cards-top-carousel">
+                        <GenreFilterSection hideHeader={true} onSelectGenre={handleGenreToggle} selectedGenres={selectedGenres} />
+                    </div>
+                )}
 
                 <div className="event-listing-content-wrapper">
-                    {/* Sentinel for sticky filter row detection */}
-                    <div ref={sentinelRef} style={{ height: "1px", margin: "0", padding: "0" }}></div>
+                    {/* Full-Width Sticky Calendar Header Bar (Renders on Scroll) */}
+                    {isSticky && (
+                        <div className="sticky-calendar-bar sticky-active">
+                            <div className="sticky-calendar-inner">
+                                <div className="month-subtitle">JANUARY 2027</div>
 
-                    {/* Date Filter Row */}
-                    <div className="venue-date-filter-row">
-                        <div className="date-filter-row">
-                            {dates.map((date, idx) => {
-                                const isActive = selectedDate === date.value;
-                                if (date.value === "ALL") {
-                                    return (
-                                        <button
-                                            key={idx}
-                                            className={`date-card ${isActive ? "active" : ""}`}
-                                            onClick={() => setSelectedDate("ALL")}
-                                        >
-                                            <span className="date-card-all" style={{ textTransform: "none", fontWeight: 600, fontSize: "24px", lineHeight: "32px" }}>All</span>
-                                        </button>
-                                    );
-                                }
-                                return (
-                                    <button
-                                        key={idx}
-                                        className={`date-card ${isActive ? "active" : ""}`}
-                                        onClick={() => setSelectedDate(date.value)}
-                                    >
-                                        <div className="date-card-section">
-                                            <span className="date-card-day">{date.day}</span>
-                                            <span className="date-card-weekday">{date.weekday}</span>
-                                        </div>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                        {venues.length > 0 && (
-                            <div className="venue-filter-row-container">
-                                {isSticky && (
-                                    <>
-                                        <button className="mobile-filter-trigger-btn" onClick={() => setIsFilterModalOpen(true)} aria-label="Open Filters">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
-                                                <path d="M16.5 2.25H1.5L7.5 9.345V14.25L10.5 15.75V9.345L16.5 2.25Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </button>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="1" height="38" viewBox="0 0 1 38" fill="none" style={{ flexShrink: 0 }}>
-                                            <path d="M0.5 38V0" stroke="#6C6C6C" />
-                                        </svg>
-                                    </>
-                                )}
-                                {canScrollVenuesLeft && (
-                                    <button
-                                        className="venue-next-btn"
-                                        onClick={scrollVenuesLeft}
-                                        aria-label="Previous Venues"
-                                    >
-                                        <svg
-                                            className="venue-next-svg"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        >
-                                            <line x1="19" y1="12" x2="5" y2="12"></line>
-                                            <polyline points="12 19 5 12 12 5"></polyline>
-                                        </svg>
-                                    </button>
-                                )}
-                                <div ref={venueRowRef} className="venue-filter-row" onScroll={handleVenueScroll}>
-                                    {venues.map((venue) => {
-                                        const isSelected = selectedVenues.includes(venue);
+                                <div className="date-filter-row">
+                                    {dates.map((date, idx) => {
+                                        const isActive = selectedDate === date.value;
+                                        if (date.value === "ALL") {
+                                            return (
+                                                <button
+                                                    key={idx}
+                                                    className={`date-card ${isActive ? "active" : ""}`}
+                                                    onClick={() => setSelectedDate("ALL")}
+                                                >
+                                                    <span className="date-card-all">ALL</span>
+                                                </button>
+                                            );
+                                        }
                                         return (
                                             <button
-                                                key={venue}
-                                                className={`venue-chip ${isSelected ? "selected" : ""}`}
-                                                onClick={() => setSelectedVenues(prev => isSelected ? prev.filter(v => v !== venue) : [...prev, venue])}
+                                                key={idx}
+                                                className={`date-card ${isActive ? "active" : ""}`}
+                                                onClick={() => setSelectedDate(date.value)}
                                             >
-                                                <span className="venue-name">{venue}</span>
+                                                <div className="date-card-section">
+                                                    <span className="date-card-day">{date.day}</span>
+                                                    <span className="date-card-weekday">{date.weekday}</span>
+                                                </div>
                                             </button>
                                         );
                                     })}
                                 </div>
-                                {canScrollVenuesRight && (
-                                    <button className="venue-next-btn" onClick={scrollVenuesRight} aria-label="Next Venues">
-                                        <svg
-                                            className="venue-next-svg"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        >
-                                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                                            <polyline points="12 5 19 12 12 19"></polyline>
+
+                                <div className="sticky-calendar-divider"></div>
+
+                                <button
+                                    className="download-calendar-btn"
+                                    onClick={() => setIsCalendarModalOpen(true)}
+                                >
+                                    <span className="download-calendar-text">DOWNLOAD CALENDAR</span>
+                                    <div className="download-calendar-icon-circle">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8" fill="none">
+                                            <path d="M5.72084 3.309L0.957996 8L0 7.0581L4.66684 2.38972C2.88234 2.8072 1.7198 2.42879 0.267154 1.40668L1.33368 0C2.84268 1.56915 5.08635 1.63085 6.80824 0.296144L7.79755 1.2401C6.44091 2.90797 6.53065 5.16195 8 6.7311L6.62249 7.68946C5.64362 6.4 5.31177 4.96658 5.71876 3.30694L5.72084 3.309Z" fill="black" />
                                         </svg>
-                                    </button>
-                                )}
+                                    </div>
+                                </button>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
+
                     {/* Main Layout */}
-                    <div className="main-layout">
+                    <div className="main-layout" ref={mainLayoutRef}>
                         {/* Left Sticky Filters Sidebar */}
-                        <aside className="left-filter-sidebar">
-                            {/* Filtered By */}
-                            <div className="filter-accordion">
-                                <span className="filter-section-title">Filtered by</span>
-                                <div className="filtered-by-pills" style={{ marginTop: "12px" }}>
-                                    {selectedVenues.map((venue) => (
-                                        <div key={venue} className="filtered-pill">
-                                            <span>{venue}</span>
-                                            <span
-                                                className="filtered-pill-close"
-                                                onClick={() => setSelectedVenues(prev => prev.filter(v => v !== venue))}
-                                            >
-                                                <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                            </span>
-                                        </div>
-                                    ))}
-                                    {selectedGenres.map((genre) => (
-                                        <div key={genre} className="filtered-pill">
-                                            <span>{genre}</span>
-                                            <span
-                                                className="filtered-pill-close"
-                                                onClick={() => handleGenreToggle(genre)}
-                                            >
-                                                <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                            </span>
-                                        </div>
-                                    ))}
-                                    {selectedZones.map((zone) => (
-                                        <div key={zone} className="filtered-pill">
-                                            <span>{zone}</span>
-                                            <span
-                                                className="filtered-pill-close"
-                                                onClick={() => handleZoneToggle(zone)}
-                                            >
-                                                <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                            </span>
-                                        </div>
-                                    ))}
-                                    {selectedLanguages.map((lang) => (
-                                        <div key={lang} className="filtered-pill">
-                                            <span>{lang}</span>
-                                            <span
-                                                className="filtered-pill-close"
-                                                onClick={() => handleLanguageToggle(lang)}
-                                            >
-                                                <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                            </span>
-                                        </div>
-                                    ))}
-                                    {selectedSubfestivals.map((subfest) => (
-                                        <div key={subfest} className="filtered-pill">
-                                            <span>{subfest}</span>
-                                            <span
-                                                className="filtered-pill-close"
-                                                onClick={() => setSelectedSubfestivals(prev => prev.filter(s => s !== subfest))}
-                                            >
-                                                <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                            </span>
-                                        </div>
-                                    ))}
-                                    {freePassOnly && (
-                                        <div className="filtered-pill">
-                                            <span>Free Pass</span>
-                                            <span
-                                                className="filtered-pill-close"
-                                                onClick={() => setFreePassOnly(false)}
-                                            >
-                                                <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                            </span>
-                                        </div>
-                                    )}
-                                    {donorPassOnly && (
-                                        <div className="filtered-pill">
-                                            <span>Donor Pass</span>
-                                            <span
-                                                className="filtered-pill-close"
-                                                onClick={() => setDonorPassOnly(false)}
-                                            >
-                                                <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                            </span>
-                                        </div>
-                                    )}
-                                    {selectedCurators.map((curator) => (
-                                        <div key={curator} className="filtered-pill">
-                                            <span>{curator}</span>
-                                            <span
-                                                className="filtered-pill-close"
-                                                onClick={() => setSelectedCurators(prev => prev.filter(c => c !== curator))}
-                                            >
-                                                <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                            </span>
-                                        </div>
-                                    ))}
-                                    {selectedMoreFilters.map((filter) => (
-                                        <div key={filter} className="filtered-pill">
-                                            <span>{filter}</span>
-                                            <span
-                                                className="filtered-pill-close"
-                                                onClick={() => handleMoreFilterToggle(filter)}
-                                            >
-                                                <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Genre Section */}
-                            {genres.length > 0 && (
-                                <div className={`filter-accordion genre-accordion ${genreOpen ? "open" : ""}`}>
-                                    <div className="accordion-header" onClick={() => setGenreOpen(!genreOpen)}>
-                                        <h4 className="accordion-title">Genre</h4>
-                                        <svg
-                                            className={`accordion-chevron ${genreOpen ? "open" : ""}`}
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                        >
-                                            <polyline points="6 9 12 15 18 9"></polyline>
-                                        </svg>
-                                    </div>
-                                    {genreOpen && (
-                                        <div className="accordion-content">
-                                            {genres.map((genre) => {
-                                                const isSelected = selectedGenres.includes(genre);
-                                                return (
-                                                    <button
-                                                        key={genre}
-                                                        className={`filter-pill ${isSelected ? "selected" : ""}`}
-                                                        onClick={() => handleGenreToggle(genre)}
-                                                    >
-                                                        {genre}
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Zones Section */}
-                            <div className="filter-accordion">
-                                <div className="accordion-header" onClick={() => setZonesOpen(!zonesOpen)}>
-                                    <h4 className="accordion-title">Zones</h4>
-                                    <svg
-                                        className={`accordion-chevron ${zonesOpen ? "open" : ""}`}
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                    >
-                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                    </svg>
-                                </div>
-                                {zonesOpen && (
-                                    <div className="accordion-content">
-                                        {STATIC_ZONES.map((zone) => {
-                                            const isSelected = selectedZones.includes(zone);
-                                            return (
-                                                <button
-                                                    key={zone}
-                                                    className={`filter-pill ${isSelected ? "selected" : ""}`}
-                                                    onClick={() => handleZoneToggle(zone)}
-                                                >
-                                                    {zone}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Language Section */}
-                            {languages.length > 0 && (
-                                <div className="filter-accordion">
-                                    <div className="accordion-header" onClick={() => setLanguageOpen(!languageOpen)}>
-                                        <h4 className="accordion-title">Language</h4>
-                                        <svg
-                                            className={`accordion-chevron ${languageOpen ? "open" : ""}`}
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                        >
-                                            <polyline points="6 9 12 15 18 9"></polyline>
-                                        </svg>
-                                    </div>
-                                    {languageOpen && (
-                                        <div className="accordion-content">
-                                            <button
-                                                className={`filter-pill ${selectedLanguages.length === 0 ? "selected" : ""}`}
-                                                onClick={() => setSelectedLanguages([])}
-                                            >
-                                                All
-                                            </button>
-                                            {languages.map((lang) => {
-                                                const isSelected = selectedLanguages.includes(lang);
-                                                return (
-                                                    <button
-                                                        key={lang}
-                                                        className={`filter-pill ${isSelected ? "selected" : ""}`}
-                                                        onClick={() => handleLanguageToggle(lang)}
-                                                    >
-                                                        {lang}
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* More Filters Section */}
-                            <div className="filter-accordion">
-                                <div className="accordion-header" onClick={() => setMoreFiltersOpen(!moreFiltersOpen)}>
-                                    <h4 className="accordion-title">More Filters</h4>
-                                    <svg
-                                        className={`accordion-chevron ${moreFiltersOpen ? "open" : ""}`}
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                    >
-                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                    </svg>
-                                </div>
-                                {moreFiltersOpen && (
-                                    <div className="accordion-content" style={{ display: "flex", flexDirection: "column", gap: "20px", width: "100%" }}>
-                                        {/* Status Group */}
-                                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                            <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Status & Duration</span>
-                                            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                                                {MORE_FILTERS.map((filter) => {
-                                                    const isSelected = selectedMoreFilters.includes(filter);
-                                                    return (
-                                                        <button
-                                                            key={filter}
-                                                            className={`filter-pill ${isSelected ? "selected" : ""}`}
-                                                            onClick={() => handleMoreFilterToggle(filter)}
-                                                        >
-                                                            {filter}
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
+                        <aside className={`left-filter-sidebar ${isSticky ? "is-sticky-sidebar" : ""}`}>
+                            {(() => {
+                                const hasActiveFilters = selectedVenues.length > 0 || selectedGenres.length > 0 || selectedZones.length > 0 || selectedLanguages.length > 0 || selectedSubfestivals.length > 0 || freePassOnly || donorPassOnly || selectedCurators.length > 0 || selectedMoreFilters.length > 0;
+                                return (
+                                    <>
+                                        <div className="filter-sidebar-header" style={{ marginBottom: hasActiveFilters ? "16px" : "40px" }}>
+                                            <span className="filter-section-title">FILTER BY</span>
+                                            {hasActiveFilters && (
+                                                <span className="filter-clear-all" onClick={handleResetAll}>Clear all</span>
+                                            )}
                                         </div>
 
-                                        {/* Passes Group */}
-                                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                            <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Pass Types</span>
-                                            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                                                <button
-                                                    className={`filter-pill ${freePassOnly ? "selected" : ""}`}
-                                                    onClick={() => setFreePassOnly(!freePassOnly)}
-                                                >
-                                                    Free Pass
-                                                </button>
-                                                <button
-                                                    className={`filter-pill ${donorPassOnly ? "selected" : ""}`}
-                                                    onClick={() => setDonorPassOnly(!donorPassOnly)}
-                                                >
-                                                    Donor Pass
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        {/* Sub-Festival Group */}
-                                        {subfestivals.length > 0 && (
-                                            <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                                <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Sub-Festivals</span>
-                                                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                                                    <button
-                                                        className={`filter-pill ${selectedSubfestivals.length === 0 ? "selected" : ""}`}
-                                                        onClick={() => setSelectedSubfestivals([])}
-                                                    >
-                                                        All
-                                                    </button>
-                                                    {subfestivals.map((subfest) => {
-                                                        const isSelected = selectedSubfestivals.includes(subfest);
-                                                        return (
-                                                            <button
-                                                                key={subfest}
-                                                                className={`filter-pill ${isSelected ? "selected" : ""}`}
-                                                                onClick={() => {
-                                                                    setSelectedSubfestivals(prev =>
-                                                                        prev.includes(subfest)
-                                                                            ? prev.filter(s => s !== subfest)
-                                                                            : [...prev, subfest]
-                                                                    );
-                                                                }}
-                                                            >
-                                                                {subfest}
-                                                            </button>
-                                                        );
-                                                    })}
-                                                </div>
+                                        {/* Active Filtered Pills */}
+                                        {hasActiveFilters && (
+                                            <div className="filtered-by-pills" style={{ marginBottom: "32px" }}>
+                                                {selectedVenues.map((venue) => (
+                                                    <div key={venue} className="filtered-pill">
+                                                        <span>{venue}</span>
+                                                        <CloseIcon onClick={() => setSelectedVenues(prev => prev.filter(v => v !== venue))} />
+                                                    </div>
+                                                ))}
+                                                {selectedGenres.map((genre) => (
+                                                    <div key={genre} className="filtered-pill">
+                                                        <span>{toTitleCase(genre)}</span>
+                                                        <CloseIcon onClick={() => handleGenreToggle(genre)} />
+                                                    </div>
+                                                ))}
+                                                {selectedZones.map((zone) => (
+                                                    <div key={zone} className="filtered-pill">
+                                                        <span>{zone}</span>
+                                                        <CloseIcon onClick={() => handleZoneToggle(zone)} />
+                                                    </div>
+                                                ))}
+                                                {selectedLanguages.map((lang) => (
+                                                    <div key={lang} className="filtered-pill">
+                                                        <span>{lang}</span>
+                                                        <CloseIcon onClick={() => handleLanguageToggle(lang)} />
+                                                    </div>
+                                                ))}
+                                                {selectedSubfestivals.map((subfest) => (
+                                                    <div key={subfest} className="filtered-pill">
+                                                        <span>{subfest}</span>
+                                                        <CloseIcon onClick={() => setSelectedSubfestivals(prev => prev.filter(s => s !== subfest))} />
+                                                    </div>
+                                                ))}
+                                                {freePassOnly && (
+                                                    <div className="filtered-pill">
+                                                        <span>Free Pass</span>
+                                                        <CloseIcon onClick={() => setFreePassOnly(false)} />
+                                                    </div>
+                                                )}
+                                                {donorPassOnly && (
+                                                    <div className="filtered-pill">
+                                                        <span>Donor Pass</span>
+                                                        <CloseIcon onClick={() => setDonorPassOnly(false)} />
+                                                    </div>
+                                                )}
+                                                {selectedCurators.map((curator) => (
+                                                    <div key={curator} className="filtered-pill">
+                                                        <span>{curator}</span>
+                                                        <CloseIcon onClick={() => setSelectedCurators(prev => prev.filter(c => c !== curator))} />
+                                                    </div>
+                                                ))}
+                                                {selectedMoreFilters.map((filter) => (
+                                                    <div key={filter} className="filtered-pill">
+                                                        <span>{filter}</span>
+                                                        <CloseIcon onClick={() => handleMoreFilterToggle(filter)} />
+                                                    </div>
+                                                ))}
                                             </div>
                                         )}
+                                    </>
+                                );
+                            })()}
 
-                                        {/* Curator Group */}
-                                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                            <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Curated By</span>
-                                            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                                                <button
-                                                    className={`filter-pill ${selectedCurators.length === 0 ? "selected" : ""}`}
-                                                    onClick={() => setSelectedCurators([])}
-                                                >
-                                                    All
-                                                </button>
-                                                {curators.map((curator) => {
-                                                    const isSelected = selectedCurators.includes(curator);
+                            {/* Venues Section */}
+                            {venues.length > 0 && (
+                                <div className={`filter-accordion ${openAccordion === "VENUES" ? "open" : ""}`}>
+                                    <div className="accordion-header" onClick={() => toggleAccordion("VENUES")}>
+                                        <div className="accordion-title-wrapper">
+                                            <h4 className="accordion-title">VENUES</h4>
+                                            {selectedVenues.length > 0 && (
+                                                <span className="filter-count-badge">{selectedVenues.length}</span>
+                                            )}
+                                        </div>
+                                        <svg
+                                            className={`accordion-chevron ${openAccordion === "VENUES" ? "open" : ""}`}
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        >
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </div>
+                                    <AnimatePresence initial={false}>
+                                        {openAccordion === "VENUES" && (
+                                            <motion.div
+                                                key="venues-content"
+                                                initial={{ opacity: 0, y: -4 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -4 }}
+                                                transition={{ duration: 0.15, ease: "easeOut" }}
+                                                className="accordion-content"
+                                            >
+                                                {(venuesShowAll ? venues : venues.slice(0, 10)).map((venue) => {
+                                                    const isSelected = selectedVenues.includes(venue);
                                                     return (
-                                                        <button
-                                                            key={curator}
-                                                            className={`filter-pill ${isSelected ? "selected" : ""}`}
-                                                            onClick={() => {
-                                                                setSelectedCurators(prev =>
-                                                                    prev.includes(curator)
-                                                                        ? prev.filter(c => c !== curator)
-                                                                        : [...prev, curator]
-                                                                );
-                                                            }}
+                                                        <div
+                                                            key={venue}
+                                                            className={`filter-checkbox-row ${isSelected ? "checked" : ""}`}
+                                                            onClick={() => setSelectedVenues(prev => isSelected ? prev.filter(v => v !== venue) : [...prev, venue])}
                                                         >
-                                                            {curator}
-                                                        </button>
+                                                            <div className="custom-checkbox">
+                                                                {isSelected && (
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+                                                                        <path d="M8.75 0.75L3.48657 5.75L0.75 3.1502" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                                    </svg>
+                                                                )}
+                                                            </div>
+                                                            <span className="filter-checkbox-label">{venue}</span>
+                                                        </div>
                                                     );
                                                 })}
-                                            </div>
-                                        </div>
+                                                {venues.length > 10 && (
+                                                    <div className="view-all-toggle" onClick={() => setVenuesShowAll(!venuesShowAll)}>
+                                                        <span>{venuesShowAll ? "View Less" : `View All (${venues.length})`}</span>
+                                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                            <polyline points={venuesShowAll ? "18 15 12 9 6 15" : "6 9 12 15 18 9"}></polyline>
+                                                        </svg>
+                                                    </div>
+                                                )}
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                            )}
+
+                            {/* Genre Section */}
+                            <div className={`filter-accordion ${openAccordion === "GENRE" ? "open" : ""}`}>
+                                <div className="accordion-header" onClick={() => toggleAccordion("GENRE")}>
+                                    <div className="accordion-title-wrapper">
+                                        <h4 className="accordion-title">GENRE</h4>
+                                        {selectedGenres.length > 0 && (
+                                            <span className="filter-count-badge">{selectedGenres.length}</span>
+                                        )}
                                     </div>
-                                )}
+                                    <svg
+                                        className={`accordion-chevron ${openAccordion === "GENRE" ? "open" : ""}`}
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                    >
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </div>
+                                <AnimatePresence initial={false}>
+                                    {openAccordion === "GENRE" && (
+                                        <motion.div
+                                            key="genre-content"
+                                            initial={{ opacity: 0, y: -4 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -4 }}
+                                            transition={{ duration: 0.15, ease: "easeOut" }}
+                                            className="accordion-content"
+                                        >
+                                            {genres.length > 0 ? (
+                                                genres.map((genre) => {
+                                                    const isSelected = selectedGenres.some((g) => g.toLowerCase() === genre.toLowerCase());
+                                                    return (
+                                                        <div
+                                                            key={genre}
+                                                            className={`filter-checkbox-row ${isSelected ? "checked" : ""}`}
+                                                            onClick={() => handleGenreToggle(genre)}
+                                                        >
+                                                            <div className="custom-checkbox">
+                                                                {isSelected && (
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+                                                                        <path d="M8.75 0.75L3.48657 5.75L0.75 3.1502" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                                    </svg>
+                                                                )}
+                                                            </div>
+                                                            <span className="filter-checkbox-label">{toTitleCase(genre)}</span>
+                                                        </div>
+                                                    );
+                                                })
+                                            ) : (
+                                                <div className="filter-checkbox-row" style={{ opacity: 0.6, cursor: "default" }}>
+                                                    <span className="filter-checkbox-label">No genres added yet</span>
+                                                </div>
+                                            )}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+
+                            {/* Festivals Section */}
+                            <div className={`filter-accordion ${openAccordion === "FESTIVALS" ? "open" : ""}`}>
+                                <div className="accordion-header" onClick={() => toggleAccordion("FESTIVALS")}>
+                                    <div className="accordion-title-wrapper">
+                                        <h4 className="accordion-title">FESTIVALS</h4>
+                                        {selectedSubfestivals.length > 0 && (
+                                            <span className="filter-count-badge">{selectedSubfestivals.length}</span>
+                                        )}
+                                    </div>
+                                    <svg
+                                        className={`accordion-chevron ${openAccordion === "FESTIVALS" ? "open" : ""}`}
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                    >
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </div>
+                                <AnimatePresence initial={false}>
+                                    {openAccordion === "FESTIVALS" && (
+                                        <motion.div
+                                            key="festivals-content"
+                                            initial={{ opacity: 0, y: -4 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -4 }}
+                                            transition={{ duration: 0.15, ease: "easeOut" }}
+                                            className="accordion-content"
+                                        >
+                                            {subfestivals.map((subfest) => {
+                                                const isSelected = selectedSubfestivals.includes(subfest);
+                                                return (
+                                                    <div
+                                                        key={subfest}
+                                                        className={`filter-checkbox-row ${isSelected ? "checked" : ""}`}
+                                                        onClick={() => setSelectedSubfestivals(prev => isSelected ? prev.filter(s => s !== subfest) : [...prev, subfest])}
+                                                    >
+                                                        <div className="custom-checkbox">
+                                                            {isSelected && (
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+                                                                    <path d="M8.75 0.75L3.48657 5.75L0.75 3.1502" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                                </svg>
+                                                            )}
+                                                        </div>
+                                                        <span className="filter-checkbox-label">{toTitleCase(subfest)}</span>
+                                                    </div>
+                                                );
+                                            })}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+
+                            {/* Curators Section */}
+                            <div className={`filter-accordion ${openAccordion === "CURATORS" ? "open" : ""}`}>
+                                <div className="accordion-header" onClick={() => toggleAccordion("CURATORS")}>
+                                    <div className="accordion-title-wrapper">
+                                        <h4 className="accordion-title">CURATORS</h4>
+                                        {selectedCurators.length > 0 && (
+                                            <span className="filter-count-badge">{selectedCurators.length}</span>
+                                        )}
+                                    </div>
+                                    <svg
+                                        className={`accordion-chevron ${openAccordion === "CURATORS" ? "open" : ""}`}
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                    >
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </div>
+                                <AnimatePresence initial={false}>
+                                    {openAccordion === "CURATORS" && (
+                                        <motion.div
+                                            key="curators-content"
+                                            initial={{ opacity: 0, y: -4 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -4 }}
+                                            transition={{ duration: 0.15, ease: "easeOut" }}
+                                            className="accordion-content"
+                                        >
+                                            {curators.map((curator) => {
+                                                const isSelected = selectedCurators.includes(curator);
+                                                return (
+                                                    <div
+                                                        key={curator}
+                                                        className={`filter-checkbox-row ${isSelected ? "checked" : ""}`}
+                                                        onClick={() => setSelectedCurators(prev => isSelected ? prev.filter(c => c !== curator) : [...prev, curator])}
+                                                    >
+                                                        <div className="custom-checkbox">
+                                                            {isSelected && (
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+                                                                    <path d="M8.75 0.75L3.48657 5.75L0.75 3.1502" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                                </svg>
+                                                            )}
+                                                        </div>
+                                                        <span className="filter-checkbox-label">{toTitleCase(curator)}</span>
+                                                    </div>
+                                                );
+                                            })}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+
+                            {/* Languages Section */}
+                            {languages.length > 0 && (
+                                <div className={`filter-accordion ${openAccordion === "LANGUAGES" ? "open" : ""}`}>
+                                    <div className="accordion-header" onClick={() => toggleAccordion("LANGUAGES")}>
+                                        <div className="accordion-title-wrapper">
+                                            <h4 className="accordion-title">LANGUAGES</h4>
+                                            {selectedLanguages.length > 0 && (
+                                                <span className="filter-count-badge">{selectedLanguages.length}</span>
+                                            )}
+                                        </div>
+                                        <svg
+                                            className={`accordion-chevron ${openAccordion === "LANGUAGES" ? "open" : ""}`}
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        >
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </div>
+                                    <AnimatePresence initial={false}>
+                                        {openAccordion === "LANGUAGES" && (
+                                            <motion.div
+                                                key="languages-content"
+                                                initial={{ opacity: 0, y: -4 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -4 }}
+                                                transition={{ duration: 0.15, ease: "easeOut" }}
+                                                className="accordion-content"
+                                            >
+                                                {languages.map((lang) => {
+                                                    const isSelected = selectedLanguages.includes(lang);
+                                                    return (
+                                                        <div
+                                                            key={lang}
+                                                            className={`filter-checkbox-row ${isSelected ? "checked" : ""}`}
+                                                            onClick={() => handleLanguageToggle(lang)}
+                                                        >
+                                                            <div className="custom-checkbox">
+                                                                {isSelected && (
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+                                                                        <path d="M8.75 0.75L3.48657 5.75L0.75 3.1502" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                                    </svg>
+                                                                )}
+                                                            </div>
+                                                            <span className="filter-checkbox-label">{toTitleCase(lang)}</span>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                            )}
+
+                            {/* Availability Section */}
+                            <div className={`filter-accordion ${openAccordion === "AVAILABILITY" ? "open" : ""}`}>
+                                <div className="accordion-header" onClick={() => toggleAccordion("AVAILABILITY")}>
+                                    <div className="accordion-title-wrapper">
+                                        <h4 className="accordion-title">AVAILABILITY</h4>
+                                        {(freePassOnly || donorPassOnly) && (
+                                            <span className="filter-count-badge">{(freePassOnly ? 1 : 0) + (donorPassOnly ? 1 : 0)}</span>
+                                        )}
+                                    </div>
+                                    <svg
+                                        className={`accordion-chevron ${openAccordion === "AVAILABILITY" ? "open" : ""}`}
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                    >
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </div>
+                                <AnimatePresence initial={false}>
+                                    {openAccordion === "AVAILABILITY" && (
+                                        <motion.div
+                                            key="availability-content"
+                                            initial={{ opacity: 0, y: -4 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -4 }}
+                                            transition={{ duration: 0.15, ease: "easeOut" }}
+                                            className="accordion-content"
+                                        >
+                                            <div
+                                                className={`filter-checkbox-row ${freePassOnly ? "checked" : ""}`}
+                                                onClick={() => setFreePassOnly(!freePassOnly)}
+                                            >
+                                                <div className="custom-checkbox">
+                                                    {freePassOnly && (
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+                                                            <path d="M8.75 0.75L3.48657 5.75L0.75 3.1502" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                        </svg>
+                                                    )}
+                                                </div>
+                                                <span className="filter-checkbox-label">Free Pass</span>
+                                            </div>
+                                            <div
+                                                className={`filter-checkbox-row ${donorPassOnly ? "checked" : ""}`}
+                                                onClick={() => setDonorPassOnly(!donorPassOnly)}
+                                            >
+                                                <div className="custom-checkbox">
+                                                    {donorPassOnly && (
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+                                                            <path d="M8.75 0.75L3.48657 5.75L0.75 3.1502" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                        </svg>
+                                                    )}
+                                                </div>
+                                                <span className="filter-checkbox-label">Donor Pass</span>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+
+                            {/* More Filters Section */}
+                            <div className={`filter-accordion ${openAccordion === "MORE_FILTERS" ? "open" : ""}`}>
+                                <div className="accordion-header" onClick={() => toggleAccordion("MORE_FILTERS")}>
+                                    <div className="accordion-title-wrapper">
+                                        <h4 className="accordion-title">MORE FILTERS</h4>
+                                        {selectedMoreFilters.length > 0 && (
+                                            <span className="filter-count-badge">{selectedMoreFilters.length}</span>
+                                        )}
+                                    </div>
+                                    <svg
+                                        className={`accordion-chevron ${openAccordion === "MORE_FILTERS" ? "open" : ""}`}
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                    >
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </div>
+                                <AnimatePresence initial={false}>
+                                    {openAccordion === "MORE_FILTERS" && (
+                                        <motion.div
+                                            key="more-filters-content"
+                                            initial={{ opacity: 0, y: -4 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -4 }}
+                                            transition={{ duration: 0.15, ease: "easeOut" }}
+                                            className="accordion-content"
+                                        >
+                                            {MORE_FILTERS.map((filter) => {
+                                                const isSelected = selectedMoreFilters.includes(filter);
+                                                return (
+                                                    <div
+                                                        key={filter}
+                                                        className={`filter-checkbox-row ${isSelected ? "checked" : ""}`}
+                                                        onClick={() => handleMoreFilterToggle(filter)}
+                                                    >
+                                                        <div className="custom-checkbox">
+                                                            {isSelected && (
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+                                                                    <path d="M8.75 0.75L3.48657 5.75L0.75 3.1502" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                                </svg>
+                                                            )}
+                                                        </div>
+                                                        <span className="filter-checkbox-label">{filter}</span>
+                                                    </div>
+                                                );
+                                            })}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
 
                             {/* Reset Button */}
                             <button className="reset-filters-btn" onClick={handleResetAll}>
-                                RESET ALL FILTERS
+                                <span className="btn-text-primary">RESET FILTERS</span>
+                                <span className="btn-text-secondary">RESET FILTERS</span>
                             </button>
                         </aside>
 
                         {/* Right Content Area */}
                         <main className="right-content-area">
+                            {/* Sentinel for sticky calendar detection */}
+                            <div ref={sentinelRef} style={{ height: "1px", margin: "0", padding: "0" }}></div>
+
+                            {/* Month Subtitle & Download Calendar Row */}
+                            <div className="month-header-row">
+                                <div className="month-subtitle">JANUARY 2027</div>
+                                <button
+                                    className="download-calendar-btn"
+                                    onClick={() => setIsCalendarModalOpen(true)}
+                                >
+                                    <span className="download-calendar-text">DOWNLOAD CALENDAR</span>
+                                    <div className="download-calendar-icon-circle">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8" fill="none">
+                                            <path d="M5.72084 3.309L0.957996 8L0 7.0581L4.66684 2.38972C2.88234 2.8072 1.7198 2.42879 0.267154 1.40668L1.33368 0C2.84268 1.56915 5.08635 1.63085 6.80824 0.296144L7.79755 1.2401C6.44091 2.90797 6.53065 5.16195 8 6.7311L6.62249 7.68946C5.64362 6.4 5.31177 4.96658 5.71876 3.30694L5.72084 3.309Z" fill="black" />
+                                        </svg>
+                                    </div>
+                                </button>
+                            </div>
+
+                            {/* Date & Venue Filter Row - Sticky Wrapper on Mobile */}
+                            <div className="venue-date-filter-row">
+                                <div className="date-filter-row">
+                                    {dates.map((date, idx) => {
+                                        const isActive = selectedDate === date.value;
+                                        if (date.value === "ALL") {
+                                            return (
+                                                <button
+                                                    key={idx}
+                                                    className={`date-card ${isActive ? "active" : ""}`}
+                                                    onClick={() => setSelectedDate("ALL")}
+                                                >
+                                                    <span className="date-card-all">ALL</span>
+                                                </button>
+                                            );
+                                        }
+                                        return (
+                                            <button
+                                                key={idx}
+                                                className={`date-card ${isActive ? "active" : ""}`}
+                                                onClick={() => setSelectedDate(date.value)}
+                                            >
+                                                <div className="date-card-section">
+                                                    <span className="date-card-day">{date.day}</span>
+                                                    <span className="date-card-weekday">{date.weekday}</span>
+                                                </div>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Mobile Active Filtered Pills Row (Only rendered when active filters exist) */}
+                            {(() => {
+                                const hasActiveFilters = selectedVenues.length > 0 || selectedGenres.length > 0 || selectedZones.length > 0 || selectedLanguages.length > 0 || selectedSubfestivals.length > 0 || freePassOnly || donorPassOnly || selectedCurators.length > 0 || selectedMoreFilters.length > 0;
+                                if (!hasActiveFilters) return null;
+                                return (
+                                    <div className="mobile-active-filters-row">
+                                        <span className="mobile-filtered-by-label">FILTERED BY</span>
+                                        <div className="mobile-filtered-pills-scroll">
+                                            {selectedVenues.map((venue) => (
+                                                <div key={venue} className="filtered-pill">
+                                                    <span>{venue}</span>
+                                                    <CloseIcon onClick={() => setSelectedVenues(prev => prev.filter(v => v !== venue))} />
+                                                </div>
+                                            ))}
+                                            {selectedGenres.map((genre) => (
+                                                <div key={genre} className="filtered-pill">
+                                                    <span>{toTitleCase(genre)}</span>
+                                                    <CloseIcon onClick={() => handleGenreToggle(genre)} />
+                                                </div>
+                                            ))}
+                                            {selectedZones.map((zone) => (
+                                                <div key={zone} className="filtered-pill">
+                                                    <span>{zone}</span>
+                                                    <CloseIcon onClick={() => handleZoneToggle(zone)} />
+                                                </div>
+                                            ))}
+                                            {selectedLanguages.map((lang) => (
+                                                <div key={lang} className="filtered-pill">
+                                                    <span>{lang}</span>
+                                                    <CloseIcon onClick={() => handleLanguageToggle(lang)} />
+                                                </div>
+                                            ))}
+                                            {selectedSubfestivals.map((subfest) => (
+                                                <div key={subfest} className="filtered-pill">
+                                                    <span>{subfest}</span>
+                                                    <CloseIcon onClick={() => setSelectedSubfestivals(prev => prev.filter(s => s !== subfest))} />
+                                                </div>
+                                            ))}
+                                            {freePassOnly && (
+                                                <div className="filtered-pill">
+                                                    <span>Free Pass</span>
+                                                    <CloseIcon onClick={() => setFreePassOnly(false)} />
+                                                </div>
+                                            )}
+                                            {donorPassOnly && (
+                                                <div className="filtered-pill">
+                                                    <span>Donor Pass</span>
+                                                    <CloseIcon onClick={() => setDonorPassOnly(false)} />
+                                                </div>
+                                            )}
+                                            {selectedCurators.map((curator) => (
+                                                <div key={curator} className="filtered-pill">
+                                                    <span>{curator}</span>
+                                                    <CloseIcon onClick={() => setSelectedCurators(prev => prev.filter(c => c !== curator))} />
+                                                </div>
+                                            ))}
+                                            {selectedMoreFilters.map((filter) => (
+                                                <div key={filter} className="filtered-pill">
+                                                    <span>{filter}</span>
+                                                    <CloseIcon onClick={() => handleMoreFilterToggle(filter)} />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                );
+                            })()}
                             {loading ? (
                                 <div className="events-grid">
                                     {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -900,7 +1459,7 @@ export const EventListing = () => {
                                 </>
                             ) : (
                                 <div className="no-events-found" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', height: '300px' }}>
-                                    <p style={{ fontFamily: 'Roboto Condensed', fontSize: '24px', fontWeight: '600', color: '#000', margin: '0 0 16px 0' }}>No Events Found</p>
+                                    <p style={{ fontFamily: 'Roboto Condensed', fontSize: '24px', fontWeight: '600', color: '#FFFFFF', margin: '0 0 16px 0' }}>No Events Found</p>
                                     <button
                                         className="reset-filters-btn-inline"
                                         style={{
@@ -928,7 +1487,6 @@ export const EventListing = () => {
                     </div>
                 </div>
             </div>
-            <HorizontalRow />
 
             {/* Filter Modal Bottom Sheet */}
             {isFilterModalOpen && (
@@ -936,7 +1494,7 @@ export const EventListing = () => {
                     <div className="mobile-filter-bottom-sheet" onClick={(e) => e.stopPropagation()}>
                         {/* Header */}
                         <div className="bottom-sheet-header">
-                            <span className="bottom-sheet-title">Filters</span>
+                            <span className="bottom-sheet-title">FILTER BY</span>
                             <button className="bottom-sheet-close-btn" onClick={() => setIsFilterModalOpen(false)}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
                                     <path d="M13.5 4.5L4.5 13.5M4.5 4.5L13.5 13.5" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -944,246 +1502,267 @@ export const EventListing = () => {
                             </button>
                         </div>
 
-                        {/* Content */}
-                        <div className="bottom-sheet-content">
-                            {/* Active Pills */}
-                            {(selectedVenues.length > 0 || selectedGenres.length > 0 || selectedLanguages.length > 0 || selectedMoreFilters.length > 0 || selectedSubfestivals.length > 0 || freePassOnly || donorPassOnly || selectedCurators.length > 0) && (
-                                <div className="bottom-sheet-section">
-                                    <span className="bottom-sheet-section-label">Filtered by</span>
-                                    <div className="filtered-by-pills" style={{ marginTop: "12px" }}>
-                                        {selectedVenues.map((venue) => (
-                                            <div key={venue} className="filtered-pill">
-                                                <span>{venue}</span>
-                                                <span className="filtered-pill-close" onClick={() => setSelectedVenues(prev => prev.filter(v => v !== venue))}>
-                                                    <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                                </span>
-                                            </div>
-                                        ))}
-                                        {selectedGenres.map((genre) => (
-                                            <div key={genre} className="filtered-pill">
-                                                <span>{genre}</span>
-                                                <span className="filtered-pill-close" onClick={() => handleGenreToggle(genre)}>
-                                                    <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                                </span>
-                                            </div>
-                                        ))}
-                                        {selectedLanguages.map((lang) => (
-                                            <div key={lang} className="filtered-pill">
-                                                <span>{lang}</span>
-                                                <span className="filtered-pill-close" onClick={() => handleLanguageToggle(lang)}>
-                                                    <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                                </span>
-                                            </div>
-                                        ))}
-                                        {selectedSubfestivals.map((subfest) => (
-                                            <div key={subfest} className="filtered-pill">
-                                                <span>{subfest}</span>
-                                                <span className="filtered-pill-close" onClick={() => setSelectedSubfestivals(prev => prev.filter(s => s !== subfest))}>
-                                                    <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                                </span>
-                                            </div>
-                                        ))}
-                                        {freePassOnly && (
-                                            <div className="filtered-pill">
-                                                <span>Free Pass</span>
-                                                <span className="filtered-pill-close" onClick={() => setFreePassOnly(false)}>
-                                                    <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                                </span>
-                                            </div>
-                                        )}
-                                        {donorPassOnly && (
-                                            <div className="filtered-pill">
-                                                <span>Donor Pass</span>
-                                                <span className="filtered-pill-close" onClick={() => setDonorPassOnly(false)}>
-                                                    <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                                </span>
-                                            </div>
-                                        )}
-                                        {selectedCurators.map((curator) => (
-                                            <div key={curator} className="filtered-pill">
-                                                <span>{curator}</span>
-                                                <span className="filtered-pill-close" onClick={() => setSelectedCurators(prev => prev.filter(c => c !== curator))}>
-                                                    <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                                </span>
-                                            </div>
-                                        ))}
-                                        {selectedMoreFilters.map((filter) => (
-                                            <div key={filter} className="filtered-pill">
-                                                <span>{filter}</span>
-                                                <span className="filtered-pill-close" onClick={() => handleMoreFilterToggle(filter)}>
-                                                    <img src={xIcon} alt="close" style={{ width: "10px", height: "10px" }} />
-                                                </span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Genre Accordion */}
-                            {genres.length > 0 && (
-                                <div className={`filter-accordion genre-accordion ${genreOpen ? "open" : ""}`}>
-                                    <div className="accordion-header" onClick={() => setGenreOpen(!genreOpen)}>
-                                        <h4 className="accordion-title">Genre</h4>
-                                        <svg className={`accordion-chevron ${genreOpen ? "open" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                            <polyline points="6 9 12 15 18 9"></polyline>
-                                        </svg>
-                                    </div>
-                                    {genreOpen && (
-                                        <div className="accordion-content">
-                                            <div className="pills-grid">
-                                                {genres.map((genre) => {
-                                                    const isSelected = selectedGenres.includes(genre);
-                                                    return (
-                                                        <button key={genre} className={`filter-pill ${isSelected ? "selected" : ""}`} onClick={() => handleGenreToggle(genre)}>
-                                                            {genre}
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
+                        {/* 2-Column Body */}
+                        <div className="bottom-sheet-body">
+                            {/* Left Sidebar */}
+                            <div className="bottom-sheet-sidebar">
+                                <div
+                                    className={`sidebar-tab ${activeMobileFilterTab === "VENUES" ? "active" : ""}`}
+                                    onClick={() => setActiveMobileFilterTab("VENUES")}
+                                >
+                                    <span>VENUES</span>
+                                    {selectedVenues.length > 0 && (
+                                        <span className="tab-badge">{selectedVenues.length}</span>
                                     )}
                                 </div>
-                            )}
 
-                            {/* Language Accordion */}
-                            {languages.length > 0 && (
-                                <div className="filter-accordion">
-                                    <div className="accordion-header" onClick={() => setLanguageOpen(!languageOpen)}>
-                                        <h4 className="accordion-title">Language</h4>
-                                        <svg className={`accordion-chevron ${languageOpen ? "open" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                            <polyline points="6 9 12 15 18 9"></polyline>
-                                        </svg>
-                                    </div>
-                                    {languageOpen && (
-                                        <div className="accordion-content">
-                                            <div className="pills-grid">
-                                                <button
-                                                    className={`filter-pill ${selectedLanguages.length === 0 ? "selected" : ""}`}
-                                                    onClick={() => setSelectedLanguages([])}
-                                                >
-                                                    All
-                                                </button>
-                                                {languages.map((lang) => {
-                                                    const isSelected = selectedLanguages.includes(lang);
-                                                    return (
-                                                        <button key={lang} className={`filter-pill ${isSelected ? "selected" : ""}`} onClick={() => handleLanguageToggle(lang)}>
-                                                            {lang}
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
+                                <div
+                                    className={`sidebar-tab ${activeMobileFilterTab === "GENRE" ? "active" : ""}`}
+                                    onClick={() => setActiveMobileFilterTab("GENRE")}
+                                >
+                                    <span>GENRE</span>
+                                    {selectedGenres.length > 0 && (
+                                        <span className="tab-badge">{selectedGenres.length}</span>
                                     )}
                                 </div>
-                            )}
 
-                            {/* More Filters Accordion */}
-                            <div className="filter-accordion">
-                                <div className="accordion-header" onClick={() => setMoreFiltersOpen(!moreFiltersOpen)}>
-                                    <h4 className="accordion-title">More Filters</h4>
-                                    <svg className={`accordion-chevron ${moreFiltersOpen ? "open" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                    </svg>
+                                <div
+                                    className={`sidebar-tab ${activeMobileFilterTab === "FESTIVALS" ? "active" : ""}`}
+                                    onClick={() => setActiveMobileFilterTab("FESTIVALS")}
+                                >
+                                    <span>FESTIVALS</span>
+                                    {selectedSubfestivals.length > 0 && (
+                                        <span className="tab-badge">{selectedSubfestivals.length}</span>
+                                    )}
                                 </div>
-                                {moreFiltersOpen && (
-                                    <div className="accordion-content" style={{ display: "flex", flexDirection: "column", gap: "20px", width: "100%" }}>
-                                        {/* Status Group */}
-                                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                            <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Status & Duration</span>
-                                            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                                                {MORE_FILTERS.map((filter) => {
-                                                    const isSelected = selectedMoreFilters.includes(filter);
-                                                    return (
-                                                        <button key={filter} className={`filter-pill ${isSelected ? "selected" : ""}`} onClick={() => handleMoreFilterToggle(filter)}>
-                                                            {filter}
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
 
-                                        {/* Passes Group */}
-                                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                            <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Pass Types</span>
-                                            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                                                <button
-                                                    className={`filter-pill ${freePassOnly ? "selected" : ""}`}
-                                                    onClick={() => setFreePassOnly(!freePassOnly)}
-                                                >
-                                                    Free Pass
-                                                </button>
-                                                <button
-                                                    className={`filter-pill ${donorPassOnly ? "selected" : ""}`}
-                                                    onClick={() => setDonorPassOnly(!donorPassOnly)}
-                                                >
-                                                    Donor Pass
-                                                </button>
-                                            </div>
-                                        </div>
+                                <div
+                                    className={`sidebar-tab ${activeMobileFilterTab === "CURATORS" ? "active" : ""}`}
+                                    onClick={() => setActiveMobileFilterTab("CURATORS")}
+                                >
+                                    <span>CURATORS</span>
+                                    {selectedCurators.length > 0 && (
+                                        <span className="tab-badge">{selectedCurators.length}</span>
+                                    )}
+                                </div>
 
-                                        {/* Sub-Festival Group */}
-                                        {subfestivals.length > 0 && (
-                                            <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                                <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Sub-Festivals</span>
-                                                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                                                    <button
-                                                        className={`filter-pill ${selectedSubfestivals.length === 0 ? "selected" : ""}`}
-                                                        onClick={() => setSelectedSubfestivals([])}
-                                                    >
-                                                        All
-                                                    </button>
-                                                    {subfestivals.map((subfest) => {
-                                                        const isSelected = selectedSubfestivals.includes(subfest);
-                                                        return (
-                                                            <button
-                                                                key={subfest}
-                                                                className={`filter-pill ${isSelected ? "selected" : ""}`}
-                                                                onClick={() => {
-                                                                    setSelectedSubfestivals(prev =>
-                                                                        prev.includes(subfest)
-                                                                            ? prev.filter(s => s !== subfest)
-                                                                            : [...prev, subfest]
-                                                                    );
-                                                                }}
-                                                            >
-                                                                {subfest}
-                                                            </button>
-                                                        );
-                                                    })}
+                                <div
+                                    className={`sidebar-tab ${activeMobileFilterTab === "LANGUAGES" ? "active" : ""}`}
+                                    onClick={() => setActiveMobileFilterTab("LANGUAGES")}
+                                >
+                                    <span>LANGUAGES</span>
+                                    {selectedLanguages.length > 0 && (
+                                        <span className="tab-badge">{selectedLanguages.length}</span>
+                                    )}
+                                </div>
+
+                                <div
+                                    className={`sidebar-tab ${activeMobileFilterTab === "AVAILABILITY" ? "active" : ""}`}
+                                    onClick={() => setActiveMobileFilterTab("AVAILABILITY")}
+                                >
+                                    <span>AVAILABILITY</span>
+                                    {(freePassOnly || donorPassOnly) && (
+                                        <span className="tab-badge">{(freePassOnly ? 1 : 0) + (donorPassOnly ? 1 : 0)}</span>
+                                    )}
+                                </div>
+
+                                <div
+                                    className={`sidebar-tab ${activeMobileFilterTab === "MORE FILTERS" ? "active" : ""}`}
+                                    onClick={() => setActiveMobileFilterTab("MORE FILTERS")}
+                                >
+                                    <span>MORE FILTERS</span>
+                                    {selectedMoreFilters.length > 0 && (
+                                        <span className="tab-badge">{selectedMoreFilters.length}</span>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Right Options Column */}
+                            <div className="bottom-sheet-options">
+                                {activeMobileFilterTab === "VENUES" && (
+                                    <div className="options-list">
+                                        {venues.map((venue) => {
+                                            const isChecked = selectedVenues.includes(venue);
+                                            return (
+                                                <div
+                                                    key={venue}
+                                                    className={`option-row ${isChecked ? "checked" : ""}`}
+                                                    onClick={() =>
+                                                        setSelectedVenues(prev =>
+                                                            prev.includes(venue) ? prev.filter(v => v !== venue) : [...prev, venue]
+                                                        )
+                                                    }
+                                                >
+                                                    <div className="option-checkbox">
+                                                        {isChecked && (
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+                                                                <path d="M8.75 0.75L3.48657 5.75L0.75 3.1502" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                            </svg>
+                                                        )}
+                                                    </div>
+                                                    <span className="option-label">{venue}</span>
                                                 </div>
-                                            </div>
-                                        )}
+                                            );
+                                        })}
+                                    </div>
+                                )}
 
-                                        {/* Curator Group */}
-                                        <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                                            <span style={{ fontSize: "12px", fontWeight: "600", fontFamily: "Roboto Condensed", textTransform: "uppercase", color: "#6C6C6C" }}>Curated By</span>
-                                            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                                                <button
-                                                    className={`filter-pill ${selectedCurators.length === 0 ? "selected" : ""}`}
-                                                    onClick={() => setSelectedCurators([])}
+                                {activeMobileFilterTab === "GENRE" && (
+                                    <div className="options-list">
+                                        {genres.map((genre) => {
+                                            const isChecked = selectedGenres.some((g) => g.toLowerCase() === genre.toLowerCase());
+                                            return (
+                                                <div
+                                                    key={genre}
+                                                    className={`option-row ${isChecked ? "checked" : ""}`}
+                                                    onClick={() => handleGenreToggle(genre)}
                                                 >
-                                                    All
-                                                </button>
-                                                {curators.map((curator) => {
-                                                    const isSelected = selectedCurators.includes(curator);
-                                                    return (
-                                                        <button
-                                                            key={curator}
-                                                            className={`filter-pill ${isSelected ? "selected" : ""}`}
-                                                            onClick={() => {
-                                                                setSelectedCurators(prev =>
-                                                                    prev.includes(curator)
-                                                                        ? prev.filter(c => c !== curator)
-                                                                        : [...prev, curator]
-                                                                );
-                                                            }}
-                                                        >
-                                                            {curator}
-                                                        </button>
-                                                    );
-                                                })}
+                                                    <div className="option-checkbox">
+                                                        {isChecked && (
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+                                                                <path d="M8.75 0.75L3.48657 5.75L0.75 3.1502" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                            </svg>
+                                                        )}
+                                                    </div>
+                                                    <span className="option-label">{toTitleCase(genre)}</span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+
+                                {activeMobileFilterTab === "FESTIVALS" && (
+                                    <div className="options-list">
+                                        {subfestivals.map((subfest) => {
+                                            const isChecked = selectedSubfestivals.includes(subfest);
+                                            return (
+                                                <div
+                                                    key={subfest}
+                                                    className={`option-row ${isChecked ? "checked" : ""}`}
+                                                    onClick={() =>
+                                                        setSelectedSubfestivals(prev =>
+                                                            prev.includes(subfest) ? prev.filter(s => s !== subfest) : [...prev, subfest]
+                                                        )
+                                                    }
+                                                >
+                                                    <div className="option-checkbox">
+                                                        {isChecked && (
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+                                                                <path d="M8.75 0.75L3.48657 5.75L0.75 3.1502" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                            </svg>
+                                                        )}
+                                                    </div>
+                                                    <span className="option-label">{subfest}</span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+
+                                {activeMobileFilterTab === "CURATORS" && (
+                                    <div className="options-list">
+                                        {curators.map((curator) => {
+                                            const isChecked = selectedCurators.includes(curator);
+                                            return (
+                                                <div
+                                                    key={curator}
+                                                    className={`option-row ${isChecked ? "checked" : ""}`}
+                                                    onClick={() =>
+                                                        setSelectedCurators(prev =>
+                                                            prev.includes(curator) ? prev.filter(c => c !== curator) : [...prev, curator]
+                                                        )
+                                                    }
+                                                >
+                                                    <div className="option-checkbox">
+                                                        {isChecked && (
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+                                                                <path d="M8.75 0.75L3.48657 5.75L0.75 3.1502" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                            </svg>
+                                                        )}
+                                                    </div>
+                                                    <span className="option-label">{curator}</span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+
+                                {activeMobileFilterTab === "LANGUAGES" && (
+                                    <div className="options-list">
+                                        {languages.map((lang) => {
+                                            const isChecked = selectedLanguages.includes(lang);
+                                            return (
+                                                <div
+                                                    key={lang}
+                                                    className={`option-row ${isChecked ? "checked" : ""}`}
+                                                    onClick={() => handleLanguageToggle(lang)}
+                                                >
+                                                    <div className="option-checkbox">
+                                                        {isChecked && (
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+                                                                <path d="M8.75 0.75L3.48657 5.75L0.75 3.1502" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                            </svg>
+                                                        )}
+                                                    </div>
+                                                    <span className="option-label">{lang}</span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+
+                                {activeMobileFilterTab === "AVAILABILITY" && (
+                                    <div className="options-list">
+                                        <div
+                                            className={`option-row ${freePassOnly ? "checked" : ""}`}
+                                            onClick={() => setFreePassOnly(!freePassOnly)}
+                                        >
+                                            <div className="option-checkbox">
+                                                {freePassOnly && (
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+                                                        <path d="M8.75 0.75L3.48657 5.75L0.75 3.1502" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                    </svg>
+                                                )}
                                             </div>
+                                            <span className="option-label">Free Pass</span>
                                         </div>
+                                        <div
+                                            className={`option-row ${donorPassOnly ? "checked" : ""}`}
+                                            onClick={() => setDonorPassOnly(!donorPassOnly)}
+                                        >
+                                            <div className="option-checkbox">
+                                                {donorPassOnly && (
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+                                                        <path d="M8.75 0.75L3.48657 5.75L0.75 3.1502" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                    </svg>
+                                                )}
+                                            </div>
+                                            <span className="option-label">Donor Pass</span>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {activeMobileFilterTab === "MORE FILTERS" && (
+                                    <div className="options-list">
+                                        {MORE_FILTERS.map((filter) => {
+                                            const isChecked = selectedMoreFilters.includes(filter);
+                                            return (
+                                                <div
+                                                    key={filter}
+                                                    className={`option-row ${isChecked ? "checked" : ""}`}
+                                                    onClick={() => handleMoreFilterToggle(filter)}
+                                                >
+                                                    <div className="option-checkbox">
+                                                        {isChecked && (
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
+                                                                <path d="M8.75 0.75L3.48657 5.75L0.75 3.1502" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                            </svg>
+                                                        )}
+                                                    </div>
+                                                    <span className="option-label">{filter}</span>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 )}
                             </div>
@@ -1191,13 +1770,47 @@ export const EventListing = () => {
 
                         {/* Actions */}
                         <div className="bottom-sheet-actions">
-                            <button className="bottom-sheet-apply-btn" onClick={() => setIsFilterModalOpen(false)}>APPLY</button>
-                            <button className="bottom-sheet-reset-btn" onClick={() => { handleResetAll(); setIsFilterModalOpen(false); }}>RESET</button>
+                            <button className="bottom-sheet-apply-btn" onClick={() => setIsFilterModalOpen(false)}>
+                                APPLY
+                            </button>
+                            <button
+                                className="bottom-sheet-reset-btn"
+                                onClick={() => {
+                                    handleResetAll();
+                                    setIsFilterModalOpen(false);
+                                }}
+                            >
+                                RESET FILTERS
+                            </button>
                         </div>
                     </div>
                 </div>
             )}
-        </>
+
+            {/* Mobile Sticky Bottom CTA Bar */}
+            <div className="mobile-sticky-bottom-bar">
+                <button
+                    className="mobile-sticky-filter-btn"
+                    onClick={() => setIsFilterModalOpen(true)}
+                >
+                    FILTER
+                </button>
+                <button
+                    className="mobile-sticky-download-btn"
+                    onClick={() => setIsCalendarModalOpen(true)}
+                >
+                    DOWNLOAD CALENDAR
+                </button>
+            </div>
+
+            {/* Add to Calendar Modal (Google, Apple, Outlook, ICS) */}
+            <AddToCalendarModal
+                isOpen={isCalendarModalOpen}
+                onClose={() => setIsCalendarModalOpen(false)}
+                events={filteredEvents && filteredEvents.length > 0 ? filteredEvents : events}
+                calendarName="BLR Hubba 2027"
+            />
+        </div>
     );
 };
 

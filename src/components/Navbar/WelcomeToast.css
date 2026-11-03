@@ -1,0 +1,111 @@
+/* ================= WELCOME TOAST NOTIFICATION ================= */
+
+.welcome-toast-container {
+    position: fixed;
+    top: 76px;
+    right: 24px;
+    z-index: 99999;
+    pointer-events: auto;
+}
+
+.welcome-toast-container.slide-in {
+    animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.welcome-toast-container.slide-out {
+    animation: slideOutRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideInRight {
+    0% {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+}
+
+.welcome-toast-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 14px;
+    background: #EBF8F2;
+    border: 1.5px solid #C2EDD9;
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+    min-width: 280px;
+}
+
+.welcome-toast-icon-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.welcome-toast-text-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.welcome-toast-title {
+    color: #0D8A54;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 20px;
+}
+
+.welcome-toast-subtitle {
+    color: #181C20;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+}
+
+.welcome-toast-close-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    margin-left: auto;
+    color: #181C20;
+    transition: opacity 0.2s ease;
+}
+
+.welcome-toast-close-btn:hover {
+    opacity: 0.6;
+}
+
+@media (max-width: 768px) {
+    .welcome-toast-container {
+        top: 64px;
+        right: 16px;
+        left: 16px;
+    }
+
+    .welcome-toast-content {
+        min-width: auto;
+        width: 100%;
+    }
+}

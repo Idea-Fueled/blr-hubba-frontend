@@ -1,97 +1,241 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./BookingFlow.css";
+import { useLocation, useNavigate } from "react-router-dom";
 import freePassImage from "../../assets/free-pass-image.png";
 import donorPassImage from "../../assets/donor-pass-image.png";
+import { fetchEventTickets } from "../../api/bookingApi";
+import { extractSubVenueName } from "../../utils/subVenueUtils";
 
-export const BookingFlow = () => {
+export const BookingFlow = ({ event: propEvent, selectedDate: propDate, selectedSlot: propSlot, selectedVenue: propVenue, hideHeader = false, onSelectPass }) => {
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const event = propEvent || location.state?.event || {
+        id: "default-event-id",
+        title: "Pankh: A Leap of Faith",
+        mainPerformer: "Kaushiki Chakraborty & Shantanu Moitra",
+        startDateTime: "2027-01-25T20:30:00.000Z",
+        venue: { name: "Freedom Park" },
+        subVenue: null
+    };
+
+    const selectedDate = propDate || location.state?.selectedDate;
+    const selectedSlot = propSlot || location.state?.selectedSlot;
+    const selectedVenue = propVenue || location.state?.selectedVenue;
+
+    const [tickets, setTickets] = useState([]);
+    const [selectedTicket, setSelectedTicket] = useState(null);
+
+    useEffect(() => {
+        if (event?.id) {
+            fetchEventTickets(event.id, selectedDate?.id, selectedSlot?.id)
+                .then(data => {
+                    if (data && data.tickets && data.tickets.length > 0) {
+                        setTickets(data.tickets);
+                    } else {
+                        setTickets([
+                            { id: "free-pass", name: "Free Pass", price: 0, type: "FREE" },
+                            { id: "donor-pass", name: "Donor Pass", price: 400, type: "DONOR" }
+                        ]);
+                    }
+                })
+                .catch(err => {
+                    console.error("Failed to load tickets:", err);
+                    setTickets([
+                        { id: "free-pass", name: "Free Pass", price: 0, type: "FREE" },
+                        { id: "donor-pass", name: "Donor Pass", price: 400, type: "DONOR" }
+                    ]);
+                });
+        }
+    }, [event.id]);
+
+    const handlePassSelect = (ticket) => {
+        if (onSelectPass) {
+            onSelectPass(ticket);
+            return;
+        }
+        setSelectedTicket(ticket);
+        navigate("/review-order", {
+            state: {
+                event,
+                selectedTicket: ticket,
+                selectedDate,
+                selectedSlot,
+                selectedVenue,
+                quantity: 1
+            }
+        });
+    };
+
+    const formatTimeString = (timeVal) => {
+        if (!timeVal) return "";
+        if (timeVal instanceof Date) {
+            if (!isNaN(timeVal.getTime())) {
+                return timeVal.toLocaleTimeString("en-US", {
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true
+                }).toLowerCase();
+            }
+            return "";
+        }
+        const str = String(timeVal).trim();
+        if (!str) return "";
+        if (str.includes("T") || str.includes("Z")) {
+            const d = new Date(str);
+            if (!isNaN(d.getTime())) {
+                return d.toLocaleTimeString("en-US", {
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true
+                }).toLowerCase();
+            }
+        }
+        if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(str)) {
+            const parts = str.split(':');
+            let hours = parseInt(parts[0], 10);
+            const minutes = parts[1];
+            if (!isNaN(hours)) {
+                const period = hours >= 12 ? 'pm' : 'am';
+                hours = hours % 12;
+                if (hours === 0) hours = 12;
+                return `${hours}:${minutes} ${period}`;
+            }
+        }
+        return str.toLowerCase();
+    };
+
+    const getEvtTimeRange = () => {
+        const start = formatTimeString(event.startDateTime);
+        const end = formatTimeString(event.endDateTime);
+        if (start && end) return `${start}–${end}`;
+        if (start || end) return start || end;
+        return "8:30 pm–10:00 pm";
+    };
+
+    const slotTimeDisplay = selectedSlot?.timeDisplay || (selectedSlot?.startTime && selectedSlot?.endTime
+        ? `${formatTimeString(selectedSlot.startTime)}–${formatTimeString(selectedSlot.endTime)}`
+        : (formatTimeString(selectedSlot?.startTime || selectedSlot?.time) || getEvtTimeRange()));
+
+    const formattedDateTime = selectedDate && selectedSlot
+        ? `${selectedDate.weekday || ''} ${selectedDate.day || ''} | ${slotTimeDisplay}`
+        : (event.startDateTime
+            ? `${new Date(event.startDateTime).toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })} | ${getEvtTimeRange()}`
+            : "Monday 25, Jan 2027  |  8:30 pm–10:00 pm");
+
+    const venueName = selectedVenue?.name || event.venue?.name || "Freedom Park";
+    const subVenueName = extractSubVenueName(selectedDate?.raw || selectedVenue || event, event);
+    const performerName = event.mainPerformer ? `By ${event.mainPerformer}` : (event.by || "By Kaushiki Chakraborty & Shantanu Moitra");
+
     return (
-        <div className="booking-flow-wrapper">
-            <div className="booking-top-container">
-                <div className="booking-event-detail-wrapper">
-                    <span className="booking-event-detail-wrapper-arrow-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
-                            <path d="M22.1663 14H5.83301M13.9997 5.83334L5.83301 14L13.9997 22.1667" stroke="#181C20" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                    </span>
-                    <div className="booking-event-detail-container">
-                        <div className="booking-event-detail-container-left-wrapper">
-                            <h2 className="booking-event-title">Pankh: A Leap of Faith</h2>
-                            <p className="booking-event-performer">By Kaushiki Chakraborty & Shantanu Moitra</p>
-                        </div>
-                        <div className="booking-event-detail-container-right-wrapper">
-                            <h2 className="booking-venue-time-detail">Monday 25, Jan 2027  |  8:30 pm–10:00 pm</h2>
-                            <div>
-                                <span className="booking-venue-title">Freedom Park </span>
-                                <span className="booking-col">:</span>
-                                <span className="booking-venue-names">Watch Tower</span>
+        <div className="booking-flow-wrapper" style={hideHeader ? { padding: "0" } : {}}>
+            {!hideHeader && (
+                <div className="booking-top-container">
+                    <div className="booking-event-detail-wrapper">
+                        <span className="booking-event-detail-wrapper-arrow-container" onClick={() => navigate(-1)} style={{ cursor: "pointer" }}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+                                <path d="M22.1663 14H5.83301M13.9997 5.83334L5.83301 14L13.9997 22.1667" stroke="#181C20" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </span>
+                        <div className="booking-event-detail-container">
+                            <div className="booking-event-detail-container-left-wrapper">
+                                <h2 className="booking-event-title">{event.title || "Pankh: A Leap of Faith"}</h2>
+                                <p className="booking-event-performer">{performerName}</p>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="booking-progress-bar-container">
-                    <div className="booking-progress-bar-item-container">
-                        <div className="booking-number-container">
-                            <h2 className="booking-number">1</h2>
-                        </div>
-                        <p className="booking-item-container-title">Select Pass</p>
-                    </div>
-                    <div className="booking-progress-bar-item-container">
-                        <div className="booking-number-container">
-                            <h2 className="booking-number">2</h2>
-                        </div>
-                        <p className="booking-item-container-title">Review &amp; Add to Cart</p>
-                    </div>
-                </div>
-            </div>
-            <div className="booking-bottom-container">
-                <div className="booking-free-pass-container">
-                    <img src={freePassImage} alt="Free Pass" className="booking-free-pass-image-container" />
-                    <div className="booking-free-pass-bottom-container">
-                        <div className="booking-free-pass-top-row-wrapper">
-                            <div className="booking-free-pass-top-row-left">
-                                <div className="booking-ticket-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="none">
-                                        <path d="M11.25 9V7.875M11.25 14.0625V12.9375M11.25 19.125V18M5.85 4.5H21.15C22.4101 4.5 23.0402 4.5 23.5215 4.74524C23.9448 4.96095 24.2891 5.30516 24.5048 5.72852C24.75 6.20982 24.75 6.83988 24.75 8.1V9.5625C22.5754 9.5625 20.8125 11.3254 20.8125 13.5C20.8125 15.6746 22.5754 17.4375 24.75 17.4375V18.9C24.75 20.1601 24.75 20.7902 24.5048 21.2715C24.2891 21.6948 23.9448 22.039 23.5215 22.2548C23.0402 22.5 22.4101 22.5 21.15 22.5H5.85C4.58988 22.5 3.95982 22.5 3.47852 22.2548C3.05516 22.039 2.71095 21.6948 2.49524 21.2715C2.25 20.7902 2.25 20.1601 2.25 18.9V17.4375C4.42462 17.4375 6.1875 15.6746 6.1875 13.5C6.1875 11.3254 4.42462 9.5625 2.25 9.5625V8.1C2.25 6.83988 2.25 6.20982 2.49524 5.72852C2.71095 5.30516 3.05516 4.96095 3.47852 4.74524C3.95982 4.5 4.58988 4.5 5.85 4.5Z" stroke="#050014" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
+                            <div className="booking-event-detail-container-right-wrapper">
+                                <h2 className="booking-venue-time-detail">{formattedDateTime}</h2>
+                                <div>
+                                    <span className="booking-venue-title">{venueName}</span>
+                                    {subVenueName ? (
+                                        <>
+                                            <span className="booking-col"> : </span>
+                                            <span className="booking-venue-names">{subVenueName}</span>
+                                        </>
+                                    ) : null}
                                 </div>
-                                <h2 className="booking-free-pass-title">Free Pass</h2>
-                            </div>
-                            <div className="booking-free-pass-top-row-right">
-                                <h2 className="booking-free-pass-top-row-right-number">&#8377;0</h2>
                             </div>
                         </div>
-                        <ul className="booking-free-pass-list-wrapper">
-                            <li className="booking-free-pass-text">Cost: Free</li>
-                            <li className="booking-free-pass-text">Entry: Guaranteed entry if you arrive 15+ minutes prior to the event start time</li>
-                            <li className="booking-free-pass-text">Seating: Open Seating</li>
-                        </ul>
-                        <p className="booking-free-pass-text">All Free Passes will be available for booking from Saturday, January 9, 2027, and will remain open until the venue reaches full capacity.</p>
+                    </div>
+                    <div className="booking-progress-bar-container">
+                        <div className="booking-progress-bar-item-container">
+                            <div className="booking-number-container">
+                                <h2 className="booking-number">1</h2>
+                            </div>
+                            <p className="booking-item-container-title">Select Pass</p>
+                        </div>
+                        <div className="booking-progress-bar-item-container" style={{ opacity: 0.4 }}>
+                            <div className="booking-number-container" style={{ background: "#C3C3C3" }}>
+                                <h2 className="booking-number">2</h2>
+                            </div>
+                            <p className="booking-item-container-title" style={{ color: "#888" }}>Review &amp; Add to Cart</p>
+                        </div>
                     </div>
                 </div>
-                <div className="booking-free-pass-container">
-                    <img src={donorPassImage} alt="Donor Pass" className="booking-free-pass-image-container" />
-                    <div className="booking-free-pass-bottom-container">
-                        <div className="booking-free-pass-top-row-wrapper">
-                            <div className="booking-free-pass-top-row-left">
-                                <div className="booking-ticket-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="none">
-                                        <path d="M11.25 9V7.875M11.25 14.0625V12.9375M11.25 19.125V18M5.85 4.5H21.15C22.4101 4.5 23.0402 4.5 23.5215 4.74524C23.9448 4.96095 24.2891 5.30516 24.5048 5.72852C24.75 6.20982 24.75 6.83988 24.75 8.1V9.5625C22.5754 9.5625 20.8125 11.3254 20.8125 13.5C20.8125 15.6746 22.5754 17.4375 24.75 17.4375V18.9C24.75 20.1601 24.75 20.7902 24.5048 21.2715C24.2891 21.6948 23.9448 22.039 23.5215 22.2548C23.0402 22.5 22.4101 22.5 21.15 22.5H5.85C4.58988 22.5 3.95982 22.5 3.47852 22.2548C3.05516 22.039 2.71095 21.6948 2.49524 21.2715C2.25 20.7902 2.25 20.1601 2.25 18.9V17.4375C4.42462 17.4375 6.1875 15.6746 6.1875 13.5C6.1875 11.3254 4.42462 9.5625 2.25 9.5625V8.1C2.25 6.83988 2.25 6.20982 2.49524 5.72852C2.71095 5.30516 3.05516 4.96095 3.47852 4.74524C3.95982 4.5 4.58988 4.5 5.85 4.5Z" stroke="#050014" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
+            )}
+            <div className="booking-bottom-container" style={{ display: 'flex', flexWrap: 'wrap', gap: '24px' }}>
+                {tickets.map((tkt, index) => {
+                    const isFree = Number(tkt.price || 0) === 0 || tkt.type === 'FREE' || tkt.ticketType === 'FREE' || tkt.name?.toLowerCase().includes('free');
+                    const passImage = isFree ? freePassImage : donorPassImage;
+                    const passPriceDisplay = isFree ? "0" : Number(tkt.price || 0).toFixed(2);
+                    const passName = tkt.name || (isFree ? "Free Pass" : "Donor Pass");
+                    const tickClass = isFree ? "booking-free-pass-tick" : "booking-donor-pass-tick";
+                    const wrapperClass = isFree ? "booking-free-pass-list-wrapper" : "booking-donor-pass-list-wrapper";
+
+                    return (
+                        <div
+                            key={tkt.id || index}
+                            className="booking-free-pass-container"
+                            onClick={() => handlePassSelect(tkt)}
+                            style={{ cursor: "pointer" }}
+                        >
+                            <img src={passImage} alt={passName} className="booking-free-pass-image-container" />
+                            <div className="booking-free-pass-bottom-container">
+                                <div className="booking-free-pass-top-row-wrapper">
+                                    <div className="booking-free-pass-top-row-left">
+                                        <div className="booking-ticket-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="27" viewBox="0 0 37 27" fill="none">
+                                                <path d="M35.7803 9.76886V15.013L35.7158 15.012H35.6914V15.011H35.6699C33.9589 15.0122 32.5773 16.4178 32.5771 18.1341C32.5771 19.8507 33.9606 21.2581 35.6729 21.2581H35.6914L35.7051 21.2571C35.7074 21.257 35.711 21.2565 35.7227 21.2562L35.7217 21.2552H35.7803V26.5003H4.79492V21.2562L4.85938 21.2571L4.86914 21.2581H4.8877C6.59656 21.2543 7.97559 19.8493 7.97559 18.1341C7.9754 16.419 6.59638 15.0151 4.8877 15.011H4.87109C4.86584 15.0112 4.86359 15.012 4.86133 15.012H4.79492V9.76886H35.7803ZM35.6533 21.4271L35.2236 21.3655C33.6631 21.1444 32.4502 19.7822 32.4502 18.1341C32.4504 16.4862 33.6631 15.1241 35.2236 14.9026L35.6533 14.8421V9.90851H4.92188V14.8421L5.34961 14.9056C6.90065 15.1353 8.10237 16.493 8.10254 18.1341C8.10254 19.7754 6.90013 21.1338 5.34863 21.3636L4.92188 21.4261V26.3607H35.6533V21.4271Z" fill="black" stroke="black" />
+                                                <path d="M28.0986 10.7573C28.0847 10.7573 28.0707 10.7567 28.0568 10.7553C28.0433 10.7539 28.0295 10.7519 28.016 10.749C28.0024 10.7465 27.9889 10.7428 27.9757 10.7388C27.9627 10.7348 27.9495 10.7299 27.9368 10.7248C27.9241 10.7194 27.9114 10.7134 27.8996 10.7069C27.8872 10.7003 27.8753 10.6932 27.8638 10.6855C27.8522 10.6778 27.8412 10.6693 27.8305 10.6604C27.8198 10.6516 27.8094 10.6422 27.7995 10.6322C27.7899 10.6225 27.7803 10.612 27.7716 10.6012C27.7629 10.5903 27.7547 10.5789 27.7471 10.5672C27.7395 10.5558 27.7324 10.5436 27.7259 10.5313C27.7195 10.5191 27.7135 10.5063 27.7082 10.4934C27.7028 10.4806 27.6983 10.4675 27.6941 10.4541C27.6902 10.4407 27.6868 10.4271 27.684 10.4137C27.6814 10.3997 27.6792 10.386 27.6778 10.3721C27.6766 10.3581 27.6758 10.3439 27.6758 10.3299C27.6758 10.3159 27.6766 10.302 27.6778 10.288C27.6792 10.2741 27.6814 10.2601 27.684 10.2464C27.6868 10.233 27.6902 10.2193 27.6941 10.206C27.6983 10.1926 27.7028 10.1795 27.7082 10.1666C27.7135 10.1538 27.7195 10.141 27.7259 10.1287C27.7324 10.1165 27.7395 10.1042 27.7471 10.0928C27.7547 10.0812 27.7629 10.0698 27.7716 10.0589C27.7803 10.0481 27.7899 10.0378 27.7995 10.0279C27.8094 10.0179 27.8198 10.0085 27.8305 9.99967C27.8412 9.99084 27.8522 9.98257 27.8638 9.97459C27.8753 9.9669 27.8872 9.95978 27.8996 9.95322C27.9114 9.94667 27.9241 9.94069 27.9368 9.93527C27.9495 9.93014 27.9627 9.9253 27.9757 9.92131C27.9889 9.91732 28.0024 9.9139 28.016 9.91105C28.0295 9.90821 28.0433 9.90621 28.0568 9.90479C28.0845 9.90194 28.1126 9.90194 28.14 9.90479C28.1538 9.90621 28.1676 9.90821 28.1811 9.91105C28.1947 9.9139 28.2082 9.91732 28.2214 9.92131C28.2344 9.9253 28.2476 9.93014 28.2603 9.93527C28.273 9.94069 28.2854 9.94667 28.2975 9.95322C28.3099 9.95978 28.3218 9.9669 28.3333 9.97459C28.3446 9.98257 28.3559 9.99084 28.3666 9.99967C28.3773 10.0085 28.3877 10.0179 28.3976 10.0279C28.4762 10.1074 28.5213 10.2176 28.5213 10.3299C28.5213 10.3439 28.5205 10.3581 28.5191 10.3721C28.5179 10.386 28.5157 10.3997 28.5132 10.4137C28.5103 10.4271 28.5069 10.4407 28.503 10.4541C28.4988 10.4675 28.4943 10.4806 28.4889 10.4934C28.4836 10.5063 28.4776 10.5191 28.4712 10.5313C28.4647 10.5436 28.4576 10.5558 28.45 10.5672C28.4424 10.5789 28.4342 10.5903 28.4255 10.6012C28.4168 10.612 28.4072 10.6225 28.3976 10.6322C28.3877 10.6422 28.3773 10.6516 28.3666 10.6604C28.3559 10.6693 28.3446 10.6778 28.3333 10.6855C28.3218 10.6932 28.3099 10.7003 28.2975 10.7069C28.2854 10.7134 28.273 10.7194 28.2603 10.7248C28.2476 10.7299 28.2344 10.7348 28.2214 10.7388C28.2082 10.7428 28.1947 10.7465 28.1811 10.749C28.1676 10.7519 28.1538 10.7539 28.14 10.7553C28.1265 10.7567 28.1124 10.7573 28.0986 10.7573Z" fill="black" />
+                                                <path d="M27.6758 11.979C27.6758 11.9308 27.6837 11.8846 27.698 11.8416C27.6837 11.7983 27.6758 11.7522 27.6758 11.704C27.6758 11.4681 27.8649 11.2766 28.0986 11.2766C28.3319 11.2766 28.5213 11.4681 28.5213 11.704C28.5213 11.7522 28.5134 11.7983 28.4991 11.8416C28.5134 11.8846 28.5213 11.9308 28.5213 11.979C28.5213 12.2149 28.3319 12.4064 28.0986 12.4064C27.8649 12.4064 27.6758 12.2149 27.6758 11.979Z" fill="black" />
+                                                <path d="M27.6758 26.2705C27.6758 26.2224 27.6837 26.1762 27.698 26.1329C27.6837 26.0899 27.6758 26.0437 27.6758 25.9956C27.6758 25.7597 27.8652 25.5682 28.0986 25.5682C28.3319 25.5682 28.5213 25.7597 28.5213 25.9956C28.5213 26.0437 28.5134 26.0899 28.4991 26.1329C28.5134 26.1762 28.5213 26.2224 28.5213 26.2705C28.5213 26.5065 28.3319 26.6979 28.0986 26.6979C27.8652 26.6979 27.6758 26.5065 27.6758 26.2705ZM27.6758 24.6214C27.6758 24.598 27.6778 24.5752 27.6811 24.5527C27.6778 24.5305 27.6758 24.5074 27.6758 24.484C27.6758 24.4359 27.6837 24.3897 27.698 24.3467C27.6837 24.3034 27.6758 24.2572 27.6758 24.2094C27.6758 23.9732 27.8652 23.7817 28.0986 23.7817C28.3319 23.7817 28.5213 23.9732 28.5213 24.2094C28.5213 24.2572 28.5134 24.3034 28.4991 24.3467C28.5134 24.3897 28.5213 24.4359 28.5213 24.484C28.5213 24.5074 28.5194 24.5305 28.516 24.5527C28.5194 24.5752 28.5213 24.598 28.5213 24.6214C28.5213 24.8576 28.3319 25.0488 28.0986 25.0488C27.8652 25.0488 27.6758 24.8576 27.6758 24.6214ZM27.6758 22.8351C27.6758 22.8115 27.6778 22.7887 27.6811 22.7662C27.6778 22.744 27.6758 22.7209 27.6758 22.6975C27.6758 22.6497 27.6837 22.6032 27.698 22.5602C27.6837 22.5172 27.6758 22.4707 27.6758 22.4228C27.6758 22.1866 27.8652 21.9955 28.0986 21.9955C28.3319 21.9955 28.5213 22.1866 28.5213 22.4228C28.5213 22.4707 28.5134 22.5172 28.4991 22.5602C28.5134 22.6032 28.5213 22.6497 28.5213 22.6975C28.5213 22.7209 28.5194 22.744 28.516 22.7662C28.5194 22.7887 28.5213 22.8115 28.5213 22.8351C28.5213 23.0711 28.3319 23.2625 28.0986 23.2625C27.8652 23.2625 27.6758 23.0711 27.6758 22.8351ZM27.6758 21.0486C27.6758 21.0253 27.6778 21.0022 27.6811 20.98C27.6778 20.9575 27.6758 20.9347 27.6758 20.9113C27.6758 20.8631 27.6837 20.817 27.698 20.7737C27.6837 20.7307 27.6758 20.6845 27.6758 20.6363C27.6758 20.4004 27.8652 20.2089 28.0986 20.2089C28.3319 20.2089 28.5213 20.4004 28.5213 20.6363C28.5213 20.6845 28.5134 20.7307 28.4991 20.7737C28.5134 20.817 28.5213 20.8631 28.5213 20.9113C28.5213 20.9347 28.5194 20.9575 28.516 20.98C28.5194 21.0022 28.5213 21.0253 28.5213 21.0486C28.5213 21.2846 28.3319 21.476 28.0986 21.476C27.8652 21.476 27.6758 21.2846 27.6758 21.0486ZM27.6758 19.2621C27.6758 19.2388 27.6778 19.216 27.6811 19.1935C27.6778 19.1712 27.6758 19.1482 27.6758 19.1248C27.6758 19.0766 27.6837 19.0305 27.698 18.9875C27.6837 18.9441 27.6758 18.898 27.6758 18.8498C27.6758 18.6139 27.8652 18.4224 28.0986 18.4224C28.3319 18.4224 28.5213 18.6139 28.5213 18.8498C28.5213 18.898 28.5134 18.9441 28.4991 18.9875C28.5134 19.0305 28.5213 19.0766 28.5213 19.1248C28.5213 19.1482 28.5194 19.1712 28.516 19.1935C28.5194 19.216 28.5213 19.2388 28.5213 19.2621C28.5213 19.4983 28.3319 19.6895 28.0986 19.6895C27.8652 19.6895 27.6758 19.4983 27.6758 19.2621ZM27.6758 17.4756C27.6758 17.4523 27.6778 17.4295 27.6811 17.407C27.6778 17.3847 27.6758 17.3617 27.6758 17.3383C27.6758 17.2901 27.6837 17.244 27.698 17.201C27.6837 17.1579 27.6758 17.1115 27.6758 17.0636C27.6758 16.8274 27.8652 16.6359 28.0986 16.6359C28.3319 16.6359 28.5213 16.8274 28.5213 17.0636C28.5213 17.1115 28.5134 17.1579 28.4991 17.201C28.5134 17.244 28.5213 17.2901 28.5213 17.3383C28.5213 17.3617 28.5194 17.3847 28.516 17.407C28.5194 17.4295 28.5213 17.4523 28.5213 17.4756C28.5213 17.7118 28.3319 17.903 28.0986 17.903C27.8652 17.903 27.6758 17.7118 27.6758 17.4756ZM27.6758 15.6894C27.6758 15.6658 27.6778 15.643 27.6811 15.6204C27.6778 15.5982 27.6758 15.5751 27.6758 15.5518C27.6758 15.5039 27.6837 15.4575 27.698 15.4144C27.6837 15.3714 27.6758 15.3253 27.6758 15.2771C27.6758 15.0409 27.8652 14.8497 28.0986 14.8497C28.3319 14.8497 28.5213 15.0409 28.5213 15.2771C28.5213 15.3253 28.5134 15.3714 28.4991 15.4144C28.5134 15.4575 28.5213 15.5039 28.5213 15.5518C28.5213 15.5751 28.5194 15.5982 28.516 15.6204C28.5194 15.643 28.5213 15.6658 28.5213 15.6894C28.5213 15.9253 28.3319 16.1168 28.0986 16.1168C27.8652 16.1168 27.6758 15.9253 27.6758 15.6894ZM27.6758 13.9029C27.6758 13.8795 27.6778 13.8565 27.6811 13.8342C27.6778 13.8117 27.6758 13.7889 27.6758 13.7656C27.6758 13.7174 27.6837 13.6712 27.698 13.6279C27.6837 13.5849 27.6758 13.5388 27.6758 13.4906C27.6758 13.2547 27.8652 13.0632 28.0986 13.0632C28.3319 13.0632 28.5213 13.2547 28.5213 13.4906C28.5213 13.5388 28.5134 13.5849 28.4991 13.6279C28.5134 13.6712 28.5213 13.7174 28.5213 13.7656C28.5213 13.7889 28.5194 13.8117 28.516 13.8342C28.5194 13.8565 28.5213 13.8795 28.5213 13.9029C28.5213 14.1388 28.3319 14.3303 28.0986 14.3303C27.8652 14.3303 27.6758 14.1388 27.6758 13.9029ZM27.6758 12.1164C27.6758 11.8805 27.8652 11.689 28.0986 11.689C28.3319 11.689 28.5213 11.8805 28.5213 12.1164C28.5213 12.3526 28.3319 12.5438 28.0986 12.5438C27.8652 12.5438 27.6758 12.3526 27.6758 12.1164Z" fill="black" />
+                                                <path d="M28.0986 26.8351C28.0847 26.8351 28.0707 26.8345 28.0568 26.8331C28.0433 26.8317 28.0295 26.8294 28.016 26.8268C28.0024 26.824 27.9889 26.8206 27.9757 26.8166C27.9627 26.8123 27.9495 26.8077 27.9368 26.8023C27.9241 26.7969 27.9114 26.7909 27.8993 26.7847C27.8872 26.7781 27.8753 26.7707 27.8638 26.763C27.8525 26.7553 27.8412 26.747 27.8305 26.7382C27.8198 26.7294 27.8094 26.7197 27.7995 26.71C27.7899 26.7 27.7803 26.6895 27.7716 26.6787C27.7629 26.6678 27.7547 26.6564 27.7471 26.645C27.7395 26.6334 27.7324 26.6214 27.7259 26.6091C27.7195 26.5969 27.7135 26.5841 27.7082 26.5712C27.7028 26.5584 27.6983 26.545 27.6941 26.5319C27.6902 26.5185 27.6868 26.5049 27.684 26.4912C27.6814 26.4775 27.6792 26.4635 27.6778 26.4499C27.6766 26.4359 27.6758 26.4217 27.6758 26.4077C27.6758 26.3937 27.6766 26.3795 27.6778 26.3658C27.6792 26.3519 27.6814 26.3379 27.684 26.3242C27.6868 26.3105 27.6902 26.2969 27.6941 26.2838C27.6983 26.2704 27.7028 26.257 27.7082 26.2442C27.7135 26.2313 27.7195 26.2188 27.7259 26.2065C27.7324 26.194 27.7395 26.182 27.7471 26.1704C27.7547 26.159 27.7629 26.1476 27.7716 26.1367C27.7803 26.1259 27.7899 26.1154 27.7995 26.1054C27.8094 26.0957 27.8198 26.086 27.8305 26.0772C27.8412 26.0683 27.8525 26.0601 27.8638 26.0524C27.8753 26.0447 27.8872 26.0376 27.8993 26.031C27.9114 26.0245 27.9241 26.0185 27.9368 26.0131C27.9495 26.0077 27.9627 26.0031 27.9757 25.9988C27.9889 25.9948 28.0024 25.9914 28.016 25.9886C28.0295 25.986 28.0433 25.9837 28.0568 25.9823C28.0845 25.9797 28.1126 25.9797 28.14 25.9823C28.1538 25.9837 28.1676 25.986 28.1811 25.9886C28.1947 25.9914 28.2082 25.9948 28.2214 25.9988C28.2344 26.0031 28.2476 26.0077 28.2603 26.0131C28.273 26.0185 28.2854 26.0245 28.2975 26.031C28.3099 26.0376 28.3218 26.0447 28.3333 26.0524C28.3446 26.0601 28.3559 26.0683 28.3666 26.0772C28.3773 26.086 28.3877 26.0957 28.3976 26.1054C28.4072 26.1154 28.4165 26.1259 28.4255 26.1367C28.4342 26.1476 28.4424 26.159 28.45 26.1704C28.4576 26.182 28.4647 26.194 28.4712 26.2065C28.4776 26.2188 28.4836 26.2313 28.4889 26.2442C28.4943 26.257 28.4988 26.2704 28.503 26.2838C28.5069 26.2969 28.5103 26.3105 28.5132 26.3242C28.5157 26.3379 28.5179 26.3519 28.5194 26.3658C28.5205 26.3795 28.5213 26.3937 28.5213 26.4077C28.5213 26.4217 28.5205 26.4359 28.5194 26.4499C28.5179 26.4635 28.5157 26.4775 28.5132 26.4912C28.5103 26.5049 28.5069 26.5185 28.503 26.5319C28.4988 26.545 28.4943 26.5584 28.4889 26.5712C28.4836 26.5841 28.4776 26.5969 28.4712 26.6091C28.4647 26.6214 28.4576 26.6334 28.45 26.645C28.4424 26.6564 28.4342 26.6678 28.4255 26.6787C28.4165 26.6895 28.4072 26.7 28.3976 26.71C28.3877 26.7197 28.3773 26.7294 28.3666 26.7382C28.3559 26.747 28.3446 26.7553 28.3333 26.763C28.3218 26.7707 28.3099 26.7781 28.2975 26.7847C28.2854 26.7909 28.273 26.7969 28.2603 26.8023C28.2476 26.8077 28.2344 26.8123 28.2214 26.8166C28.2082 26.8206 28.1947 26.824 28.1811 26.8268C28.1676 26.8294 28.1538 26.8317 28.14 26.8331C28.1265 26.8345 28.1124 26.8351 28.0986 26.8351Z" fill="black" />
+                                                <path d="M30.501 0.508789C30.5153 0.517502 30.5267 0.532409 30.5312 0.550781V0.551758L31.7754 5.49707C31.7802 5.51629 31.7761 5.53712 31.7656 5.55469C31.7557 5.57041 31.7423 5.5804 31.7275 5.58398L31.7227 5.58496C31.7212 5.58532 31.7199 5.5857 31.7188 5.58594L31.7119 5.58789L31.7051 5.58887L31.6943 5.5918L31.6836 5.59375C30.3916 5.92718 29.4609 7.05196 29.3623 8.3877C29.3592 8.43044 29.3244 8.45344 29.2939 8.45117C29.2638 8.44853 29.2322 8.42043 29.2354 8.37695C29.3274 7.12819 30.111 6.06288 31.2285 5.60059L31.6279 5.43555L31.5225 5.0166L30.5479 1.14062L30.4248 0.65332L29.9385 0.77832L1.1582 8.17676L0.647461 8.30859L0.805664 8.81152L3.87598 18.5527C3.88583 18.584 3.87501 18.6139 3.85547 18.6309L3.83398 18.6426C3.82667 18.6448 3.82081 18.6455 3.81641 18.6455C3.79259 18.6455 3.76564 18.6295 3.75586 18.5986L0.503906 8.28027C0.497761 8.26026 0.49968 8.23942 0.508789 8.22266L0.509766 8.22168C0.51893 8.20506 0.53379 8.19358 0.549805 8.18945L30.4561 0.501953C30.4706 0.498236 30.4868 0.500289 30.501 0.508789Z" fill="black" stroke="black" />
+                                                <path d="M24.149 8.43482C24.1431 8.41117 24.1392 8.3878 24.1372 8.36416C24.1279 8.34279 24.12 8.32028 24.1141 8.29663C24.102 8.24819 24.0986 8.19975 24.1028 8.15245C24.0769 8.11342 24.0569 8.06897 24.0447 8.02053C23.9873 7.79173 24.1239 7.55923 24.3503 7.50111C24.5766 7.4427 24.8066 7.58117 24.8641 7.80997C24.8762 7.85812 24.8799 7.90684 24.8756 7.95386C24.9016 7.99318 24.9216 8.03763 24.9337 8.08607C24.9396 8.10943 24.9433 8.13308 24.9453 8.15644C24.9548 8.1781 24.9624 8.20061 24.9684 8.22397C25.0259 8.45277 24.8892 8.68556 24.6628 8.74368C24.6279 8.75251 24.5929 8.75679 24.5583 8.75679C24.3694 8.75679 24.1975 8.62829 24.149 8.43482ZM23.6975 6.63976C23.6916 6.61612 23.6876 6.59275 23.6857 6.5691C23.6764 6.54773 23.6685 6.52522 23.6626 6.50186C23.6504 6.45342 23.6471 6.4047 23.6513 6.35768C23.6254 6.31836 23.6053 6.27392 23.5932 6.22548C23.5357 5.99696 23.6724 5.76418 23.8988 5.70605C24.1251 5.64793 24.3551 5.78612 24.4126 6.01491C24.425 6.06335 24.4283 6.11208 24.4241 6.15909C24.45 6.19841 24.4701 6.24257 24.4822 6.29101C24.4881 6.31466 24.4918 6.33802 24.4937 6.36167C24.503 6.38304 24.5109 6.40555 24.5168 6.4292C24.5743 6.658 24.4376 6.8905 24.2113 6.94863C24.1764 6.95775 24.1414 6.96202 24.1068 6.96202C23.9182 6.96202 23.746 6.83323 23.6975 6.63976ZM23.246 4.845C23.2401 4.82135 23.2361 4.7977 23.2342 4.77433C23.2249 4.75296 23.217 4.73045 23.211 4.7068C23.1989 4.65837 23.1955 4.60993 23.1998 4.56263C23.1738 4.52331 23.1538 4.47915 23.1417 4.43071C23.0842 4.20191 23.2209 3.96941 23.4472 3.911C23.6736 3.85287 23.9035 3.99135 23.961 4.22015C23.9734 4.26858 23.9768 4.31702 23.9726 4.36403C23.9985 4.40336 24.0183 4.4478 24.0307 4.49624C24.0366 4.51961 24.0402 4.54326 24.0422 4.56662C24.0515 4.58799 24.0594 4.61078 24.0653 4.63415C24.1228 4.86295 23.9861 5.09573 23.7598 5.15386C23.7249 5.16269 23.6899 5.16697 23.6552 5.16697C23.4664 5.16697 23.2945 5.03846 23.246 4.845ZM22.7945 3.04994C22.7367 2.82114 22.8737 2.58864 23.0997 2.53052C23.3263 2.47239 23.5563 2.61058 23.6138 2.83938C23.6713 3.06818 23.5346 3.30068 23.3083 3.3588C23.2733 3.36792 23.2381 3.3722 23.2037 3.3722C23.0149 3.3722 22.843 3.24341 22.7945 3.04994Z" fill="black" />
+                                            </svg>
+                                        </div>
+                                        <h2 className="booking-free-pass-title" style={{ textTransform: "uppercase" }}>{passName}</h2>
+                                    </div>
+                                    <div className="booking-free-pass-top-row-right">
+                                        <h2 className="booking-free-pass-top-row-right-number">&#8377;{passPriceDisplay}</h2>
+                                    </div>
                                 </div>
-                                <h2 className="booking-free-pass-title">Donor Pass</h2>
-                            </div>
-                            <div className="booking-free-pass-top-row-right">
-                                <h2 className="booking-free-pass-top-row-right-number">&#8377;0</h2>
+                                <div className={wrapperClass}>
+                                    <div style={{ gap: "12px", display: "flex", flexDirection: "row" }}>
+                                        <span className={tickClass}><svg xmlns="http://www.w3.org/2000/svg" width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M0.140376 4.33289C-0.0687314 4.13712 -0.0286055 3.82019 0.157896 3.64558C0.331963 3.48262 0.665404 3.42442 0.86886 3.61384L2.13481 4.78898L7.06974 0.166717C7.29071 -0.0406925 7.61737 -0.0597403 7.83835 0.138674C8.05932 0.337089 8.0531 0.658256 7.82365 0.873073L2.5112 5.84984C2.3134 6.03502 1.98334 6.05778 1.78102 5.86836L0.140376 4.33289Z" fill={isFree ? "white" : "black"} /></svg></span>
+                                        <p className="booking-free-pass-text">
+                                            {isFree
+                                                ? "Cost: Free"
+                                                : (tkt.description || "Cost: A donation that supports the festival. Donor Passes are non-refundable.")}
+                                        </p>
+                                    </div>
+                                    <div style={{ gap: "12px", display: "flex", flexDirection: "row" }}>
+                                        <span className={tickClass}><svg xmlns="http://www.w3.org/2000/svg" width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M0.140376 4.33289C-0.0687314 4.13712 -0.0286055 3.82019 0.157896 3.64558C0.331963 3.48262 0.665404 3.42442 0.86886 3.61384L2.13481 4.78898L7.06974 0.166717C7.29071 -0.0406925 7.61737 -0.0597403 7.83835 0.138674C8.05932 0.337089 8.0531 0.658256 7.82365 0.873073L2.5112 5.84984C2.3134 6.03502 1.98334 6.05778 1.78102 5.86836L0.140376 4.33289Z" fill={isFree ? "white" : "black"} /></svg></span>
+                                        <p className="booking-free-pass-text">Entry: Guaranteed entry if you arrive 15+ minutes prior to the event start time</p>
+                                    </div>
+                                    <div style={{ gap: "12px", display: "flex", flexDirection: "row" }}>
+                                        <span className={tickClass}><svg xmlns="http://www.w3.org/2000/svg" width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M0.140376 4.33289C-0.0687314 4.13712 -0.0286055 3.82019 0.157896 3.64558C0.331963 3.48262 0.665404 3.42442 0.86886 3.61384L2.13481 4.78898L7.06974 0.166717C7.29071 -0.0406925 7.61737 -0.0597403 7.83835 0.138674C8.05932 0.337089 8.0531 0.658256 7.82365 0.873073L2.5112 5.84984C2.3134 6.03502 1.98334 6.05778 1.78102 5.86836L0.140376 4.33289Z" fill={isFree ? "white" : "black"} /></svg></span>
+                                        <p className="booking-free-pass-text">Seating: Open Seating</p>
+                                    </div>
+                                </div>
+                                <p className="booking-free-pass-text">
+                                    {isFree
+                                        ? "All Free Passes will be available for booking from Saturday, January 9, 2027, and will remain open until the venue reaches full capacity."
+                                        : "Donor Passes will be available for booking as soon as the events are live on the website."}
+                                </p>
                             </div>
                         </div>
-                        <ul className="booking-free-pass-list-wrapper">
-                            <li className="booking-free-pass-text">Cost: A donation that supports the festival. Donor Passes are non-refundable.</li>
-                            <li className="booking-free-pass-text">Entry: Guaranteed entry if you arrive 15+ minutes prior to the event start time</li>
-                            <li className="booking-free-pass-text">Seating: Open Seating</li>
-                        </ul>
-                        <p className="booking-free-pass-text">Donor Passes will be available for booking as soon as the events are live on the website.</p>
-                    </div>
-                </div>
+                    );
+                })}
             </div>
         </div>
     );

@@ -1,35 +1,39 @@
-.similar-events-wrapper {
-    display: flex;
-    padding: 100px 80px;
-    flex-direction: column;
-    align-items: center;
-    /* CHANGED: was flex-start — needed so the fixed-width container below centers on wide screens */
-    gap: 10px;
-    background: #FFF;
-    height: auto;
+/* SIMILAR EVENTS SECTION (EXACT MATCH WITH VENUE DETAIL PAGE) */
+.venue-similar-events-section {
+    width: 100%;
+    background-color: #000000;
+    padding: 80px 0;
+    box-sizing: border-box;
 }
 
-.similar-events-header {
+.venue-similar-events-container {
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 0 80px;
+    box-sizing: border-box;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+}
+
+.venue-similar-events-header {
+    display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 38px;
-    align-self: stretch;
+    width: 100%;
+    margin-bottom: 60px;
 }
 
-.similar-events-header-title {
-    color: #000;
-    leading-trim: both;
-    text-edge: cap;
-    font-family: "Roboto Condensed";
+.venue-similar-events-title {
+    color: #FFFFFF;
+    font-family: "Roboto Condensed", sans-serif;
     font-size: 32px;
-    font-style: normal;
     font-weight: 700;
     line-height: 40px;
+    margin: 0;
 }
 
-.similar-events-header-button {
+.venue-similar-explore-btn {
     display: flex;
     height: 44px;
     padding: 16px 24px;
@@ -37,213 +41,178 @@
     align-items: center;
     gap: 12px;
     border-radius: 8px;
-    border: 2px solid var(--Hubba-Black, #000);
-    background: var(--Hubba-Yellow, #FDFF53);
-    color: var(--Hubba-Black, #000);
+    border: 2px solid #FDFF53;
+    background: #FDFF53;
+    color: #000000;
     text-align: center;
-    leading-trim: both;
-    text-edge: cap;
-    font-family: "Roboto Condensed";
+    font-family: "Roboto Condensed", sans-serif;
     font-size: 18px;
-    font-style: normal;
     font-weight: 500;
     line-height: 24px;
-    font-variant: all-small-caps;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    outline: none;
 }
 
-.similar-events-header-button a {
-    text-decoration: none;
-    color: #000000;
+.venue-similar-explore-btn:hover {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border-color: #000000 !important;
 }
 
-.similar-events-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 60px;
+.venue-similar-explore-btn .btn-text-secondary {
+    color: #FFFFFF !important;
+}
+
+.venue-similar-explore-btn:hover .btn-text-primary,
+.venue-similar-explore-btn:hover .btn-text-secondary {
+    color: #FFFFFF !important;
+}
+
+.venue-similar-carousel-wrapper {
     width: 100%;
-    /* NEW: fixed width, same pattern as .event-listing-content-wrapper */
-    height: 664px;
+    overflow: hidden;
 }
 
-.similar-events-cards-container {
+.venue-similar-carousel {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 40px;
-    align-self: stretch;
-}
-
-.cards-grid {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
     gap: 24px;
-    height: auto;
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    padding-left: 80px;
-    padding-right: 80px;
-    box-sizing: border-box;
     overflow-x: auto;
     scroll-behavior: smooth;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
 
-.cards-grid::-webkit-scrollbar {
-    /* NEW: hide scrollbar (Chrome/Safari) */
+.venue-similar-carousel::-webkit-scrollbar {
     display: none;
 }
 
-.navigation-button-container {
+.venue-similar-card-item {
+    flex: 0 0 290px;
+    box-sizing: border-box;
+}
+
+.venue-similar-controls {
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
     gap: 16px;
+    margin-top: 60px;
     width: 100%;
-    /* CHANGED: was hardcoded 1280px, now 100% of the already-1280px parent so it centers correctly */
-    height: 56px;
-    margin-top: 40px;
 }
 
-.arrows {
+.venue-similar-nav-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1.5px solid #FFFFFF;
+    background-color: transparent;
+    color: #FFFFFF;
     display: flex;
-    width: 56px;
-    height: 56px;
-    justify-content: center;
     align-items: center;
-    gap: var(--spacing-lg, 12px);
-    border-radius: var(--radius-full, 9999px);
-    border: 1px solid var(--Hubba-Black, #000);
-    background: #FFFFFF;
-    /* NEW: added so it's clickable-looking, remove if you don't want this */
+    justify-content: center;
     cursor: pointer;
-    /* NEW */
+    transition: background-color 0.2s ease, color 0.2s ease;
+    outline: none;
 }
 
-/* Override card stretch inside Similar Events scroll container */
-.cards-grid .event-listing-card {
-    width: auto !important;
-    flex: 0 0 auto !important;
+.venue-similar-nav-btn:hover {
+    background-color: #FFFFFF;
+    color: #000000;
 }
 
-/* If there are less than 3 events, disable breakout hacks and align them strictly to the start of the layout container */
-.similar-events-cards-container.few-cards {
-    align-items: flex-start !important;
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .venue-similar-events-container {
+        padding: 0 40px;
+    }
 }
 
-.cards-grid.few-cards {
-    display: flex;
-    justify-content: flex-start !important;
-    align-items: flex-start;
-    gap: 24px;
-    height: auto;
-    width: 100% !important;
-    max-width: 100% !important;
-    position: static !important;
-    margin: 0 !important;
-    left: auto !important;
-    right: auto !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    box-sizing: border-box;
-    overflow: visible !important;
-}
-
-.cards-grid.single-card {
-    justify-content: flex-start !important;
-}
-
-/* On desktop, hide navigation when there are few cards */
-.similar-events-cards-container.few-cards .navigation-button-container {
-    display: none;
-}
-
-/* Mobile responsive styles */
-@media (max-width: 480px) {
-    .similar-events-wrapper {
-        padding: 40px 24px !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
+@media (max-width: 768px) {
+    .venue-similar-events-section {
+        padding: 60px 0 !important;
+        background-color: #000000 !important;
     }
 
-    .similar-events-container {
-        gap: 24px !important;
-        height: auto !important;
-        width: 100% !important;
+    .venue-similar-events-container {
+        padding: 0 24px !important;
     }
 
-    .similar-events-header {
-        width: 100% !important;
-    }
-
-    .similar-events-header-title {
-        font-size: 24px !important;
-        line-height: 32px !important;
-    }
-
-    .similar-events-header-button {
-        display: none !important;
-    }
-
-    .similar-events-cards-container {
-        width: 100% !important;
-        gap: 24px !important;
-    }
-
-    .cards-grid {
-        position: static !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
+    .venue-similar-events-header {
         display: flex !important;
-        overflow-x: auto !important;
-        scroll-snap-type: x mandatory !important;
-        scroll-behavior: smooth !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 24px !important;
+        margin-bottom: 40px !important;
+        width: 100% !important;
+    }
+
+    .venue-similar-events-title {
+        font-family: "Roboto Condensed", sans-serif !important;
+        font-size: 28px !important;
+        line-height: 36px !important;
+        font-weight: 700 !important;
+        color: #FFFFFF !important;
+        text-align: center !important;
+        margin: 0 !important;
+    }
+
+    .venue-similar-explore-btn {
+        display: flex;
+        height: 44px;
+        padding: 16px 24px;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        border-radius: 8px;
+        border: 2px solid var(--Hubba-Yellow, #FDFF53);
+        background: var(--Hubba-Yellow, #FDFF53);
+        color: var(--Hubba-Black, #000);
+        text-align: center;
+        leading-trim: both;
+        text-edge: cap;
+
+        /* Title2_Medium */
+        font-family: "Roboto Condensed";
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+        /* 133.333% */
+        font-variant: all-small-caps;
+    }
+
+    .venue-similar-carousel-wrapper {
+        width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    .venue-similar-carousel {
+        display: flex !important;
         gap: 16px !important;
+        overflow-x: auto !important;
+        padding-bottom: 12px !important;
         -webkit-overflow-scrolling: touch !important;
     }
 
-    .cards-grid::-webkit-scrollbar {
-        display: none !important;
-    }
-
-    .cards-grid .event-listing-card {
-        width: calc(100vw - 80px) !important;
-        flex: 0 0 auto !important;
-        scroll-snap-align: start !important;
-    }
-
-    .similar-events-cards-container.few-cards .navigation-button-container {
-        display: flex !important;
-    }
-
-    .navigation-button-container {
-        display: flex !important;
-        margin-top: 24px !important;
+    .venue-similar-card-item {
+        flex: 0 0 100% !important;
         width: 100% !important;
-        justify-content: center !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        scroll-snap-align: center !important;
     }
 
-    .arrows {
-        width: 56px !important;
-        height: 56px !important;
-    }
-}
-
-@media (min-width: 481px) and (max-width: 1024px) {
-    .similar-events-wrapper {
-        padding: 60px 40px !important;
+    .venue-similar-card-item .event-card-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 469px !important;
+        box-sizing: border-box !important;
     }
 
-    .cards-grid {
-        padding-left: 40px !important;
-        padding-right: 40px !important;
+    .venue-similar-controls {
+        margin-top: 30px !important;
     }
 }

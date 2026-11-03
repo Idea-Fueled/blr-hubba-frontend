@@ -1,4 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Roboto:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap');
+
+div#root {
+  max-width: 2000px;
+  margin: 0 auto;
+}
 
 @font-face {
   font-family: "Roboto Condensed";
@@ -32,20 +37,446 @@
   font-family: "Roboto";
   src: url("./assets/fonts/Roboto-Regular.ttf") format("truetype");
   font-weight: 400;
+  font-style: normal;
 }
 
 @font-face {
   font-family: "Roboto";
   src: url("./assets/fonts/Roboto-Medium.ttf") format("truetype");
   font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("./assets/fonts/Roboto-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
 }
 
 @font-face {
   font-family: "Roboto";
   src: url("./assets/fonts/Roboto-Bold.ttf") format("truetype");
   font-weight: 700;
+  font-style: normal;
 }
 
+@font-face {
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter_18pt-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter_18pt-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter_18pt-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter_18pt-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+html,
 body {
   margin: 0px !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* ==========================================================================
+   GLOBAL BUTTON STYLING & SIGNATURE PUSH-UP HOVER ANIMATION ENGINE
+   ========================================================================== */
+button,
+[role="button"],
+.btn,
+.book-now-btn,
+.login-btn,
+.reset-filters-btn,
+.download-calendar-btn,
+.favourites-browse-btn,
+.venue-map-view-btn,
+.venue-view-details-btn,
+.venue-detail-explore-btn,
+.venue-similar-explore-btn,
+.venue-map-btn-yellow,
+.venue-map-btn-white,
+.register-submit-btn,
+.register-back-btn,
+.register-skip-btn,
+.register-resend-btn,
+.profile-submit-btn,
+.dashboard-qr-action-btn,
+.bookings-action-btn,
+.hp-btn-yellow,
+.hp-btn-outline-white,
+.hp-about-btn,
+.hp-festivals-view-all-btn,
+.hp-calendar-btn-yellow,
+.hp-calendar-btn-outline,
+.hp-friends-btn,
+.hp-friends-btn-explore,
+.hp-friends-btn-know,
+.hp-passes-explore-btn,
+.hp-venues-view-all-btn,
+.hp-venues-map-view-btn,
+.know-more-btn,
+.event-card-know-more-btn,
+.get-passes-btn,
+.event-details-get-passes-btn,
+.btn-text-primary,
+.btn-text-secondary {
+    letter-spacing: 1px !important;
+}
+
+/* Kannada Global Button Typography Reset */
+.kannada .btn-text-primary,
+.kannada .btn-text-secondary,
+.kannada.btn-text-primary,
+.kannada.btn-text-secondary,
+button.kannada,
+button.kannada span,
+.hp-about-btn.kannada,
+.hp-about-btn.kannada span,
+.hp-festivals-view-all-btn.kannada,
+.hp-festivals-view-all-btn.kannada span,
+.hp-btn-yellow.kannada,
+.hp-btn-yellow.kannada span,
+.hp-btn-outline-white.kannada,
+.hp-btn-outline-white.kannada span {
+    font-family: "Noto Sans Kannada", sans-serif !important;
+    font-variant: normal !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+}
+
+/* Base Push-Up Button Container Rules */
+.book-now-btn,
+.login-btn,
+.reset-filters-btn,
+.favourites-browse-btn,
+.venue-view-details-btn,
+.venue-detail-explore-btn,
+.venue-similar-explore-btn,
+.venue-map-btn-yellow,
+.venue-map-btn-white,
+.register-submit-btn,
+.profile-submit-btn,
+.dashboard-qr-action-btn,
+.bookings-action-btn,
+.bookings-pass-qr-btn,
+.bookings-download-pdf-btn,
+.bookings-cancel-pass-btn,
+.get-passes-btn,
+.event-details-get-passes-btn,
+.event-hero-book-btn,
+.login-modal-send-otp-btn,
+.review-order-back-button,
+.review-order-cart-button,
+.view-cart-btn,
+.browse-events-btn,
+.cart-page-checkout-button,
+.cart-empty-btn,
+.contact-submit-btn,
+.b-conf-btn-yellow,
+.b-conf-btn-white {
+    position: relative !important;
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    overflow: hidden !important;
+    z-index: 1 !important;
+    cursor: pointer !important;
+    outline: none !important;
+    transition: border-color 0.65s cubic-bezier(0.25, 1, 0.3, 1) !important;
+}
+
+/* Curved Fill Layer Rising from Bottom */
+.book-now-btn::before,
+.login-btn::before,
+.reset-filters-btn::before,
+.favourites-browse-btn::before,
+.venue-view-details-btn::before,
+.venue-detail-explore-btn::before,
+.venue-similar-explore-btn::before,
+.register-submit-btn::before,
+.profile-submit-btn::before,
+.bookings-action-btn::before,
+.bookings-pass-qr-btn::before,
+.bookings-download-pdf-btn::before,
+.bookings-cancel-pass-btn::before,
+.get-passes-btn::before,
+.event-details-get-passes-btn::before,
+.event-hero-book-btn::before,
+.login-modal-send-otp-btn::before,
+.review-order-back-button::before,
+.review-order-cart-button::before,
+.view-cart-btn::before,
+.browse-events-btn::before,
+.cart-page-checkout-button::before,
+.cart-empty-btn::before,
+.contact-submit-btn::before,
+.b-conf-btn-yellow::before,
+.b-conf-btn-white::before {
+    content: '' !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 100% 100% 0 0 !important;
+    transform: translateY(100%) !important;
+    transition: transform 0.65s cubic-bezier(0.25, 1, 0.3, 1), border-radius 0.65s cubic-bezier(0.25, 1, 0.3, 1) !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+}
+
+/* Fill Layer Activation on Hover */
+.book-now-btn:hover::before,
+.login-btn:hover::before,
+.reset-filters-btn:hover::before,
+.favourites-browse-btn:hover::before,
+.venue-view-details-btn:hover::before,
+.venue-detail-explore-btn:hover::before,
+.venue-similar-explore-btn:hover::before,
+.register-submit-btn:hover::before,
+.profile-submit-btn:hover::before,
+.bookings-action-btn:hover::before,
+.bookings-pass-qr-btn:hover::before,
+.bookings-download-pdf-btn:hover::before,
+.bookings-cancel-pass-btn:hover::before,
+.get-passes-btn:hover::before,
+.event-details-get-passes-btn:hover::before,
+.event-hero-book-btn:hover::before,
+.login-modal-send-otp-btn:hover::before,
+.review-order-back-button:hover::before,
+.review-order-cart-button:hover::before,
+.view-cart-btn:hover::before,
+.browse-events-btn:hover::before,
+.cart-page-checkout-button:hover::before,
+.cart-empty-btn:hover::before,
+.contact-submit-btn:hover::before,
+.b-conf-btn-yellow:hover::before,
+.b-conf-btn-white:hover::before {
+    transform: translateY(0%) !important;
+    border-radius: 0 !important;
+}
+
+/* Yellow Fill Buttons rise Black layer (#000000) */
+.book-now-btn::before,
+.login-btn::before,
+.get-passes-btn::before,
+.event-details-get-passes-btn::before,
+.event-hero-book-btn::before,
+.login-modal-send-otp-btn::before,
+.cart-page-checkout-button::before,
+.cart-empty-btn::before,
+.venue-detail-explore-btn::before,
+.venue-similar-explore-btn::before,
+.contact-submit-btn::before,
+.b-conf-btn-yellow::before,
+.view-cart-btn::before,
+.review-order-cart-button::before,
+.bookings-pass-qr-btn::before {
+    background-color: #000000 !important;
+}
+
+/* White/Outline Buttons rise Yellow layer (#FDFF53) */
+.reset-filters-btn::before,
+.favourites-browse-btn::before,
+.venue-view-details-btn::before,
+.register-submit-btn::before,
+.profile-submit-btn::before,
+.bookings-action-btn::before,
+.bookings-download-pdf-btn::before,
+.bookings-cancel-pass-btn::before,
+.review-order-back-button::before,
+.browse-events-btn::before,
+.b-conf-btn-white::before {
+    background-color: #FDFF53 !important;
+}
+
+/* Dual Text Conveyor Layers */
+.btn-text-primary {
+    position: relative !important;
+    z-index: 2 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    transform: translateY(0) !important;
+    transition: transform 0.65s cubic-bezier(0.25, 1, 0.3, 1), color 0.65s cubic-bezier(0.25, 1, 0.3, 1) !important;
+}
+
+.btn-text-secondary {
+    position: absolute !important;
+    z-index: 2 !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, 160%) !important;
+    width: 100% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    transition: transform 0.65s cubic-bezier(0.25, 1, 0.3, 1), color 0.65s cubic-bezier(0.25, 1, 0.3, 1) !important;
+}
+
+/* Yellow buttons (Hover text: White #FFFFFF) */
+.book-now-btn .btn-text-secondary,
+.login-btn .btn-text-secondary,
+.get-passes-btn .btn-text-secondary,
+.event-details-get-passes-btn .btn-text-secondary,
+.event-hero-book-btn .btn-text-secondary,
+.login-modal-send-otp-btn .btn-text-secondary,
+.cart-page-checkout-button .btn-text-secondary,
+.cart-empty-btn .btn-text-secondary,
+.venue-detail-explore-btn .btn-text-secondary,
+.venue-similar-explore-btn .btn-text-secondary,
+.contact-submit-btn .btn-text-secondary,
+.b-conf-btn-yellow .btn-text-secondary,
+.view-cart-btn .btn-text-secondary,
+.review-order-cart-button .btn-text-secondary,
+.bookings-pass-qr-btn .btn-text-secondary {
+    color: #FFFFFF !important;
+}
+
+/* White buttons (Hover text: Black #000000) */
+.reset-filters-btn .btn-text-secondary,
+.favourites-browse-btn .btn-text-secondary,
+.venue-view-details-btn .btn-text-secondary,
+.register-submit-btn .btn-text-secondary,
+.profile-submit-btn .btn-text-secondary,
+.bookings-action-btn .btn-text-secondary,
+.bookings-download-pdf-btn .btn-text-secondary,
+.bookings-cancel-pass-btn .btn-text-secondary,
+.review-order-back-button .btn-text-secondary,
+.browse-events-btn .btn-text-secondary,
+.b-conf-btn-white .btn-text-secondary {
+    color: #000000 !important;
+}
+
+/* Conveyor Text Movements on Hover */
+.book-now-btn:hover .btn-text-primary,
+.login-btn:hover .btn-text-primary,
+.reset-filters-btn:hover .btn-text-primary,
+.favourites-browse-btn:hover .btn-text-primary,
+.venue-view-details-btn:hover .btn-text-primary,
+.venue-detail-explore-btn:hover .btn-text-primary,
+.venue-similar-explore-btn:hover .btn-text-primary,
+.register-submit-btn:hover .btn-text-primary,
+.profile-submit-btn:hover .btn-text-primary,
+.bookings-action-btn:hover .btn-text-primary,
+.bookings-pass-qr-btn:hover .btn-text-primary,
+.bookings-download-pdf-btn:hover .btn-text-primary,
+.bookings-cancel-pass-btn:hover .btn-text-primary,
+.get-passes-btn:hover .btn-text-primary,
+.event-details-get-passes-btn:hover .btn-text-primary,
+.event-hero-book-btn:hover .btn-text-primary,
+.login-modal-send-otp-btn:hover .btn-text-primary,
+.review-order-back-button:hover .btn-text-primary,
+.review-order-cart-button:hover .btn-text-primary,
+.view-cart-btn:hover .btn-text-primary,
+.browse-events-btn:hover .btn-text-primary,
+.cart-page-checkout-button:hover .btn-text-primary,
+.cart-empty-btn:hover .btn-text-primary,
+.contact-submit-btn:hover .btn-text-primary,
+.b-conf-btn-yellow:hover .btn-text-primary,
+.b-conf-btn-white:hover .btn-text-primary {
+    transform: translateY(-160%) !important;
+}
+
+.book-now-btn:hover .btn-text-secondary,
+.login-btn:hover .btn-text-secondary,
+.reset-filters-btn:hover .btn-text-secondary,
+.favourites-browse-btn:hover .btn-text-secondary,
+.venue-view-details-btn:hover .btn-text-secondary,
+.venue-detail-explore-btn:hover .btn-text-secondary,
+.venue-similar-explore-btn:hover .btn-text-secondary,
+.register-submit-btn:hover .btn-text-secondary,
+.profile-submit-btn:hover .btn-text-secondary,
+.bookings-action-btn:hover .btn-text-secondary,
+.bookings-pass-qr-btn:hover .btn-text-secondary,
+.bookings-download-pdf-btn:hover .btn-text-secondary,
+.bookings-cancel-pass-btn:hover .btn-text-secondary,
+.get-passes-btn:hover .btn-text-secondary,
+.event-details-get-passes-btn:hover .btn-text-secondary,
+.event-hero-book-btn:hover .btn-text-secondary,
+.login-modal-send-otp-btn:hover .btn-text-secondary,
+.review-order-back-button:hover .btn-text-secondary,
+.review-order-cart-button:hover .btn-text-secondary,
+.view-cart-btn:hover .btn-text-secondary,
+.browse-events-btn:hover .btn-text-secondary,
+.cart-page-checkout-button:hover .btn-text-secondary,
+.cart-empty-btn:hover .btn-text-secondary,
+.contact-submit-btn:hover .btn-text-secondary,
+.b-conf-btn-yellow:hover .btn-text-secondary,
+.b-conf-btn-white:hover .btn-text-secondary {
+    transform: translate(-50%, -50%) !important;
+}
+
+.b-conf-btn-yellow:hover,
+.b-conf-btn-white:hover {
+    border-color: #FFFFFF !important;
+}
+
+/* Disabled button overrides */
+button:disabled::before {
+    display: none !important;
+}
+
+button:disabled .btn-text-primary {
+    transform: translateY(0) !important;
+    color: inherit !important;
+}
+
+button:disabled .btn-text-secondary {
+    display: none !important;
 }

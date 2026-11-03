@@ -1,9 +1,22 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
-const getHeaders = () => {
-  return {
-    'Content-Type': 'application/json',
-  };
+const getHeaders = (hasBody = false) => {
+  const headers = {};
+  if (hasBody) {
+    headers['Content-Type'] = 'application/json';
+  }
+  const token = localStorage.getItem('token') || localStorage.getItem('attendee_token');
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  } else {
+    let guestId = localStorage.getItem('guest_attendee_id');
+    if (!guestId) {
+      guestId = `guest_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+      localStorage.setItem('guest_attendee_id', guestId);
+    }
+    headers['x-test-attendee-id'] = guestId;
+  }
+  return headers;
 };
 
 const normalizeEventImages = (event) => {
@@ -58,6 +71,13 @@ const normalizeEventImages = (event) => {
     }
     cleanEvent.media = cleanMedia;
   }
+
+  if (cleanEvent.subfestival && cleanEvent.subfestival.logoImage) {
+    cleanEvent.subfestival.logoImage = {
+      ...cleanEvent.subfestival.logoImage,
+      data: fixUrl(cleanEvent.subfestival.logoImage.data)
+    };
+  }
   
   return cleanEvent;
 };
@@ -66,7 +86,10 @@ const normalizeEventImages = (event) => {
 // Caching & Request Deduplication Mechanisms
 // ----------------------------------------------------
 const CACHE_VERSION = 'v2'; // Bump this to invalidate all caches
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes TTL
+const CACHE_TTL_MS = (typeof window !== 'undefined' && 
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))
+    ? 5000 // 5 seconds in local development
+    : 5 * 60 * 1000; // 5 minutes TTL
 const eventsCache = new Map();
 let spotlightCache = null;
 const eventSlugCache = new Map();
@@ -197,7 +220,8 @@ export const fetchEvents = async (params = {}) => {
     return cached.data;
   }
 
-  const url = `${API_BASE_URL}/public/events${cacheKey ? `?${cacheKey}` : ""}`;
+  const queryString = query.toString();
+  const url = `${API_BASE_URL}/public/events${queryString ? `?${queryString}` : ""}`;
   const data = await fetchWithDeduplication(url, {
     method: 'GET',
     headers: getHeaders(),
@@ -314,4 +338,46 @@ export const fetchEventLanguages = async () => {
   return { 
     languages: Array.from(langs) 
   };
+};
+
+/**
+ * Toggle event in wishlist on backend
+ */
+export const toggleWishlistApi = async (eventId) => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/wishlist/toggle`, {
+      method: 'POST',
+      headers: getHeaders(true),
+      body: JSON.stringify({ eventId }),
+    });
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.error('Error toggling wishlist:', err);
+    return { success: false, message: err.message };
+  }
+};
+
+/**
+ * Fetch user's wishlist items from backend
+ */
+export const fetchWishlistApi = async () => {
+  try {
+    const isLoggedIn = typeof window !== 'undefined' && localStorage.getItem('isLoggedIn') === 'true';
+    if (!isLoggedIn) {
+      return { success: true, data: [] };
+    }
+    const res = await fetch(`${API_BASE_URL}/wishlist?includeEvents=true`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    if (!res.ok) {
+      return { success: false, data: [] };
+    }
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.error('Error fetching wishlist:', err);
+    return { success: false, data: [] };
+  }
 };

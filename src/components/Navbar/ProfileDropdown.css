@@ -1,0 +1,106 @@
+.profile-dropdown-container {
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    width: 240px;
+    background: #ffffff;
+    border: 1px solid #E9E9E9;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    z-index: 9999;
+    padding: 16px 0;
+    box-sizing: border-box;
+    font-family: "Roboto Condensed", sans-serif;
+    animation: profile-dropdown-fade-in 0.2s ease-out;
+}
+
+@keyframes profile-dropdown-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.profile-dropdown-header {
+    padding: 0 20px 12px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.profile-dropdown-user-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #000000;
+    line-height: 20px;
+    text-transform: capitalize;
+}
+
+.profile-dropdown-user-email {
+    font-size: 13px;
+    color: #6C6C6C;
+    line-height: 16px;
+    word-break: break-all;
+}
+
+.profile-dropdown-divider {
+    height: 1px;
+    background: #E9E9E9;
+    margin: 8px 0;
+}
+
+.profile-dropdown-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.profile-dropdown-item {
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #181C20;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+    line-height: 20px;
+}
+
+.profile-dropdown-item:hover {
+    background: #F5F5F5;
+    color: #000000;
+}
+
+.profile-dropdown-logout-section {
+    padding: 8px 20px 0 20px;
+}
+
+.profile-dropdown-logout-btn {
+    width: 100%;
+    height: 38px;
+    background: #ffffff;
+    border: 1px solid #D32F2F;
+    border-radius: 6px;
+    color: #D32F2F;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+    text-transform: uppercase;
+}
+
+.profile-dropdown-logout-btn:hover {
+    background: #D32F2F;
+    color: #ffffff;
+}
+
+@media (max-width: 1024px) {
+    .profile-dropdown-container {
+        top: 50px !important;
+        right: 0px !important;
+    }
+}

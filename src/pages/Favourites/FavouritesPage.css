@@ -1,0 +1,126 @@
+.favourites-page-container {
+    width: 100%;
+    min-height: calc(100vh - 160px);
+    background: #ffffff;
+    box-sizing: border-box;
+    font-family: "Roboto Condensed", sans-serif;
+}
+
+.favourites-page-content {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 60px 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 1200px) {
+    .favourites-page-content {
+        padding: 48px 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .favourites-page-content {
+        padding: 32px 16px;
+        gap: 24px;
+    }
+}
+
+.favourites-page-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.favourites-page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #000000;
+    margin: 0;
+}
+
+.favourites-page-subtitle {
+    font-size: 15px;
+    color: #6C6C6C;
+    margin: 0;
+}
+
+/* Loading box */
+.favourites-loading-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 0;
+}
+
+.favourites-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #F5F5F5;
+    border-top: 3px solid #000000;
+    border-radius: 50%;
+    animation: favourites-spin 0.8s linear infinite;
+}
+
+@keyframes favourites-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Favorites Grid */
+.favourites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+/* Empty State */
+.favourites-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    border: 2px dashed #E9E9E9;
+    border-radius: 16px;
+    text-align: center;
+    gap: 16px;
+}
+
+.favourites-empty-icon {
+    color: #C3C3C3;
+}
+
+.favourites-empty-state h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #000000;
+    margin: 0;
+}
+
+.favourites-empty-state p {
+    font-size: 15px;
+    color: #6C6C6C;
+    margin: 0 0 8px 0;
+}
+
+.favourites-browse-btn {
+    background: #FDFF53;
+    border: 2px solid #000000;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #000000;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.favourites-browse-btn:hover {
+    background: #000000 !important;
+    color: #FFFFFF !important;
+    border-color: #000000 !important;
+}

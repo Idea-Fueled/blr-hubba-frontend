@@ -1,0 +1,449 @@
+/* =========================================================
+   3. OUR FESTIVALS SECTION (PIXEL PERFECT FIGMA SPEC)
+   Figma: Frame 2422 / Our Festivals
+   Top: 80px, Sides: 80px, Header-to-cards gap: 60px
+========================================================= */
+
+.hp-festivals-section {
+    width: 100%;
+    padding: 80px 0 60px 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.hp-festivals-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 60px;
+    width: 100%;
+    padding: 0 80px;
+    box-sizing: border-box;
+    gap: 20px;
+}
+
+.hp-festivals-header-left {
+    display: flex;
+    width: auto;
+    max-width: calc(100% - 160px);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.hp-festivals-subtitle {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Label1_Regular */
+    font-family: "Roboto Condensed";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    align-self: stretch;
+}
+
+.hp-festivals-subtitle.kannada {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Noto Sans Kannada", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: normal;
+    text-transform: uppercase;
+}
+
+.hp-festivals-title {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Heading1_Bold */
+    font-family: "Roboto Condensed";
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 38px;
+    width: 559px;
+    max-width: 100%;
+    margin: 0;
+}
+
+.hp-festivals-title.kannada {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Noto Sans Kannada Condensed", "Noto Sans Kannada", sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 42px;
+    width: auto;
+    max-width: 100%;
+    margin: 0;
+}
+
+.hp-festivals-view-all-btn {
+    display: flex;
+    height: 40px;
+    padding: 16px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    border: 2px solid var(--Hubba-Black, #000);
+    background: var(--Hubba-White, #FFF);
+    color: var(--Hubba-Black, #000);
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Title2_Medium */
+    font-family: "Roboto Condensed";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    font-variant: all-small-caps;
+    cursor: pointer;
+    transition: all 0.3s ease !important;
+    flex-shrink: 0;
+}
+
+.hp-festivals-view-all-btn.kannada,
+.hp-festivals-view-all-btn.kannada span,
+.hp-festivals-view-all-btn.kannada .btn-text-primary,
+.hp-festivals-view-all-btn.kannada .btn-text-secondary {
+    font-family: "Noto Sans Kannada", sans-serif !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    font-variant: normal !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+}
+
+.hp-festivals-btn-mobile {
+    display: none !important;
+}
+
+.hp-festivals-view-all-btn.kannada {
+    padding: 0 24px !important;
+}
+
+.hp-festivals-view-all-btn.kannada .btn-text-primary {
+    transform: translateY(2.5px) !important;
+}
+
+.hp-festivals-view-all-btn.kannada:hover .btn-text-primary {
+    transform: translateY(-160%) !important;
+}
+
+.hp-festivals-view-all-btn.kannada:hover .btn-text-secondary {
+    transform: translate(-50%, calc(-50% + 2.5px)) !important;
+}
+
+.hp-festivals-view-all-btn:hover {
+    background: #FDFF53 !important;
+    color: #000000 !important;
+    border-color: #000000 !important;
+}
+
+/* Bottom Centered Arrow Controls */
+.hp-festivals-bottom-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 32px;
+}
+
+.hp-festivals-nav-arrows {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.hp-festivals-nav-btn {
+    display: flex;
+    width: 56px;
+    height: 56px;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-lg, 12px);
+    border-radius: var(--radius-full, 9999px);
+    border: 1px solid var(--Hubba-Black, #000);
+    background: #FFF;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.hp-festivals-nav-btn:hover {
+    background: #FDFF53;
+    border-color: #000;
+    transform: scale(1.06);
+}
+
+.hp-festivals-nav-btn:active {
+    transform: scale(0.94);
+}
+
+/* MARQUEE TICKER (Interactive continuous smooth scrolling & draggable) */
+.hp-festivals-marquee-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    position: relative;
+    padding: 10px 0 20px 0;
+    box-sizing: border-box;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    touch-action: pan-y;
+    scroll-behavior: auto;
+}
+
+.hp-festivals-marquee-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.hp-festivals-marquee-wrapper.is-dragging {
+    cursor: grabbing;
+    cursor: -webkit-grabbing;
+}
+
+.hp-festivals-marquee-wrapper.is-dragging .hp-festival-card {
+    cursor: grabbing;
+}
+
+.hp-festivals-marquee-wrapper.is-dragging .hp-festival-card:hover .hp-festival-card-img {
+    transform: none;
+}
+
+.hp-festivals-track {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+    width: max-content;
+    will-change: scroll-position;
+}
+
+.hp-festival-card {
+    flex: 0 0 auto;
+    width: auto;
+    height: 360px;
+    border-radius: 24px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+    flex-shrink: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.hp-festival-card:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.hp-festival-card-img {
+    width: auto;
+    height: 360px;
+    object-fit: contain;
+    border-radius: 24px;
+    display: block;
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    pointer-events: none;
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+.hp-festival-card:hover .hp-festival-card-img {
+    transform: scale(1.06);
+}
+
+.hp-festivals-title-line {
+    display: inline;
+}
+
+.hp-festivals-btn-desktop {
+    display: flex;
+}
+
+.hp-festivals-btn-mobile {
+    display: none !important;
+}
+
+@media (max-width: 1024px) {
+    .hp-festivals-section {
+        padding: 60px 0 40px 0;
+    }
+
+    .hp-festivals-header {
+        padding: 0 32px;
+        margin-bottom: 40px;
+    }
+
+    .hp-festival-card,
+    .hp-festival-card-img {
+        height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hp-festivals-section {
+        padding: 40px 0 40px 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+        gap: 0px !important;
+    }
+
+    .hp-festivals-header {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 0 24px !important;
+        margin-bottom: 40px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        gap: 0 !important;
+    }
+
+    .hp-festivals-header-left {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0 !important;
+    }
+
+    .hp-festivals-subtitle {
+        color: #000 !important;
+        font-family: "Roboto Condensed", sans-serif !important;
+        font-size: 14px !important;
+        font-style: normal !important;
+        font-weight: 400 !important;
+        line-height: 20px !important;
+        letter-spacing: 2px !important;
+        text-transform: uppercase !important;
+        margin-bottom: 24px !important;
+    }
+
+    .hp-festivals-subtitle.kannada {
+        font-family: "Noto Sans Kannada", sans-serif !important;
+        letter-spacing: normal !important;
+    }
+
+    .hp-festivals-title {
+        color: #000 !important;
+        font-family: "Roboto Condensed", sans-serif !important;
+        font-size: 24px !important;
+        font-style: normal !important;
+        font-weight: 700 !important;
+        line-height: 32px !important;
+        letter-spacing: -0.2px !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+
+    .hp-festivals-title.kannada {
+        color: #000 !important;
+        font-family: "Noto Sans Kannada", sans-serif !important;
+        font-size: clamp(15px, 4.4vw, 20px) !important;
+        font-style: normal !important;
+        font-weight: 700 !important;
+        line-height: 1.35 !important;
+        letter-spacing: normal !important;
+        width: 100% !important;
+        margin: 0 !important;
+        word-break: normal !important;
+    }
+
+    .hp-festivals-title-line {
+        display: block !important;
+        white-space: nowrap !important;
+    }
+
+    .hp-festivals-btn-desktop,
+    .hp-festivals-view-all-btn.hp-festivals-btn-desktop {
+        display: none !important;
+    }
+
+    .hp-festivals-bottom-controls,
+    .hp-festivals-nav-arrows {
+        display: none !important;
+    }
+
+    .hp-festivals-marquee-wrapper {
+        width: 100% !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    .hp-festivals-track {
+        gap: 24px !important;
+    }
+
+    .hp-festival-card {
+        width: 156px !important;
+        height: 204px !important;
+        flex: 0 0 156px !important;
+        border-radius: 16px !important;
+    }
+
+    .hp-festival-card-img {
+        width: 156px !important;
+        height: 204px !important;
+        object-fit: cover !important;
+        border-radius: 16px !important;
+    }
+
+    .hp-festivals-btn-mobile {
+        display: flex !important;
+        width: calc(100% - 48px) !important;
+        margin: 40px 24px 0 24px !important;
+        height: 40px !important;
+        padding: 12px 24px !important;
+        box-sizing: border-box !important;
+        align-self: center !important;
+        justify-content: center !important;
+        align-items: center !important;
+        border-radius: 8px !important;
+        border: 2px solid #000000 !important;
+        background: #FFFFFF !important;
+        color: #000000 !important;
+        font-family: "Roboto Condensed", sans-serif !important;
+        font-size: 18px !important;
+        font-weight: 600 !important;
+        line-height: 20px !important;
+        letter-spacing: 1px !important;
+        text-transform: uppercase !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .hp-festivals-btn-mobile:hover {
+        background: #FDFF53 !important;
+        color: #000000 !important;
+    }
+}

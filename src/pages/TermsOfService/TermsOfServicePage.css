@@ -1,0 +1,244 @@
+/* TermsOfServicePage.css */
+
+.terms-page {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #FFFFFF;
+    box-sizing: border-box;
+}
+
+/* ================= HERO BANNER SECTION ================= */
+.terms-hero-wrapper {
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 0 32px;
+    box-sizing: border-box;
+}
+
+.terms-hero-card {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    background-image: url("../../assets/banner-images/our-team-page/image.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 32px;
+    padding: 80px 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 32px;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.terms-hero-eyebrow {
+    color: var(--Hubba-White, #FFF);
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Label1_Regular */
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.terms-hero-title {
+    color: #FFF;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Display2_Bold */
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 46px;
+    margin: 0;
+}
+
+/* ================= TERMS CONTENT SECTION ================= */
+.terms-content-wrapper {
+    width: 100%;
+    max-width: 1920px;
+    margin: 80px auto 100px auto;
+    padding: 0 200px 80px 200px;
+    box-sizing: border-box;
+}
+
+.terms-sections-container {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    width: 100%;
+}
+
+.terms-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+}
+
+.terms-section-title {
+    color: #000;
+    text-align: left;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 26px;
+    margin: 0;
+}
+
+.terms-paragraphs-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.terms-paragraph {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Body_Regular */
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 26px; /* 162.5% */
+    margin: 0;
+}
+
+.terms-contact-bold-row {
+    font-weight: 700;
+}
+
+.terms-email-link {
+    color: #000;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 26px;
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-skip-ink: none;
+    text-decoration-thickness: auto;
+    text-underline-offset: auto;
+    text-underline-position: from-font;
+    transition: opacity 0.2s ease;
+}
+
+.terms-email-link:hover {
+    opacity: 0.7;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1280px) {
+    .terms-content-wrapper {
+        padding: 0 100px 60px 100px;
+        margin: 60px auto 80px auto;
+    }
+}
+
+@media (max-width: 1024px) {
+    .terms-hero-card {
+        padding: 60px 48px;
+        height: 280px;
+    }
+
+    .terms-hero-title {
+        font-size: 34px;
+        line-height: 40px;
+    }
+
+    .terms-content-wrapper {
+        padding: 0 60px 50px 60px;
+        margin: 50px auto 70px auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .terms-hero-wrapper {
+        padding: 0 16px;
+    }
+
+    .terms-hero-card {
+        height: auto;
+        min-height: 154px;
+        background-image: url("../../assets/banner-images/our-team-mobile/mobile-view.png");
+        padding: 24px 20px;
+        border-radius: 20px;
+        gap: 12px;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .terms-hero-eyebrow {
+        color: var(--Hubba-White, #FFF);
+        text-align: center;
+        leading-trim: both;
+        text-edge: cap;
+        font-family: "Roboto Condensed";
+        font-size: 13px;
+        font-style: normal;
+        font-weight: 400;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        line-height: 16px;
+        margin: 0;
+    }
+
+    .terms-hero-title {
+        color: #FFF;
+        leading-trim: both;
+        text-edge: cap;
+        font-family: "Roboto Condensed";
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+        width: 215px;
+        max-width: 215px;
+        margin: 0;
+    }
+
+    .terms-content-wrapper {
+        padding: 0 20px 40px 20px;
+        margin: 40px auto 60px auto;
+    }
+
+    .terms-sections-container {
+        gap: 40px;
+    }
+
+    .terms-section {
+        gap: 16px;
+    }
+
+    .terms-section-title {
+        font-size: 20px;
+        line-height: 26px;
+    }
+
+    .terms-paragraph,
+    .terms-email-link {
+        font-size: 15px;
+        line-height: 24px;
+    }
+}

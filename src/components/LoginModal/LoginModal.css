@@ -1,0 +1,282 @@
+/* =========================================================
+   LOGIN MODAL (exact Figma spec — every gap taken from
+   the dev-mode annotations: 40 / 32 / 60 / 24 / 80 / 16 / 16)
+   Unique "login-modal-" prefix — zero conflicts with other pages.
+========================================================= */
+
+.login-modal-overlay,
+.login-modal-overlay * {
+    box-sizing: border-box;
+}
+
+.login-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Card padding: 40px top, 32px on left/right/bottom
+   (matches the "40" top annotation vs "32" on the other 3 sides) */
+.login-modal-card {
+    position: relative;
+    width: 377px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 28px;
+    border: 1.5px solid var(--Hubba-Black, #000);
+    background: var(--Hubba-White, #FFF);
+}
+
+/* ================= CLOSE BUTTON ================= */
+
+.login-modal-close-btn {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 32px;
+    flex-shrink: 0;
+    padding: 10px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: none;
+    background: var(--Hubba-Yellow, #FDFF53);
+
+    cursor: pointer;
+}
+
+.login-modal-close-btn:hover {
+    background: #eedf1a;
+}
+
+/* ================= REGISTER TEXT (first child, no top margin) ================= */
+
+.login-modal-register-text {
+    color: #27272E;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Body_Regular */
+    font-family: "Roboto";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 162.023%;
+    margin: 0;
+    margin-top: 40px;
+    /* 25.924px */
+
+}
+
+.login-modal-register-link {
+    color: var(--Hubba-Black, #000);
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.login-modal-register-link:hover {
+    opacity: 0.7;
+}
+
+/* ================= TITLE + DESCRIPTION GROUP ================= */
+/* 60px gap between the register text above and this whole group */
+
+.login-modal-title-desc-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 60px;
+}
+
+.login-modal-title {
+    color: #000;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Title1_SemiBold */
+    font-family: "Roboto Condensed";
+    font-size: 24px;
+    font-style: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    /* align-self: stretch; */
+    font-weight: 600;
+    line-height: 32px;
+    align-self: stretch;
+    /* 133.333% */
+    margin-top: 60px;
+    margin: 0;
+}
+
+/* 24px gap between title and description, inside the group */
+.login-modal-description {
+    color: #27272E;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+
+    /* Body_Regular */
+    font-family: "Roboto";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    align-self: stretch;
+    margin: 0;
+    margin: 24px 0px 24px 0px;
+    /* 150% */
+}
+
+.login-modal-not-registered-error {
+    color: #E10808;
+    text-align: center;
+    leading-trim: both;
+    text-edge: cap;
+    font-family: "Roboto Condensed";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    /* 128.571% */
+    margin: 0;
+}
+
+/* ================= FORM ================= */
+/* 80px gap between the title-desc group above and the form */
+
+.login-modal-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
+    margin-top: 40px;
+}
+
+.login-modal-label {
+    overflow: hidden;
+    color: var(--Hubba-Black, #000);
+    leading-trim: both;
+    text-edge: cap;
+    font-feature-settings: 'liga' off, 'clig' off;
+    text-overflow: ellipsis;
+
+    /* Title3_Medium */
+    font-family: "Roboto Condensed";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    margin: 0;
+    /* 150% */
+}
+
+/* 16px gap between label and input */
+.login-modal-input {
+    display: flex;
+    height: 44px;
+    padding: 10px 16px;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    border-radius: 8px;
+    border: 2px solid var(--Neutral-50, #888);
+    background: var(--Hubba-White, #FFF);
+    margin-top: 16px;
+}
+
+.login-modal-input::placeholder {
+    color: var(--Neutral-40, #A3A3A3);
+}
+
+.login-modal-input:focus {
+    border-color: var(--Hubba-Black, #000);
+}
+
+/* 16px gap between input and button */
+.login-modal-send-otp-btn {
+    display: flex;
+    height: 44px;
+    padding: 16px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    align-self: stretch;
+    border-radius: 8px;
+    border: 2px solid var(--Hubba-Black, #000);
+    background: var(--Hubba-Yellow, #FDFF53);
+    color: var(--Hubba-Black, #000);
+    text-align: center;
+    margin-top: 16px;
+    leading-trim: both;
+    text-edge: cap;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+
+    /* Title2_Medium */
+    font-family: "Roboto Condensed";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    /* 133.333% */
+    font-variant: all-small-caps;
+}
+
+.login-modal-send-otp-btn:hover {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border-color: #000000 !important;
+}
+
+
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 480px) {
+
+    .login-modal-overlay {
+        padding: 0 !important;
+        align-items: flex-end !important;
+        justify-content: center !important;
+    }
+
+    .login-modal-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 32px 24px 40px 24px !important;
+        border-radius: 24px 24px 0 0 !important;
+        border: 2px solid var(--Hubba-Black, #000) !important;
+        border-bottom: none !important;
+        margin: 0 !important;
+    }
+
+    .login-modal-title {
+        font-size: 24px;
+        line-height: 30px;
+    }
+
+    .login-modal-title-desc-group {
+        margin-top: 60px;
+    }
+
+    .login-modal-description {
+        margin: 0;
+        margin-top: 24px;
+    }
+
+    .login-modal-form {
+        margin-top: 80px;
+    }
+
+}
