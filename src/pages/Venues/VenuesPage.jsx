@@ -466,11 +466,18 @@ export const VenuesPage = () => {
                                 const dObj = FESTIVAL_DATES.find(d => d.value === dVal);
                                 const label = dObj ? dObj.shortLabel || dObj.label : dVal;
                                 return (
-                                    <div key={`chip-date-${dVal}`} className="venue-filter-chip">
+                                    <div
+                                        key={`chip-date-${dVal}`}
+                                        className="venue-filter-chip"
+                                        onClick={() => toggleDateFilter(dVal)}
+                                    >
                                         <span>{label}</span>
                                         <span
                                             className="venue-filter-chip-remove"
-                                            onClick={() => toggleDateFilter(dVal)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                toggleDateFilter(dVal);
+                                            }}
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
                                                 <path d="M9 3L3 9M3 3L9 9" stroke="#181C20" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -484,11 +491,18 @@ export const VenuesPage = () => {
                                 const tObj = VENUE_TYPE_OPTIONS.find(t => t.key === tKey);
                                 const label = tObj ? tObj.label : tKey;
                                 return (
-                                    <div key={`chip-type-${tKey}`} className="venue-filter-chip">
+                                    <div
+                                        key={`chip-type-${tKey}`}
+                                        className="venue-filter-chip"
+                                        onClick={() => toggleTypeFilter(tKey)}
+                                    >
                                         <span>{label}</span>
                                         <span
                                             className="venue-filter-chip-remove"
-                                            onClick={() => toggleTypeFilter(tKey)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                toggleTypeFilter(tKey);
+                                            }}
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
                                                 <path d="M9 3L3 9M3 3L9 9" stroke="#181C20" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
