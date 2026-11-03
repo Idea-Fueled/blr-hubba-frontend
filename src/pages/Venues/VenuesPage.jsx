@@ -469,7 +469,6 @@ export const VenuesPage = () => {
                                     <div
                                         key={`chip-date-${dVal}`}
                                         className="venue-filter-chip"
-                                        onClick={() => toggleDateFilter(dVal)}
                                     >
                                         <span>{label}</span>
                                         <span
@@ -494,7 +493,6 @@ export const VenuesPage = () => {
                                     <div
                                         key={`chip-type-${tKey}`}
                                         className="venue-filter-chip"
-                                        onClick={() => toggleTypeFilter(tKey)}
                                     >
                                         <span>{label}</span>
                                         <span

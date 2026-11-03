@@ -409,14 +409,16 @@
     line-height: 14px;
     box-sizing: border-box;
     white-space: nowrap;
-    cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+    cursor: default;
+    transition: background-color 0.2s ease, border-color 0.2s ease, padding 0.2s ease;
     user-select: none;
 }
 
 .venue-filter-chip:hover {
     background: #FDFF53 !important;
     border-color: #000000 !important;
+    padding: 5px 9px !important;
+    gap: 0 !important;
 }
 
 .venue-filter-chip-remove {
@@ -428,6 +430,10 @@
     border: none;
     padding: 0;
     line-height: 1;
+}
+
+.venue-filter-chip:hover .venue-filter-chip-remove {
+    display: none !important;
 }
 
 .venue-filter-chip-remove:hover svg path {
