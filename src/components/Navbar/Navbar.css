@@ -545,15 +545,10 @@
     display: flex;
     align-items: center;
     height: 44px;
-    margin-left: 2px;
+    margin-left: 4px;
 }
 
-#INDmenu-btn.navbar-accessibility-btn {
-    position: relative !important;
-    top: auto !important;
-    bottom: auto !important;
-    left: auto !important;
-    right: auto !important;
+.navbar-accessibility-btn {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -568,18 +563,16 @@
     outline: none !important;
     transition: transform 0.2s ease, filter 0.2s ease !important;
     flex-shrink: 0 !important;
-    z-index: 10 !important;
     margin: 0 !important;
-    transform: none;
 }
 
-#INDmenu-btn.navbar-accessibility-btn:hover,
+.navbar-accessibility-btn:hover,
 .mobile-accessibility-btn:hover {
-    transform: scale(1.08) !important;
-    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35)) !important;
+    transform: scale(1.1) !important;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2)) !important;
 }
 
-#INDmenu-btn.navbar-accessibility-btn:active,
+.navbar-accessibility-btn:active,
 .mobile-accessibility-btn:active {
     transform: scale(0.95) !important;
 }
@@ -601,6 +594,8 @@
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    width: 32px !important;
+    height: 32px !important;
     padding: 0 !important;
     background: transparent !important;
     border: none !important;
@@ -610,10 +605,21 @@
     transition: transform 0.2s ease, filter 0.2s ease !important;
 }
 
-/* Prevent default EqualWeb floating launcher on body */
-.interdeal-custom-btn:not(#INDmenu-btn),
-.interdeal-btn-wrapper {
+/* Hide default EqualWeb floating launcher on body */
+#INDmenu-btn,
+.interdeal-custom-btn,
+.interdeal-btn-wrapper,
+#INDmenu-btn-wrapper,
+[id^="INDmenu-btn"] {
     display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    width: 0 !important;
+    height: 0 !important;
 }
 
 .language-container {
