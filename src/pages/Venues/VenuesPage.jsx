@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { MotionCard, MotionMaskText, MotionButton } from "../../components/AnimatedPage";
 import "./VenuesPage.css";
@@ -70,7 +70,7 @@ const parseVenueTags = (v, index = 0) => {
     return Array.from(tagSet);
 };
 
-const FESTIVAL_DATES = [
+const DEFAULT_FESTIVAL_DATES = [
     { value: "2027-01-15", day: "15", weekday: "FRI", label: "15 Jan 2027", shortLabel: "15 Jan" },
     { value: "2027-01-16", day: "16", weekday: "SAT", label: "16 Jan 2027", shortLabel: "16 Jan" },
     { value: "2027-01-17", day: "17", weekday: "SUN", label: "17 Jan 2027", shortLabel: "17 Jan" },
@@ -109,6 +109,63 @@ export const VenuesPage = () => {
 
     const toolbarRef = useRef(null);
     const dateDropdownRef = useRef(null);
+
+    // Dynamically derive available dates from venues (or fallback to festival presets)
+    const dynamicDates = useMemo(() => {
+        const dateSet = new Set();
+        venues.forEach(v => {
+            if (Array.isArray(v.availableDates)) {
+                v.availableDates.forEach(d => {
+                    if (d && typeof d === "string") {
+                        const trimmed = d.split("T")[0].trim();
+                        if (trimmed) dateSet.add(trimmed);
+                    }
+                });
+            }
+        });
+
+        const sourceDates = dateSet.size > 0 ? Array.from(dateSet) : DEFAULT_FESTIVAL_DATES.map(d => d.value);
+
+        const weekdayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const fullMonthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+        return sourceDates.sort().map(val => {
+            const parts = val.split("-");
+            if (parts.length === 3) {
+                const year = parseInt(parts[0], 10);
+                const mIdx = parseInt(parts[1], 10) - 1;
+                const dNum = parseInt(parts[2], 10);
+                const dObj = new Date(year, mIdx, dNum);
+                const weekday = weekdayNames[dObj.getDay()] || "";
+                const shortMonth = monthNames[mIdx] || "";
+                const fullMonth = fullMonthNames[mIdx] || "";
+                return {
+                    value: val,
+                    day: String(dNum).padStart(2, "0"),
+                    weekday,
+                    label: `${dNum} ${shortMonth} ${year}`,
+                    shortLabel: `${dNum} ${shortMonth}`,
+                    monthYearHeader: `${fullMonth}, ${year}`
+                };
+            }
+            return {
+                value: val,
+                day: val,
+                weekday: "",
+                label: val,
+                shortLabel: val,
+                monthYearHeader: "Festival Dates"
+            };
+        });
+    }, [venues]);
+
+    const activeMonthHeader = useMemo(() => {
+        if (dynamicDates.length > 0 && dynamicDates[0].monthYearHeader) {
+            return dynamicDates[0].monthYearHeader;
+        }
+        return "January, 2027";
+    }, [dynamicDates]);
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -230,32 +287,47 @@ export const VenuesPage = () => {
 
         // Filter by Date
         if (selectedDates.length > 0) {
-            const venueEvents = events.filter(ev => {
-                const vId = ev.venue?.id || ev.venueId;
-                const vName = (ev.venue?.name || ev.venue || "").toLowerCase().trim();
-                const thisVenueName = (venue.name || "").toLowerCase().trim();
-                return (venue.id && vId === venue.id) || (thisVenueName && vName.includes(thisVenueName)) || (vName && thisVenueName.includes(vName));
-            });
-
-            if (venueEvents.length > 0) {
-                const hasEventOnDate = venueEvents.some(ev => {
-                    return selectedDates.some(targetDateStr => {
-                        if (ev.eventDates && Array.isArray(ev.eventDates)) {
-                            const match = ev.eventDates.some(ed => {
-                                const dStr = (ed.date || ed.startDateTime || "").split("T")[0];
-                                return dStr === targetDateStr;
-                            });
-                            if (match) return true;
-                        }
-                        if (ev.startDateTime) {
-                            const startStr = ev.startDateTime.split("T")[0];
-                            const endStr = (ev.endDateTime || ev.startDateTime).split("T")[0];
-                            return targetDateStr >= startStr && targetDateStr <= endStr;
-                        }
-                        return false;
+            // Check direct venue availableDates first
+            const venueHasDirectDates = Array.isArray(venue.availableDates) && venue.availableDates.length > 0;
+            if (venueHasDirectDates) {
+                const matchesDate = selectedDates.some(targetDateStr => {
+                    return venue.availableDates.some(d => {
+                        const dStr = (d || "").split("T")[0].trim();
+                        return dStr === targetDateStr;
                     });
                 });
-                if (!hasEventOnDate) return false;
+                if (!matchesDate) return false;
+            } else {
+                // Fallback to checking events hosted at this venue
+                const venueEvents = events.filter(ev => {
+                    const vId = ev.venue?.id || ev.venueId;
+                    const vName = (ev.venue?.name || ev.venue || "").toLowerCase().trim();
+                    const thisVenueName = (venue.name || "").toLowerCase().trim();
+                    return (venue.id && vId === venue.id) || (thisVenueName && vName.includes(thisVenueName)) || (vName && thisVenueName.includes(vName));
+                });
+
+                if (venueEvents.length > 0) {
+                    const hasEventOnDate = venueEvents.some(ev => {
+                        return selectedDates.some(targetDateStr => {
+                            if (ev.eventDates && Array.isArray(ev.eventDates)) {
+                                const match = ev.eventDates.some(ed => {
+                                    const dStr = (ed.date || ed.startDateTime || "").split("T")[0];
+                                    return dStr === targetDateStr;
+                                });
+                                if (match) return true;
+                            }
+                            if (ev.startDateTime) {
+                                const startStr = ev.startDateTime.split("T")[0];
+                                const endStr = (ev.endDateTime || ev.startDateTime).split("T")[0];
+                                return targetDateStr >= startStr && targetDateStr <= endStr;
+                            }
+                            return false;
+                        });
+                    });
+                    if (!hasEventOnDate) return false;
+                } else {
+                    return false;
+                }
             }
         }
 
@@ -408,9 +480,9 @@ export const VenuesPage = () => {
                     {/* INLINE FILTER BY DATE (Figma 56:1036) */}
                     {viewMode === 'list' && openDropdown === 'date' && (
                         <div className="venue-date-filter-row venue-inline-date-filter-row">
-                            <span className="venue-date-filter-month">January, 2027</span>
+                            <span className="venue-date-filter-month">{activeMonthHeader}</span>
                             <div className="venue-date-cards-scroll">
-                                {FESTIVAL_DATES.map(date => {
+                                {dynamicDates.map(date => {
                                     const isChecked = selectedDates.includes(date.value);
                                     return (
                                         <button
@@ -463,7 +535,7 @@ export const VenuesPage = () => {
                     {viewMode === 'list' && (selectedDates.length > 0 || selectedTypes.length > 0) && (
                         <div className="venue-active-chips-row">
                             {selectedDates.map(dVal => {
-                                const dObj = FESTIVAL_DATES.find(d => d.value === dVal);
+                                const dObj = dynamicDates.find(d => d.value === dVal);
                                 const label = dObj ? dObj.shortLabel || dObj.label : dVal;
                                 return (
                                     <div
