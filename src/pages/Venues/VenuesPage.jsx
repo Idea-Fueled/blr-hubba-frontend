@@ -70,19 +70,6 @@ const parseVenueTags = (v, index = 0) => {
     return Array.from(tagSet);
 };
 
-const DEFAULT_FESTIVAL_DATES = [
-    { value: "2027-01-15", day: "15", weekday: "FRI", label: "15 Jan 2027", shortLabel: "15 Jan" },
-    { value: "2027-01-16", day: "16", weekday: "SAT", label: "16 Jan 2027", shortLabel: "16 Jan" },
-    { value: "2027-01-17", day: "17", weekday: "SUN", label: "17 Jan 2027", shortLabel: "17 Jan" },
-    { value: "2027-01-18", day: "18", weekday: "MON", label: "18 Jan 2027", shortLabel: "18 Jan" },
-    { value: "2027-01-19", day: "19", weekday: "TUE", label: "19 Jan 2027", shortLabel: "19 Jan" },
-    { value: "2027-01-20", day: "20", weekday: "WED", label: "20 Jan 2027", shortLabel: "20 Jan" },
-    { value: "2027-01-21", day: "21", weekday: "THU", label: "21 Jan 2027", shortLabel: "21 Jan" },
-    { value: "2027-01-22", day: "22", weekday: "FRI", label: "22 Jan 2027", shortLabel: "22 Jan" },
-    { value: "2027-01-23", day: "23", weekday: "SAT", label: "23 Jan 2027", shortLabel: "23 Jan" },
-    { value: "2027-01-24", day: "24", weekday: "SUN", label: "24 Jan 2027", shortLabel: "24 Jan" }
-];
-
 const VENUE_TYPE_OPTIONS = [
     { key: "Venues", label: "Venues" },
     { key: "Sites", label: "Sites" }
@@ -110,7 +97,7 @@ export const VenuesPage = () => {
     const toolbarRef = useRef(null);
     const dateDropdownRef = useRef(null);
 
-    // Dynamically derive available dates from venues (or fallback to festival presets)
+    // Dynamically derive available dates purely from venues (no hardcoding)
     const dynamicDates = useMemo(() => {
         const dateSet = new Set();
         venues.forEach(v => {
@@ -124,7 +111,7 @@ export const VenuesPage = () => {
             }
         });
 
-        const sourceDates = dateSet.size > 0 ? Array.from(dateSet) : DEFAULT_FESTIVAL_DATES.map(d => d.value);
+        const sourceDates = Array.from(dateSet);
 
         const weekdayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
