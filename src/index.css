@@ -480,3 +480,27 @@ button:disabled .btn-text-primary {
 button:disabled .btn-text-secondary {
     display: none !important;
 }
+
+/* Hide default EqualWeb floating accessibility widget button completely */
+#INDmenu-btn,
+#INDbtnWrap,
+.interdeal-custom-btn,
+.interdeal-btn-wrapper,
+#INDmenu-btn-wrapper,
+[id^="INDmenu-btn"],
+[id*="INDbtnWrap"],
+[class*="interdeal-btn"],
+[class*="INDbtn"] {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    width: 0 !important;
+    height: 0 !important;
+    max-width: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+}

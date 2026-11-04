@@ -311,7 +311,7 @@
 
 @media (min-width: 1221px) {
     .navbar-right {
-        margin-right: 56px;
+        /* margin-right: 56px; */
     }
 }
 
@@ -607,10 +607,14 @@
 
 /* Hide default EqualWeb floating launcher on body */
 #INDmenu-btn,
+#INDbtnWrap,
 .interdeal-custom-btn,
 .interdeal-btn-wrapper,
 #INDmenu-btn-wrapper,
-[id^="INDmenu-btn"] {
+[id^="INDmenu-btn"],
+[id*="INDbtnWrap"],
+[class*="interdeal-btn"],
+[class*="INDbtn"] {
     display: none !important;
     opacity: 0 !important;
     visibility: hidden !important;
@@ -620,6 +624,9 @@
     top: -9999px !important;
     width: 0 !important;
     height: 0 !important;
+    max-width: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
 }
 
 .language-container {
@@ -628,7 +635,7 @@
     gap: 8px;
     cursor: pointer;
     user-select: none;
-    padding: 6px 8px;
+    /* padding: 6px 8px; */
     border-radius: 8px;
     transition: opacity 0.2s ease;
     flex-shrink: 0;
@@ -1383,6 +1390,7 @@
     color: #FDFF53;
     border-color: #000000;
 }
+
 /* =========================================
    Mobile Sticky Bottom Action Bar
    ========================================= */

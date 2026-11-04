@@ -133,18 +133,34 @@ export const Navbar = () => {
             e.stopPropagation();
         }
         if (typeof window !== "undefined") {
+            const btn = document.getElementById("INDmenu-btn") || document.querySelector("[id*='INDmenu']");
+            if (btn) {
+                btn.click();
+                return;
+            }
             if (window.interdeal && typeof window.interdeal.openMenu === "function") {
                 window.interdeal.openMenu();
-            } else if (window.interdeal && typeof window.interdeal.open === "function") {
-                window.interdeal.open();
-            } else if (window.interdeal && window.interdeal.a11y && typeof window.interdeal.a11y.openMenu === "function") {
-                window.interdeal.a11y.openMenu();
-            } else {
-                const btn = document.getElementById("INDmenu-btn") || document.querySelector("[id*='INDmenu']");
-                if (btn) {
-                    btn.click();
-                }
+                return;
             }
+            if (window.interdeal && typeof window.interdeal.open === "function") {
+                window.interdeal.open();
+                return;
+            }
+            if (window.interdeal && window.interdeal.a11y && typeof window.interdeal.a11y.openMenu === "function") {
+                window.interdeal.a11y.openMenu();
+                return;
+            }
+            let attempts = 0;
+            const timer = setInterval(() => {
+                attempts++;
+                const b = document.getElementById("INDmenu-btn") || document.querySelector("[id*='INDmenu']");
+                if (b) {
+                    clearInterval(timer);
+                    b.click();
+                } else if (attempts > 25) {
+                    clearInterval(timer);
+                }
+            }, 100);
         }
     };
 
