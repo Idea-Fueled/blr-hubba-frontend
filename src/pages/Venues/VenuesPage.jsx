@@ -321,12 +321,81 @@ export const VenuesPage = () => {
         return true;
     });
 
+    // Helper to calculate venue sorting metrics (available dates count & events on those dates)
+    const getVenueStats = (venue) => {
+        const availableDates = Array.isArray(venue.availableDates)
+            ? venue.availableDates.map(d => (d || "").split("T")[0].trim()).filter(Boolean)
+            : [];
+        const availableDatesCount = availableDates.length;
+
+        // Find all events associated with this venue
+        const venueEvents = events.filter(ev => {
+            const vId = ev.venue?.id || ev.venueId;
+            const vName = (ev.venue?.name || ev.venue || "").toLowerCase().trim();
+            const thisVenueName = (venue.name || "").toLowerCase().trim();
+            return (venue.id && vId === venue.id) || (thisVenueName && vName.includes(thisVenueName)) || (vName && thisVenueName.includes(vName));
+        });
+
+        // Count events occurring on those available dates
+        let matchingEventsCount = 0;
+        if (availableDatesCount > 0) {
+            matchingEventsCount = venueEvents.filter(ev => {
+                if (ev.eventDates && Array.isArray(ev.eventDates)) {
+                    return ev.eventDates.some(ed => {
+                        const dStr = (ed.date || ed.startDateTime || "").split("T")[0].trim();
+                        return availableDates.includes(dStr);
+                    });
+                }
+                if (ev.startDateTime) {
+                    const startStr = ev.startDateTime.split("T")[0].trim();
+                    const endStr = (ev.endDateTime || ev.startDateTime).split("T")[0].trim();
+                    return availableDates.some(ad => ad >= startStr && ad <= endStr);
+                }
+                return false;
+            }).length;
+        } else {
+            matchingEventsCount = venueEvents.length || venue.totalEventCount || 0;
+        }
+
+        return {
+            availableDatesCount,
+            matchingEventsCount,
+            totalEventsCount: venueEvents.length || venue.totalEventCount || 0
+        };
+    };
+
     const displayedVenues = [...filteredVenues];
     if (activeTab === 'near_me') {
         displayedVenues.sort((a, b) => {
             const distA = getRawDistanceKm(a, userLocation);
             const distB = getRawDistanceKm(b, userLocation);
             return distA - distB;
+        });
+    } else {
+        // Descending order:
+        // 1. Venues with most available dates first
+        // 2. Among venues with same available dates, venues with most events on those dates first
+        displayedVenues.sort((a, b) => {
+            const statsA = getVenueStats(a);
+            const statsB = getVenueStats(b);
+
+            // 1. Primary: Highest available dates count first
+            if (statsB.availableDatesCount !== statsA.availableDatesCount) {
+                return statsB.availableDatesCount - statsA.availableDatesCount;
+            }
+
+            // 2. Secondary: Highest events occurring on those dates first
+            if (statsB.matchingEventsCount !== statsA.matchingEventsCount) {
+                return statsB.matchingEventsCount - statsA.matchingEventsCount;
+            }
+
+            // 3. Fallback: Total events count descending
+            if (statsB.totalEventsCount !== statsA.totalEventsCount) {
+                return statsB.totalEventsCount - statsA.totalEventsCount;
+            }
+
+            // 4. Alphabetical fallback
+            return (a.name || "").localeCompare(b.name || "");
         });
     }
 
