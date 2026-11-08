@@ -10,6 +10,52 @@ import { mapBackendEventToCard } from "../../utils/eventMappers";
 import { resolveVenueImageUrl } from "../../utils/venueImageResolver";
 import { Loader } from "../../components/Loader/Loader";
 
+// 15 Figma Amenities Icons
+import paidParkingIcon from "../../assets/amenities/paid_parking_nearby.png";
+import freeParkingIcon from "../../assets/amenities/free_parking_nearby.png";
+import onsiteParkingIcon from "../../assets/amenities/onsite_parking.png";
+import metroStationIcon from "../../assets/amenities/metro_station_nearby.png";
+import wheelchairIcon from "../../assets/amenities/wheelchair_friendly.png";
+import rampIcon from "../../assets/amenities/ramp_available.png";
+import accessibleToiletsIcon from "../../assets/amenities/accessible_toilets.png";
+import familyFriendlyIcon from "../../assets/amenities/family_friendly.png";
+import nursingRoomIcon from "../../assets/amenities/nursing_room_available.png";
+import onsiteCafeIcon from "../../assets/amenities/onsite_cafe.png";
+import pantryIcon from "../../assets/amenities/pantry.png";
+import eateriesIcon from "../../assets/amenities/eateries_near_me.png";
+import indoorSpacesIcon from "../../assets/amenities/indoor_spaces.png";
+import indoorStageIcon from "../../assets/amenities/indoor_stage.png";
+import freeWifiIcon from "../../assets/amenities/free_wifi.png";
+
+const ALL_AMENITIES_CONFIG = [
+    { id: "paid_parking_nearby", label: "Paid parking nearby", icon: paidParkingIcon, aliases: ["paid_parking", "paid_parking_nearby", "paid parking", "paid parking nearby"] },
+    { id: "free_parking_nearby", label: "Free parking nearby", icon: freeParkingIcon, aliases: ["free_parking", "free_parking_nearby", "free parking", "free parking nearby"] },
+    { id: "onsite_parking", label: "Onsite Parking", icon: onsiteParkingIcon, aliases: ["onsite_parking", "onsite parking", "parking", "Parking Available", "Parking"] },
+    { id: "metro_station_nearby", label: "Metro station nearby", icon: metroStationIcon, aliases: ["metro_station_nearby", "metro", "metro station", "metro nearby", "metro station nearby"] },
+    { id: "wheelchair_friendly", label: "Wheelchair Friendly", icon: wheelchairIcon, aliases: ["wheelchair_friendly", "wheelchair", "Wheelchair Accessible", "Wheelchair Friendly", "accessible"] },
+    { id: "ramp_available", label: "Ramp Available", icon: rampIcon, aliases: ["ramp_available", "ramp", "Ramp Available"] },
+    { id: "accessible_toilets", label: "Accessible Toilets", icon: accessibleToiletsIcon, aliases: ["accessible_toilets", "accessible toilets", "toilet", "toilets"] },
+    { id: "family_friendly", label: "Family Friendly", icon: familyFriendlyIcon, aliases: ["family_friendly", "children", "Family Friendly", "kids", "child friendly"] },
+    { id: "nursing_room_available", label: "Nursing Room Available", icon: nursingRoomIcon, aliases: ["nursing_room_available", "nursing room", "Nursing Room Available"] },
+    { id: "onsite_cafe", label: "On-site cafe", icon: onsiteCafeIcon, aliases: ["onsite_cafe", "cafe", "Cafe Available", "Cafe"] },
+    { id: "pantry", label: "Pantry", icon: pantryIcon, aliases: ["pantry"] },
+    { id: "eateries_near_me", label: "Eateries Near Me", icon: eateriesIcon, aliases: ["eateries_near_me", "eateries", "food", "Food Available", "Food & Drinks Available"] },
+    { id: "indoor_spaces", label: "Indoor Spaces", icon: indoorSpacesIcon, aliases: ["indoor_spaces", "indoor", "Indoor Spaces"] },
+    { id: "indoor_stage", label: "Indoor Spaces (Stage)", icon: indoorStageIcon, aliases: ["indoor_stage", "stage", "auditorium"] },
+    { id: "free_wifi", label: "Free Wifi", icon: freeWifiIcon, aliases: ["free_wifi", "wifi", "Free Wifi"] },
+];
+
+const getActiveVenueAmenities = (amenitiesList = []) => {
+    if (!Array.isArray(amenitiesList) || amenitiesList.length === 0) return [];
+    const normalized = amenitiesList.map(a => String(a).toLowerCase().trim());
+    return ALL_AMENITIES_CONFIG.filter(configItem => {
+        const idMatch = normalized.includes(configItem.id.toLowerCase());
+        const labelMatch = normalized.includes(configItem.label.toLowerCase());
+        const aliasMatch = configItem.aliases && configItem.aliases.some(alias => normalized.includes(alias.toLowerCase()));
+        return idMatch || labelMatch || aliasMatch;
+    });
+};
+
 const DEFAULT_SPACES = [
     "AUDITORIUM",
     "HALL 1",
@@ -65,7 +111,30 @@ export const VenueDetailPage = () => {
                 ? (rawMapsLink.startsWith("http") ? rawMapsLink : `https://${rawMapsLink}`)
                 : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.name + " " + addressStr)}`;
             const aboutStr = v.shortDescription || v.fullDescription || "";
-            const amenitiesList = v.amenities && Array.isArray(v.amenities) && v.amenities.length > 0 ? v.amenities : [];
+            let rawAmenities = [];
+            if (Array.isArray(v.amenities) && v.amenities.length > 0) {
+                rawAmenities = v.amenities;
+            } else if (Array.isArray(v.tags) && v.tags.length > 0) {
+                rawAmenities = v.tags;
+            } else if (typeof v.amenities === 'string' && v.amenities.trim()) {
+                try {
+                    const p = JSON.parse(v.amenities);
+                    if (Array.isArray(p)) rawAmenities = p;
+                    else rawAmenities = v.amenities.split(',');
+                } catch (e) {
+                    rawAmenities = v.amenities.split(',');
+                }
+            }
+            const amenitiesList = rawAmenities.map(a => (typeof a === 'string' ? a.trim() : (a?.name || a?.label || a?.id || ''))).filter(Boolean);
+            if ((v.wheelchair || v.wheelchairFriendly) && !amenitiesList.includes("wheelchair_friendly") && !amenitiesList.includes("wheelchair")) {
+                amenitiesList.push("wheelchair_friendly");
+            }
+            if ((v.parking || v.parkingAvailable) && !amenitiesList.includes("onsite_parking") && !amenitiesList.includes("parking")) {
+                amenitiesList.push("onsite_parking");
+            }
+            if ((v.cafe || v.cafeAvailable) && !amenitiesList.includes("onsite_cafe") && !amenitiesList.includes("cafe")) {
+                amenitiesList.push("onsite_cafe");
+            }
 
             let spaces = [];
             if (v.subVenues && Array.isArray(v.subVenues) && v.subVenues.length > 0) {
@@ -271,13 +340,14 @@ export const VenueDetailPage = () => {
                         </div>
 
                         <div className="venue-detail-hero-btns">
-                            <button
+                            {/* EXPLORE EVENTS button hidden for 2027 */}
+                            {/* <button
                                 className="venue-detail-explore-btn"
                                 onClick={() => navigate(`/events?venue=${encodeURIComponent(venueData.name)}`)}
                             >
                                 <span className="btn-text-primary">EXPLORE EVENTS</span>
                                 <span className="btn-text-secondary">EXPLORE EVENTS</span>
-                            </button>
+                            </button> */}
 
                             <a
                                 href={venueData.googleMapsLink}
@@ -319,7 +389,8 @@ export const VenueDetailPage = () => {
                                 </p>
                             )}
 
-                            <a
+                            {/* VIEW LAYOUT MAP button hidden for 2027 */}
+                            {/* <a
                                 href="#layout-map"
                                 onClick={(e) => { e.preventDefault(); }}
                                 className="venue-layout-map-link"
@@ -330,100 +401,25 @@ export const VenueDetailPage = () => {
                                         <path d="M5.72084 3.309L0.957996 8L0 7.0581L4.66684 2.38972C2.88234 2.8072 1.7198 2.42879 0.267154 1.40668L1.33368 0C2.84268 1.56915 5.08635 1.63085 6.80824 0.296144L7.79755 1.2401C6.44091 2.90797 6.53065 5.16195 8 6.7311L6.62249 7.68946C5.64362 6.4 5.31177 4.96658 5.71876 3.30694L5.72084 3.309Z" fill="black" />
                                     </svg>
                                 </div>
-                            </a>
+                            </a> */}
                         </MotionSection>
 
                         {/* AMENITIES SECTION (Frame 1819) */}
-                        <MotionSection className="venue-amenities-section" variant="slideUp">
-                            <h2 className="venue-section-title">Amenities</h2>
-                            <div className="venue-amenities-grid">
-
-                                {/* Wheelchair Friendly */}
-                                {(venueData.amenities.includes("wheelchair") || venueData.amenities.includes("Wheelchair Accessible") || venueData.amenities.includes("Wheelchair Friendly")) && (
-                                    <div className="venue-amenity-card">
-                                        <div className="venue-amenity-icon-box">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="38" height="42" viewBox="0 0 38 42" fill="none">
-                                                <g clipPath="url(#clip0_2047_29367)">
-                                                    <path d="M24.6166 24.0162C22.8401 23.5985 13.5596 23.9498 10.8763 23.9498C10.793 17.9593 10.7745 11.9783 10.719 5.98777C9.04427 4.18397 9.92328 0.927643 12.2457 0.234605C14.5496 -0.733749 17.381 1.44979 17.0109 4.01309C17.1126 6.04473 14.8087 6.5384 14.0407 7.64916C13.9852 10.0131 13.9297 12.396 14.0777 14.7599C17.2052 15.0162 20.3789 14.8264 23.5248 14.8738V17.9973H14.2813C13.5226 19.8011 14.2721 21.2821 14.1055 21.1207C17.5845 21.1397 23.2842 21.1302 26.7632 21.1302C28.7618 25.3359 30.6771 29.608 32.6942 33.7852C34.8131 33.5194 36.349 32.2947 37.154 32.2473C38.033 32.1713 38.0608 35.0574 37.959 34.9624C36.0715 35.665 33.0828 37.165 31.186 37.839C30.6956 37.0416 26.4024 27.7852 24.6166 24.0162ZM13.8464 41.9688C9.70121 41.4941 6.79586 40.2219 4.58446 38.1808C1.42002 35.3517 -0.412014 30.9751 0.0783801 26.646C0.318951 21.7378 3.50189 17.3042 7.73038 15.1492C8.39658 15.7852 7.95245 17.4276 8.07273 18.5099C8.24853 19.4498 7.03643 19.7061 6.5923 20.3612C3.45562 23.4466 2.77092 28.7061 4.751 32.6365C6.85137 37.0985 12.1624 39.9086 16.8906 38.5416C20.4436 37.6302 23.2564 34.877 25.1255 31.7441C25.9027 32.3897 27.5682 35.1143 25.8842 36.3106C23.0251 39.9941 18.4635 42.3011 13.8464 41.9688Z" fill="white" />
-                                                </g>
-                                                <defs>
-                                                    <clipPath id="clip0_2047_29367">
-                                                        <rect width="38" height="42" fill="white" />
-                                                    </clipPath>
-                                                </defs>
-                                            </svg>
+                        {getActiveVenueAmenities(venueData.amenities).length > 0 && (
+                            <MotionSection className="venue-amenities-section" variant="slideUp">
+                                <h2 className="venue-section-title">Amenities</h2>
+                                <div className="venue-amenities-grid">
+                                    {getActiveVenueAmenities(venueData.amenities).map((amenity) => (
+                                        <div key={amenity.id} className="venue-amenity-card">
+                                            <div className="venue-amenity-icon-box">
+                                                <img src={amenity.icon} alt={amenity.label} className="venue-amenity-img" />
+                                            </div>
+                                            <span className="venue-amenity-label">{amenity.label}</span>
                                         </div>
-                                        <span className="venue-amenity-label">Wheelchair Friendly</span>
-                                    </div>
-                                )}
-
-                                {/* Ramp Available */}
-                                {(venueData.amenities.includes("ramp") || venueData.amenities.includes("Ramp Available")) && (
-                                    <div className="venue-amenity-card">
-                                        <div className="venue-amenity-icon-box">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="38" height="28" viewBox="0 0 38 28" fill="none">
-                                                <path d="M0 13.7123L0.268671 13.3533L36.8961 0.0716942C37.5673 -0.220372 38.2474 0.432598 37.9113 1.07967C37.6644 1.55464 35.9444 1.9598 35.3981 2.15648V10.8428C36.2874 10.767 37.5237 9.59582 37.9916 10.8841L37.9995 27.225C38.0025 27.4709 37.8399 27.8396 37.6059 27.939L0.701914 27.998C0.297421 28.0265 0.193324 27.7492 0 27.4787V23.9454C0.595834 23.2394 1.75677 23.1233 2.59748 22.7673V14.0811C1.7419 14.1784 0.577989 15.267 0 14.1548V13.7133L0 13.7123ZM33.914 2.74455L30.797 3.84889V12.5352L33.914 11.4308V2.74455ZM29.3128 4.43794L26.4189 5.39478V14.1548L29.3128 13.1242V4.43794ZM24.9348 5.98383L21.9665 7.01442V15.7007L24.9348 14.6337V5.98383ZM20.4824 7.60347L17.5141 8.63406V17.3203L20.4824 16.2897V7.60347ZM16.029 9.22213L13.0608 10.2527V18.939L16.029 17.9084V9.22213ZM11.5766 10.8418L8.68272 11.7986V20.5586L11.5766 19.528V10.8418ZM36.5114 12.0936L1.48413 24.681V26.5209H36.5114V12.0936ZM7.19859 12.4614L4.08161 13.492V22.1783L7.19859 21.0375V12.4624V12.4614Z" fill="white" />
-                                            </svg>
-                                        </div>
-                                        <span className="venue-amenity-label">Ramp Available</span>
-                                    </div>
-                                )}
-
-                                {/* Food & Drinks Available */}
-                                {(venueData.amenities.includes("cafe") || venueData.amenities.includes("food") || venueData.amenities.includes("Cafe Available") || venueData.amenities.includes("Food Available") || venueData.amenities.includes("Food & Drinks Available")) && (
-                                    <div className="venue-amenity-card">
-                                        <div className="venue-amenity-icon-box">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="34" height="32" viewBox="0 0 34 32" fill="none">
-                                                <g clip-path="url(#clip0_3163_31474)">
-                                                    <path d="M2.12915 32.0001C1.95543 31.9617 1.77227 31.7027 1.74394 31.5165C1.59949 30.5376 1.58533 29.2277 1.5249 28.2064C1.50697 27.9011 1.54379 27.5869 1.52774 27.2816C1.11704 27.3201 0.702567 27.2885 0.612875 26.7991L0.0416766 16.1094C0.030347 15.6702 0.347575 15.4358 0.751662 15.486L0.67802 13.1302C0.365513 13.146 0.100213 12.9825 0.0492296 12.6437C-0.020636 12.1788 -0.0102505 10.6257 0.0435648 10.1402C0.142698 9.24397 1.05001 9.76792 1.38895 9.55322C1.54284 9.45572 2.17069 7.81396 2.38784 7.49979C2.49358 7.34714 2.58516 7.26539 2.77021 7.23486L13.3133 7.28608C13.4143 7.33138 13.471 7.41115 13.5323 7.49979C13.8014 7.88979 14.2697 9.30602 14.4963 9.51678C14.771 9.77186 15.7511 9.27155 15.871 10.0732C15.9342 10.4977 15.9342 12.2212 15.871 12.6447C15.82 12.9835 15.5547 13.147 15.2422 13.1312L15.1685 15.487C16.4242 15.4446 15.6208 17.2065 15.8049 17.9944L14.6738 17.9206V16.7781C14.6738 16.7555 14.7635 16.722 14.7446 16.6678H1.17463L1.7751 26.1038H9.65481V27.2836H2.6588L2.80042 30.8222H7.95915V32.0021H2.12915V32.0001ZM13.2595 9.58867C13.0914 9.35329 12.8365 8.45707 12.5882 8.40881L3.39617 8.40487C3.03362 8.45018 2.87501 9.28632 2.65786 9.58867H13.2585H13.2595ZM14.7437 10.7685H1.17463V11.9484H14.7437V10.7685ZM14.1083 13.1273H1.81098L1.88179 15.486H14.0375L14.1083 13.1273Z" fill="white" />
-                                                    <path d="M10.7885 21.9002L10.4958 22.959C9.07113 26.3163 5.25873 25.0281 5.13222 21.5733C4.9991 17.9352 8.91535 16.255 10.4958 19.8113L10.7885 20.8701V19.4322C10.7885 19.2638 11.1935 18.9565 11.3861 19.0235L21.5676 19.0254C21.7413 18.9821 22.0963 19.2923 22.0963 19.4322V20.7962H24.181C24.2537 20.7962 24.6738 20.94 24.7805 20.9814C26.6404 21.6993 27.2079 24.1378 25.9135 25.6998C24.9042 26.9181 23.4899 26.6916 22.0954 26.6925C22.1114 27.3386 21.8745 27.9423 21.5299 28.4623H24.5331C24.5728 28.4623 24.7777 28.6298 24.8145 28.6849C24.9892 28.9459 24.9561 30.3779 24.874 30.7344C24.7409 31.3105 24.2914 31.7567 23.7599 31.931L10.4165 31.9832C9.79811 31.8276 9.25523 31.3421 9.12305 30.6783C9.05508 30.3355 9.03431 28.9321 9.19953 28.6849C9.23635 28.6298 9.44123 28.4623 9.48088 28.4623H11.354C11.1605 28.1393 10.7885 27.4686 10.7885 27.0983V21.9012V21.9002ZM8.66893 23.5213C10.1163 22.5227 10.0049 19.575 8.21386 19.0934C7.60112 20.2979 8.86625 20.8937 8.95028 22.0105C8.99276 22.5798 8.76334 22.9855 8.66893 23.5213ZM6.90057 19.6144C5.87902 20.7499 6.07163 22.7443 7.36036 23.5942C7.59073 23.0299 7.96744 22.3542 7.70592 21.7604C7.40568 21.0779 6.7429 20.548 6.89963 19.6154L6.90057 19.6144ZM20.9653 20.2043H11.9196V27.0235C11.9196 27.5376 12.7938 28.4141 13.315 28.4436C15.258 28.357 17.3861 28.6199 19.3083 28.4643C19.9078 28.416 20.4158 28.1295 20.7292 27.5868C20.7755 27.508 20.9662 27.0668 20.9662 27.0235V20.2043H20.9653ZM22.0954 25.5117H24.1092C24.1508 25.5117 24.5737 25.3118 24.6493 25.2645C25.7681 24.5603 25.7671 22.9245 24.6493 22.2203C24.5737 22.1721 24.1508 21.9731 24.1092 21.9731H22.0954V25.5117ZM23.792 29.6402H10.223C10.2343 30.1139 10.087 30.6271 10.6129 30.8181L23.5078 30.7817C23.9251 30.5148 23.7703 30.0775 23.792 29.6402Z" fill="white" />
-                                                    <path d="M20.4705 15.4859L20.6064 17.7658L19.482 17.8446L19.3404 15.4859C18.8315 15.48 18.215 15.6336 18.1366 14.9353C18.0894 14.5138 18.0743 12.7371 18.1536 12.3688C18.2433 11.9492 18.6653 11.9995 18.7427 11.8773C18.7805 11.8173 18.9419 10.7477 19.025 10.4759C19.7766 8.03739 21.9122 6.36017 24.3273 6.05487L24.4113 2.82552L27.1578 0.0895844C27.3674 -0.0512503 27.5458 -0.0128409 27.746 0.11913C27.8904 0.214661 29.4444 1.84362 29.5068 1.96771C29.6286 2.21097 29.6172 2.3518 29.4775 2.58226C29.2245 2.99787 27.8479 4.11076 27.7639 4.4072L27.7799 6.05585C30.6652 6.39858 33.085 8.77012 33.3428 11.8281C33.4032 12.0202 33.9036 11.898 33.9706 12.5008C34.0121 12.8721 34.0216 14.8418 33.9376 15.1234C33.7893 15.6169 33.152 15.474 32.7678 15.4878C32.6063 18.9664 32.3042 22.4449 32.0625 25.9204C31.9502 27.5346 31.9341 29.1764 31.7783 30.7846C31.75 31.0801 31.7104 32.0019 31.3195 32.0019H26.0541V30.8221H30.6473L31.6367 15.4878H20.4705V15.4859ZM26.6187 6.04994V4.02311L28.168 2.31733L27.4212 1.48513L25.4876 3.35931V6.04994H26.6187ZM32.2013 11.9473C32.1012 9.85937 30.4735 7.98026 28.5796 7.4317C27.5364 7.12935 24.924 7.10965 23.858 7.33617C21.8329 7.76655 19.9984 9.75005 19.904 11.9473H32.2013ZM32.8376 13.1271H19.2686V14.307H32.8376V13.1271Z" fill="white" />
-                                                </g>
-                                                <defs>
-                                                    <clipPath id="clip0_3163_31474">
-                                                        <rect width="34" height="32" fill="white" />
-                                                    </clipPath>
-                                                </defs>
-                                            </svg>
-                                        </div>
-                                        <span className="venue-amenity-label">Food & Drinks Available</span>
-                                    </div>
-                                )}
-
-                                {/* Parking Available */}
-                                {(venueData.amenities.includes("parking") || venueData.amenities.includes("Parking Available")) && (
-                                    <div className="venue-amenity-card">
-                                        <div className="venue-amenity-icon-box">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="38" height="42" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <rect x="2" y="2" width="20" height="20" rx="4" />
-                                                <path d="M9 17V7h4a3 3 0 0 1 0 6H9" />
-                                            </svg>
-                                        </div>
-                                        <span className="venue-amenity-label">Parking Available</span>
-                                    </div>
-                                )}
-
-                                {/* Pet Friendly */}
-                                {(venueData.amenities.includes("pet") || venueData.amenities.includes("Pet Friendly")) && (
-                                    <div className="venue-amenity-card">
-                                        <div className="venue-amenity-icon-box">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="41" height="38" viewBox="0 0 41 38" fill="none">
-                                                <g clipPath="url(#clip0_2066_3233)">
-                                                    <path d="M0 13.7903V11.6758C0.238683 10.1981 0.468804 8.47485 1.18806 7.14708C1.60977 6.36911 2.6298 6.48429 2.72827 7.23944C2.79249 7.73274 2.20488 8.89426 2.04326 9.47991C-0.631494 19.1654 10.2591 30.9458 17.973 35.1943C18.4246 35.4431 20.0644 36.2971 20.4775 36.3145C20.9078 36.333 22.4341 35.5224 22.8879 35.2758C29.9649 31.4207 39.6878 21.1223 39.4223 12.444C39.1451 3.3724 29.221 -1.69528 22.0755 4.03194C21.6121 4.40354 21.0469 5.19346 20.47 5.17499C19.9788 5.15978 19.3644 4.3666 18.9459 4.03194C15.8644 1.56764 12.099 0.981985 8.41385 2.36408C7.8134 2.589 6.62105 3.4854 6.18757 2.58791C5.75409 1.69042 6.86723 1.27318 7.53404 0.981986C11.1282 -0.586996 15.2522 -0.253425 18.5809 1.79907C19.2681 2.22283 19.8706 2.75741 20.5385 3.20616C24.2654 -0.170847 29.5775 -0.956424 34.1049 1.25036C39.5369 3.89721 41.8124 9.79067 40.741 15.6635C39.2736 23.7083 30.544 32.969 23.6082 36.7404C22.9703 37.087 21.1904 37.9813 20.5375 37.9997C19.9541 38.016 18.0554 37.0859 17.4635 36.7687C10.0193 32.7745 0.777058 22.7587 0.0738527 13.9196L0 13.7903Z" fill="white" />
-                                                </g>
-                                                <defs>
-                                                    <clipPath id="clip0_2066_3233">
-                                                        <rect width="41" height="38" fill="white" />
-                                                    </clipPath>
-                                                </defs>
-                                            </svg>
-                                        </div>
-                                        <span className="venue-amenity-label">Pet Friendly</span>
-                                    </div>
-                                )}
-
-                            </div>
-                        </MotionSection>
+                                    ))}
+                                </div>
+                            </MotionSection>
+                        )}
 
                     </div>
 
@@ -493,8 +489,8 @@ export const VenueDetailPage = () => {
                 </div>
             </div>
 
-            {/* VENUE EVENTS LISTING SECTION (Figma Frame 629127) */}
-            <div className="venue-detail-events-wrapper">
+            {/* VENUE EVENTS LISTING SECTION (Hidden for 2027) */}
+            {/* <div className="venue-detail-events-wrapper">
                 <EventListing
                     className="venue-events-listing-custom"
                     wrapperClassName="venue-events-inner-wrapper"
@@ -504,7 +500,7 @@ export const VenueDetailPage = () => {
                     sectionEyebrow="EVENT CALENDAR"
                     sectionTitle={`Checkout what's happening at ${venueData.name}`}
                 />
-            </div>
+            </div> */}
 
             {/* VENUE FAQS SECTION (Figma Frame FAQ Desktop) */}
             <EventFAQs

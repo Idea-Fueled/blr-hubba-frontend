@@ -134,6 +134,7 @@
     line-height: 24px;
     color: #000000;
     margin: 0;
+    white-space: pre-line;
 }
 
 @media (max-width: 768px) {

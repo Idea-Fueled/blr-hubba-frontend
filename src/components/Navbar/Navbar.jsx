@@ -384,6 +384,8 @@ export const Navbar = () => {
                                 </div>
                             )}
                         </div>
+                        {/* Accessibility Icon Hidden */}
+                        {false && (
                         <div className="navbar-accessibility-container">
                             <button
                                 type="button"
@@ -399,6 +401,7 @@ export const Navbar = () => {
                                 </svg>
                             </button>
                         </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -443,6 +446,8 @@ export const Navbar = () => {
                     )}
                 </div>
 
+                {/* Accessibility Icon Hidden */}
+                {false && (
                 <div className="mobile-accessibility-wrapper">
                     <button
                         type="button"
@@ -458,6 +463,7 @@ export const Navbar = () => {
                         </svg>
                     </button>
                 </div>
+                )}
 
                 {isLoggedIn && (
                     <div className="user-container" onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)} style={{ cursor: "pointer" }}>

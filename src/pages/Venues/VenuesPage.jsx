@@ -7,6 +7,7 @@ import mapViewImg from "../../assets/map-view-image.png";
 import { resolveVenueImageUrl } from "../../utils/venueImageResolver";
 import { formatDistanceText, getRawDistanceKm, DEFAULT_USER_LOCATION } from "../../utils/venueLocationResolver";
 import { Loader } from "../../components/Loader/Loader";
+import { LoginModal } from "../../components/LoginModal/LoginModal";
 import { getApiBaseUrl } from "../../config/api";
 
 const DEFAULT_FALLBACK_TAGS = [
@@ -93,6 +94,8 @@ export const VenuesPage = () => {
     const [activeTab, setActiveTab] = useState("all");
     const [viewMode, setViewMode] = useState("list"); // 'list' or 'map'
     const [userLocation, setUserLocation] = useState(null);
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+    const isLoggedIn = !!localStorage.getItem("token") || !!localStorage.getItem("authToken");
 
     const toolbarRef = useRef(null);
     const dateDropdownRef = useRef(null);
@@ -185,11 +188,12 @@ export const VenuesPage = () => {
 
     useEffect(() => {
         const API_URL = getApiBaseUrl();
-        fetch(`${API_URL}/public/venues`)
+        fetch(`${API_URL}/public/venues`, { cache: 'no-store' })
             .then(res => res.json())
             .then(data => {
                 if (data && data.venues && data.venues.length > 0) {
-                    const mapped = data.venues.map((v, i) => {
+                    const activeVenues = data.venues.filter(v => !v.status || v.status === 'ACTIVE');
+                    const mapped = activeVenues.map((v, i) => {
                         const rawMapsLink = (
                             v.googleMapsLink ||
                             v.googleMapLink ||
@@ -444,16 +448,19 @@ export const VenuesPage = () => {
                                 <div
                                     className={`venue-filter-tab venue-near-me-btn ${activeTab === 'near_me' ? 'active' : ''}`}
                                     onClick={(e) => {
+                                        if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+                                            return;
+                                        }
                                         e.stopPropagation();
                                         setOpenDropdown(null);
                                         handleNearMeToggle();
                                     }}
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
-                                        <g clip-path="url(#clip0_5091_31747)">
-                                            <path d="M9 15C12.329 15 15 12.355 15 9.027C15 5.698 12.329 3 9 3C5.671 3 3 5.698 3 9.027C3 12.355 5.671 15 9 15Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="#181C20" />
+                                        <g clipPath="url(#clip0_5091_31747)">
+                                            <path d="M9 15C12.329 15 15 12.355 15 9.027C15 5.698 12.329 3 9 3C5.671 3 3 5.698 3 9.027C3 12.355 5.671 15 9 15Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" stroke="#181C20" />
                                             <path d="M9 11C10.1046 11 11 10.1046 11 9C11 7.89543 10.1046 7 9 7C7.89543 7 7 7.89543 7 9C7 10.1046 7.89543 11 9 11Z" fill="#181C20" />
-                                            <path d="M1 9H3M15 9H17M9 1V3M9 15V17" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="#181C20" />
+                                            <path d="M1 9H3M15 9H17M9 1V3M9 15V17" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" stroke="#181C20" />
                                         </g>
                                         <defs>
                                             <clipPath id="clip0_5091_31747">
@@ -496,41 +503,7 @@ export const VenuesPage = () => {
                             <div />
                         )}
 
-                        <div className="venue-toolbar-right">
-                            <button className="venue-map-view-btn" onClick={() => setViewMode(viewMode === 'map' ? 'list' : 'map')}>
-                                {viewMode === 'map' ? (
-                                    <>
-                                        <span className="btn-text-primary">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 26 26" fill="none">
-                                                <path d="M8.66667 6.5H22.75M8.66667 13H22.75M8.66667 19.5H22.75M3.25 6.5H3.26083M3.25 13H3.26083M3.25 19.5H3.26083" stroke="#181C20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                            <span>LIST VIEW</span>
-                                        </span>
-                                        <span className="btn-text-secondary">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 26 26" fill="none">
-                                                <path d="M8.66667 6.5H22.75M8.66667 13H22.75M8.66667 19.5H22.75M3.25 6.5H3.26083M3.25 13H3.26083M3.25 19.5H3.26083" stroke="#181C20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                            <span>LIST VIEW</span>
-                                        </span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <span className="btn-text-primary">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                                <path d="M16 6L9 2L2 6V22L9 18M16 6L22 2V18L16 22L9 18M9 18V2M16 22V6" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                            <span>MAP VIEW</span>
-                                        </span>
-                                        <span className="btn-text-secondary">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                                <path d="M16 6L9 2L2 6V22L9 18M16 6L22 2V18L16 22L9 18M9 18V2M16 22V6" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                            <span>MAP VIEW</span>
-                                        </span>
-                                    </>
-                                )}
-                            </button>
-                        </div>
+
                     </div>
 
                     {/* INLINE FILTER BY DATE (Figma 56:1036) */}
@@ -674,7 +647,7 @@ export const VenuesPage = () => {
                                         <MotionCard className="venue-listing-card" key={venue.id || idx} index={idx}>
                                             <div className={`venue-card-img-container ${isSite ? 'venue-card-site-img-container' : ''}`}>
                                                 {activeTab === 'near_me' && (
-                                                    <div className="venue-card-distance-badge">
+                                                    <div className="venue-card-distance-badge venue-card-distance-badge-overlay">
                                                         {formatDistanceText(venue, userLocation, idx)}
                                                     </div>
                                                 )}
@@ -696,6 +669,9 @@ export const VenuesPage = () => {
 
                                             <div className="venue-card-info">
                                                 <div className="venue-card-header">
+                                                    <div className="venue-card-distance-badge-info">
+                                                        {formatDistanceText(venue, userLocation, idx)}
+                                                    </div>
                                                     <h3 className="venue-card-title">{venue.name}</h3>
                                                     <p className="venue-card-address">{venue.address}</p>
                                                 </div>
@@ -739,6 +715,73 @@ export const VenuesPage = () => {
                     </>
                 )}
             </div>
+
+            {/* FIGMA MOBILE BOTTOM DOCK (Node 66-1309) */}
+            <div className="venue-mobile-bottom-dock">
+                <button
+                    type="button"
+                    className="venue-dock-item"
+                    onClick={() => navigate("/events")}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <span>SEARCH</span>
+                </button>
+                <button
+                    type="button"
+                    className="venue-dock-item"
+                    onClick={() => navigate("/events")}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="20" viewBox="0 0 19 20" fill="none">
+                        <use href="#stroke0_5205_54103" fill="black" />
+                        <mask id="stroke1_5205_54103" maskUnits="userSpaceOnUse" x="-0.800781" y="-0.800049" width="20" height="21" fill="black">
+                            <rect fill="white" x="-0.800781" y="-0.800049" width="20" height="21" />
+                            <use href="#stroke0_5205_54103" />
+                        </mask>
+                        <path d="M7.38842 19.2C6.99046 19.2 6.61651 19.0374 6.33254 18.7397L4.8967 17.224C4.8207 17.1437 4.77871 17.034 4.77871 16.92C4.77871 16.806 4.8247 16.6983 4.9027 16.6202C5.22266 16.2993 5.39864 15.8644 5.39864 15.4C5.39864 14.469 4.68072 13.7111 3.79882 13.7111C3.35887 13.7111 2.94691 13.8968 2.64095 14.2325C2.56696 14.3148 2.46497 14.3613 2.35698 14.3634C2.24699 14.3634 2.145 14.3191 2.06901 14.2388L0.63517 12.7252C0.353202 12.4254 0.199219 12.0285 0.199219 11.6105C0.199219 11.1925 0.359201 10.7914 0.63717 10.498L9.95413 0.662285C10.2321 0.36884 10.6161 0.199951 11.008 0.199951C11.4 0.199951 11.7799 0.362507 12.0639 0.660173L13.4997 2.17595C13.5757 2.25617 13.6177 2.36595 13.6177 2.47995C13.6157 2.59395 13.5717 2.70162 13.4937 2.77973C13.1738 3.10062 12.9978 3.53551 12.9978 3.99995C12.9978 4.93095 13.7157 5.68884 14.5976 5.68884C15.0376 5.68884 15.4495 5.50306 15.7555 5.1674C15.8295 5.08506 15.9335 5.03862 16.0395 5.03651C16.1494 5.0344 16.2494 5.08084 16.3274 5.16106L17.7613 6.67473C18.0432 6.97662 18.1992 7.3714 18.1992 7.7894C18.1992 8.2074 18.0392 8.60851 17.7613 8.90195L14.7256 12.1066C14.7256 12.1066 14.7116 12.1235 14.7016 12.132C14.6936 12.1404 14.6856 12.1488 14.6776 12.1573L8.4423 18.7376C8.16433 19.0311 7.78038 19.2 7.38842 19.2ZM5.7286 16.9073L6.89647 18.1423C7.02646 18.2774 7.20644 18.3555 7.38842 18.3555C7.5704 18.3555 7.74838 18.2774 7.87837 18.1423L13.8537 11.8343L12.3159 10.2108C12.1599 10.0462 12.1599 9.77806 12.3159 9.6134C12.4719 9.44873 12.7258 9.44873 12.8818 9.6134L14.4196 11.2368L17.1953 8.30451C17.3233 8.1694 17.3973 7.9794 17.3973 7.78728C17.3973 7.59517 17.3233 7.40517 17.1933 7.26795L16.0255 6.03506C15.6155 6.35806 15.1196 6.53117 14.5976 6.53117C13.2738 6.53117 12.1979 5.3954 12.1979 3.99784C12.1979 3.44684 12.3619 2.92328 12.6678 2.49051L11.5 1.25551C11.24 0.985285 10.778 0.983173 10.5201 1.25551L7.74038 4.18573L9.27821 5.80917C9.43419 5.97384 9.43419 6.24195 9.27821 6.40662C9.12223 6.57128 8.86826 6.57128 8.71227 6.40662L7.17444 4.78317L1.20111 11.0933C1.07312 11.2305 0.99913 11.4184 0.99913 11.6105C0.99913 11.8026 1.07112 11.9905 1.20311 12.1298L2.37098 13.3627C2.78093 13.0397 3.27688 12.8666 3.79882 12.8666C5.12267 12.8666 6.19855 14.0024 6.19855 15.4C6.19855 15.951 6.03457 16.4745 5.7286 16.9073ZM11.398 9.06662C11.296 9.06662 11.194 9.0244 11.116 8.94206L9.91614 7.6754C9.76016 7.51073 9.76016 7.24262 9.91614 7.07795C10.0721 6.91328 10.3261 6.91328 10.4821 7.07795L11.6819 8.34462C11.9359 8.59584 11.7419 9.07928 11.398 9.06662Z" strokeWidth="0.4" stroke="black" mask="url(#stroke1_5205_54103)" />
+                        <defs>
+                            <path id="stroke0_5205_54103" d="M7.38842 19.2C6.99046 19.2 6.61651 19.0374 6.33254 18.7397L4.8967 17.224C4.8207 17.1437 4.77871 17.034 4.77871 16.92C4.77871 16.806 4.8247 16.6983 4.9027 16.6202C5.22266 16.2993 5.39864 15.8644 5.39864 15.4C5.39864 14.469 4.68072 13.7111 3.79882 13.7111C3.35887 13.7111 2.94691 13.8968 2.64095 14.2325C2.56696 14.3148 2.46497 14.3613 2.35698 14.3634C2.24699 14.3634 2.145 14.3191 2.06901 14.2388L0.63517 12.7252C0.353202 12.4254 0.199219 12.0285 0.199219 11.6105C0.199219 11.1925 0.359201 10.7914 0.63717 10.498L9.95413 0.662285C10.2321 0.36884 10.6161 0.199951 11.008 0.199951C11.4 0.199951 11.7799 0.362507 12.0639 0.660173L13.4997 2.17595C13.5757 2.25617 13.6177 2.36595 13.6177 2.47995C13.6157 2.59395 13.5717 2.70162 13.4937 2.77973C13.1738 3.10062 12.9978 3.53551 12.9978 3.99995C12.9978 4.93095 13.7157 5.68884 14.5976 5.68884C15.0376 5.68884 15.4495 5.50306 15.7555 5.1674C15.8295 5.08506 15.9335 5.03862 16.0395 5.03651C16.1494 5.0344 16.2494 5.08084 16.3274 5.16106L17.7613 6.67473C18.0432 6.97662 18.1992 7.3714 18.1992 7.7894C18.1992 8.2074 18.0392 8.60851 17.7613 8.90195L14.7256 12.1066C14.7256 12.1066 14.7116 12.1235 14.7016 12.132C14.6936 12.1404 14.6856 12.1488 14.6776 12.1573L8.4423 18.7376C8.16433 19.0311 7.78038 19.2 7.38842 19.2ZM5.7286 16.9073L6.89647 18.1423C7.02646 18.2774 7.20644 18.3555 7.38842 18.3555C7.5704 18.3555 7.74838 18.2774 7.87837 18.1423L13.8537 11.8343L12.3159 10.2108C12.1599 10.0462 12.1599 9.77806 12.3159 9.6134C12.4719 9.44873 12.7258 9.44873 12.8818 9.6134L14.4196 11.2368L17.1953 8.30451C17.3233 8.1694 17.3973 7.9794 17.3973 7.78728C17.3973 7.59517 17.3233 7.40517 17.1933 7.26795L16.0255 6.03506C15.6155 6.35806 15.1196 6.53117 14.5976 6.53117C13.2738 6.53117 12.1979 5.3954 12.1979 3.99784C12.1979 3.44684 12.3619 2.92328 12.6678 2.49051L11.5 1.25551C11.24 0.985285 10.778 0.983173 10.5201 1.25551L7.74038 4.18573L9.27821 5.80917C9.43419 5.97384 9.43419 6.24195 9.27821 6.40662C9.12223 6.57128 8.86826 6.57128 8.71227 6.40662L7.17444 4.78317L1.20111 11.0933C1.07312 11.2305 0.99913 11.4184 0.99913 11.6105C0.99913 11.8026 1.07112 11.9905 1.20311 12.1298L2.37098 13.3627C2.78093 13.0397 3.27688 12.8666 3.79882 12.8666C5.12267 12.8666 6.19855 14.0024 6.19855 15.4C6.19855 15.951 6.03457 16.4745 5.7286 16.9073ZM11.398 9.06662C11.296 9.06662 11.194 9.0244 11.116 8.94206L9.91614 7.6754C9.76016 7.51073 9.76016 7.24262 9.91614 7.07795C10.0721 6.91328 10.3261 6.91328 10.4821 7.07795L11.6819 8.34462C11.9359 8.59584 11.7419 9.07928 11.398 9.06662Z" />
+                        </defs>
+                    </svg>
+                    <span>BOOK HERE</span>
+                </button>
+                <button
+                    type="button"
+                    className="venue-dock-item"
+                    onClick={() => {
+                        if (isLoggedIn) {
+                            navigate("/profile");
+                        } else {
+                            setIsLoginModalOpen(true);
+                        }
+                    }}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>{isLoggedIn ? "PROFILE" : "LOGIN"}</span>
+                </button>
+                <button
+                    type="button"
+                    className={`venue-dock-item ${openDropdown ? 'active' : ''}`}
+                    onClick={() => {
+                        setOpenDropdown(prev => prev ? null : 'date');
+                        if (toolbarRef.current) {
+                            toolbarRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    <span>FILTER BY</span>
+                </button>
+            </div>
+
+            <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
         </div>
     );
 };

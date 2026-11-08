@@ -542,7 +542,7 @@
 
 /* Accessibility Widget in Navbar */
 .navbar-accessibility-container {
-    display: flex;
+    display: none !important;
     align-items: center;
     height: 44px;
     margin-left: 4px;
@@ -585,7 +585,7 @@
 }
 
 .mobile-accessibility-wrapper {
-    display: flex;
+    display: none !important;
     align-items: center;
     justify-content: center;
 }
@@ -800,7 +800,7 @@
         justify-content: flex-end !important;
         gap: 4px !important;
         min-width: 0 !important;
-        margin-right: 52px !important;
+        /* margin-right: 52px !important; */
     }
 
     .mobile-icon-btn {

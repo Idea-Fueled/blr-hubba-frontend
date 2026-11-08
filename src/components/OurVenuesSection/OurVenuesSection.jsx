@@ -196,10 +196,10 @@ export const OurVenuesSection = () => {
     };
 
     const filterOptions = [
-        { key: "parking", label: "Parking Available", aliases: ["parking", "parking available", "parking-available", "parking_available", "valet", "car park", "vehicle"] },
-        { key: "wheelchair", label: "Wheelchair Accessible", aliases: ["wheelchair", "wheelchair accessible", "wheelchair friendly", "wheelchair-friendly", "wheelchair_friendly", "ramp", "accessible", "handicap"] },
-        { key: "cafe", label: "Cafe Available", aliases: ["cafe", "cafe available", "cafe-available", "cafe_available", "food", "food available", "food-available", "food_available", "food & drinks", "canteen", "restaurant", "dining"] },
-        { key: "pet", label: "Pet Friendly", aliases: ["pet", "pet friendly", "pet-friendly", "pet_friendly", "dog", "dogs", "pets", "animal", "animals"] },
+        { key: "parking", label: "Parking Available", aliases: ["parking", "parking available", "parking-available", "parking_available", "valet", "car park", "vehicle", "paid_parking_nearby", "free_parking_nearby", "onsite_parking", "paid parking", "free parking", "onsite parking"] },
+        { key: "wheelchair", label: "Wheelchair Accessible", aliases: ["wheelchair", "wheelchair accessible", "wheelchair friendly", "wheelchair-friendly", "wheelchair_friendly", "ramp", "ramp_available", "accessible", "accessible_toilets", "handicap"] },
+        { key: "cafe", label: "Cafe Available", aliases: ["cafe", "cafe available", "cafe-available", "cafe_available", "food", "food available", "food-available", "food_available", "food & drinks", "canteen", "restaurant", "dining", "onsite_cafe", "pantry", "eateries_near_me"] },
+        { key: "pet", label: "Pet Friendly", aliases: ["pet", "pet friendly", "pet-friendly", "pet_friendly", "dog", "dogs", "pets", "animal", "animals", "family_friendly"] },
     ];
 
     const getFilteredVenues = () => {
